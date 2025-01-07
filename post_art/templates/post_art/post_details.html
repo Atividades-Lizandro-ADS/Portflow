@@ -1,0 +1,19 @@
+{%extends 'base.html'%}
+
+
+
+{%block content%}
+
+    <p>{{post.tittle}}</p>
+    <p>{{post.views}}</p>
+    <p>{{post.post_owner}}</p>
+
+    <h2>programas usados</h2>
+    {%for c in post.used_programs.all%}
+    
+        <img src="{{c.program_logo.url}}" alt="">
+        <p>{{c}}</p>
+    {%endfor%}
+    
+
+{%endblock%}
