@@ -1,0 +1,107 @@
+html{
+    font-size: 10px;
+}
+:root{
+    --dark-bg: rgba(16,16,20,255);
+    --light-bg: rgba(32,32,36,255);
+    --white:#fff;
+    --light-gray:rgba(65,65,69,255);
+}
+body{
+    background-color: var(--dark-bg);
+    color: var(--white);
+}
+
+
+
+
+
+
+
+
+
+
+.album-img{
+    width: 90%;
+    max-width: 720px;
+    height: auto;
+}
+
+
+.profile-picture{
+    width: 5rem;
+    height: 5rem;
+}
+
+.software-logo{
+    width: 2rem;
+    height: 2rem;
+}
+
+
+.post-side{
+    
+    
+}
+
+.post-side .post-card{
+    background-color: var(--light-bg);
+    border-radius: .5rem;
+    padding: 3.4rem;
+    
+}
+
+
+.post-side p,.post-side span, .post-side label{
+    font-size: 1.6rem;
+}
+
+.post-side h3{
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.post-side h4{
+    font-size: 2rem;
+}
+
+
+.desc-content{
+    display: none;
+}
+#read-more{
+    display: none;
+}
+
+#read-more:checked ~ .desc-content{
+    display: block;
+}
+
+#read-more:checked ~ label{
+    display: none;
+}
+
+label.read-more{
+    color: var(--light-gray);
+    cursor: pointer;
+}
+
+
+p.software-text{
+    font-size: 1.2rem;
+}
+
+
+
+
+a{
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.keywords{
+    background-color: var(--light-gray);
+    padding: 0rem .8rem;
+    border-radius: .25rem;
+}

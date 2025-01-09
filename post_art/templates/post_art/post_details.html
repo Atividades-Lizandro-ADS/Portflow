@@ -3,17 +3,110 @@
 
 
 {%block content%}
+<main class="container">
 
-    <p>{{post.tittle}}</p>
-    <p>{{post.views}}</p>
-    <p>{{post.post_owner}}</p>
 
-    <h2>programas usados</h2>
-    {%for c in post.used_programs.all%}
+        <div class="sides d-flex flex-row justify-content-center mt-5 mb-5">
+
+
+            <div  class="col-7 p-2 album-side">
+                {%for image in post.postimages_set.all%}
+                <div class="d-flex flex-column justify-content-center text-center">
+                    <img class="album-img" src="{{image.post_img.url}}" alt="{{image.acessibility_caption}}">
+                    <p>{{image.caption}}</p>
+                </div>
+                    
+                {%endfor%}
+            </div>
+            
+            <div class="col-5 post-side">
+                    <div class="post-card ">
+                            <!--area do perfil-->
+                        <div class="d-flex flex-row gap-3 align-items-center mb-5 mt-2 ">
+                            <img class="profile-picture rounded-circle" src="{{post.post_owner.user_picture.url}}" alt="">
+
+                            <div class="d-flex flex-column gap-1">
+                                <h3>{{post.post_owner}}</h3>
+                                <a href="#">visite o perfil</a>
+                            </div>
+                        </div>
+
+
+                    <!--area de informações do post-->
+
+
+                    <div class="">
+                        <h3>{{post.tittle}}</h3>
+
+                        <div class="collapsable">
+                            <input type="checkbox" name="" id="read-more">
+                            <span>{{post.description|slice:":244"}}</span>
+                            <div class="desc-content">
+                                <span>{{post.description|slice:"244:"}}</span>
+                                <label class="read-more" for="read-more">mostrar menos</label>
+                            </div>
+                        <label class="read-more" for="read-more">mostrar mais</label>
+                        </div>
+                        
+
+                    
+                    </div>
+
+
+                    <div class="d-flex flex-row mt-4 justify-content-between">
+                        <div class="d-flex flex-row gap-2 align-items-center" >
+                            <i style="font-size: 12px;" class="bi bi-hand-thumbs-up-fill" ></i>
+                            <span style="font-size: 12px;">{{post.likes}}</span>
+                        </div>
+
+                        <div class="d-flex flex-row gap-2 align-items-center">
+                            <i style="font-size: 12px;" class="bi bi-eye-fill"></i>
+                            <span style="font-size: 12px;">{{post.views}}</span>
+                        </div>
+
+                        <div class="d-flex flex-row gap-2 align-items-center">
+                            <i style="font-size: 12px;" class="bi bi-chat-left-text-fill"></i>
+                            <span style="font-size: 12px;">{{post.likes}}</span>
+                        </div>
+                    </div>
+                    
+                
+                    <h4 class="mt-5">programas usados</h4>
+                    <div class="mt-5 d-flex flex-row gap-2 justify-content-around">
+                        {%for c in post.used_programs.all%}
+                            <div class="d-flex flex-row gap-2 p-auto col align-items-center">
+                                <img class="software-logo" src="{{c.program_logo.url}}" alt="">
+                                <p class="software-text m-0">{{c}}</p>
+                            </div>
+                        
+                    {%endfor%}
+                    </div>
+                    </div>
+
+                    <!--palavras chave-->
+                    <div class="post-card mt-5">
+                        <p>palavras chave</p>
+                        <div class="container">
+                            <div class="row gap-3 justify-content-around">
+                                {%for k in keywords%}
+                                    <span class="col keywords">#{{k}}</span>
+                                {%endfor%}
+                            </div>
+                        </div>
+                        
+                    </div>
+                
+            </div>
+
+
+        </div>
+
+        
+        
     
-        <img src="{{c.program_logo.url}}" alt="">
-        <p>{{c}}</p>
-    {%endfor%}
+</main>
+
+    
     
 
 {%endblock%}

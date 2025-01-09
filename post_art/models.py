@@ -38,6 +38,12 @@ class Category(models.Model):
         return self.category_name
 
 
+
+class PostImages(models.Model):
+    post_img=models.ImageField(upload_to='user/post/images')
+    acessibility_caption=models.CharField(max_length=120)
+    caption=models.CharField(max_length=240)
+    image_post_owner=models.ForeignKey('PostArt',on_delete=models.CASCADE)
         
 class PostArt(BasePost):
     art_type_choices=(('2',"2D"),('3',"3D"))
@@ -53,6 +59,9 @@ class PostArt(BasePost):
     used_programs=models.ManyToManyField(UsedPrograms)
     views=models.IntegerField(default=0)
     category=models.ForeignKey(Category,on_delete=models.SET_NULL, blank=True, null=True)
+
+    keywords=models.TextField(null=True, blank=True)
+
 
     class Meta:
         verbose_name="post portfolio"
