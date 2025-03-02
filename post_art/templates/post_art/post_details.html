@@ -1,6 +1,5 @@
 {%extends 'base.html'%}
-
-
+{%load static%}
 
 {%block content%}
 <main class="container">
@@ -17,6 +16,15 @@
                 </div>
                     
                 {%endfor%}
+
+                {%if post.marmoview%}
+                <div id="marmoviewer" data-marmolink="{{post.marmoview.url}}" style="position: relative;">
+                    
+                </div>
+
+                <script src="{%static 'js/marmoloader.js'%}"></script>
+                
+                {%endif%}
             </div>
             
             <div class="col-5 post-side">

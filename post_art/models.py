@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from .custom_model_fields import YoutubeUrlField,MarmosetFileField
 
 
 class BasePost(models.Model):
@@ -39,8 +40,13 @@ class Category(models.Model):
 
 
 
+def post_images_upload_to(instance,filename):
+
+    return f'user/{instance.image_post_owner}/post/{filename}'
+
+
 class PostImages(models.Model):
-    post_img=models.ImageField(upload_to='user/post/images')
+    post_img=models.ImageField(upload_to=post_images_upload_to)
     acessibility_caption=models.CharField(max_length=120)
     caption=models.CharField(max_length=240)
     image_post_owner=models.ForeignKey('PostArt',on_delete=models.CASCADE)
@@ -59,6 +65,9 @@ class PostArt(BasePost):
     used_programs=models.ManyToManyField(UsedPrograms)
     views=models.IntegerField(default=0)
     category=models.ForeignKey(Category,on_delete=models.SET_NULL, blank=True, null=True)
+
+    youtube_link=YoutubeUrlField(null=True, blank=True,)
+    marmoview=MarmosetFileField(null=True, blank=True)
 
     keywords=models.TextField(null=True, blank=True)
 
