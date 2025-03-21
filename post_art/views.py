@@ -19,7 +19,6 @@ def Index(request):
 def postPost(request):
 
     form=PostForm(request.POST or None,request.FILES)
-    print(form.data)
     
     if request.method=='POST':
         if form.is_valid():
@@ -75,7 +74,7 @@ class PostsArtView(generics.ListCreateAPIView):
 
 
 class PaginationCustom(PageNumberPagination):
-    page_size=10
+    page_size=12
 
 class PostsArtViewRefresh(generics.ListCreateAPIView):
     queryset=posts=PostArt.objects.all()

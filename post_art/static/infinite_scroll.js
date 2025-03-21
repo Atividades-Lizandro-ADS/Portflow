@@ -2,7 +2,8 @@ let page = 2;
 let loading = false;
 
 const postsContainer = document.getElementById('posts-container');
-
+let api_url=postsContainer.getAttribute('data-api-url')
+postsContainer.removeAttribute('data-api-url')
 
 $(window).scroll(function(){
     if(page!=0 && $(window).scrollTop()+$(window).height() == $(document).height()){
@@ -15,7 +16,7 @@ function loadPosts() {
     loading = true;
 
     $.ajax({
-        url: `/api/v1/posts/refresh?page=${page}`,
+        url: `${api_url}?page=${page}`,
         method: 'GET',
         success: function (data) {
             data.results.forEach(post => {
