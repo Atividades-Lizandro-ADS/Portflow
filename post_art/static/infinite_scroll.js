@@ -2,12 +2,17 @@ let page = 2;
 let loading = false;
 
 const postsContainer = document.getElementById('posts-container');
-const loadingIndicator = document.getElementById('loading');
+
+
+$(window).scroll(function(){
+    if(page!=0 && $(window).scrollTop()+$(window).height() == $(document).height()){
+        loadPosts()
+    }
+})
 
 function loadPosts() {
     if (loading) return;
     loading = true;
-    loadingIndicator.style.display = 'block';
 
     $.ajax({
         url: `/api/v1/posts/refresh?page=${page}`,
@@ -30,27 +35,13 @@ function loadPosts() {
             if (data.next) {
                 page++;
             } else {
-                observer.unobserve(loadingIndicator);
+                page=0;
             }
             loading = false;
-            loadingIndicator.style.display = 'none';
         },
         error: function (xhr, status, error) {
             console.error("Erro ao carregar posts:", error);
             loading = false;
-            loadingIndicator.style.display = 'none';
         }
     });
 }
-
-const observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting) {
-        loadPosts();
-    }
-}, {
-    threshold: 1.0
-});
-
-observer.observe(loadingIndicator);
-
-loadPosts();

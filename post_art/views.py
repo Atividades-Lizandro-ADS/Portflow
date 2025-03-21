@@ -11,7 +11,7 @@ from rest_framework.pagination import PageNumberPagination
 
 
 def Index(request):
-    posts=PostArt.objects.all()[:10]
+    posts=PostArt.objects.all()[:12]
     return render(request,'post_art/index.html',{'posts':posts})
 
 
