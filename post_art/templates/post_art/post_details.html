@@ -31,8 +31,9 @@
                     <div class="post-card ">
                             <!--area do perfil-->
                         <div class="d-flex flex-row gap-3 align-items-center mb-5 mt-2 ">
+                            {%if post.post_owner.user_picture%}
                             <img class="profile-picture rounded-circle" src="{{post.post_owner.user_picture.url}}" alt="">
-
+                            {%endif%}
                             <div class="d-flex flex-column gap-1">
                                 <h3>{{post.post_owner}}</h3>
                                 <a href="#">visite o perfil</a>

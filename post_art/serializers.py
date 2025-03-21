@@ -14,3 +14,17 @@ class PostArtSerializers(serializers.ModelSerializer):
             if valor=="":
                 raise serializers.ValidationError("o titulo não deve ser vázio")
             return valor
+        
+class PostArtSerializerRefresh(serializers.ModelSerializer):
+    class Meta:
+        model=PostArt
+        fields=(
+            'id',
+            'tittle',
+            'post_thumb',
+        )
+
+        def validate_tittle(self,valor):
+            if valor=="":
+                raise serializers.ValidationError("o titulo não deve ser vázio")
+            return valor

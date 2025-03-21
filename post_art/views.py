@@ -6,19 +6,20 @@ from django.contrib.auth.decorators import login_required
 from rest_framework import generics
 from rest_framework import viewsets
 
-from .serializers import PostArtSerializers
-
+from .serializers import PostArtSerializers,PostArtSerializerRefresh
+from rest_framework.pagination import PageNumberPagination
 
 
 def Index(request):
-    posts=PostArt.objects.all()
+    posts=PostArt.objects.all()[:10]
     return render(request,'post_art/index.html',{'posts':posts})
 
 
 
 def postPost(request):
 
-    form=PostForm(request.POST or None)
+    form=PostForm(request.POST or None,request.FILES)
+    print(form.data)
     
     if request.method=='POST':
         if form.is_valid():
@@ -33,15 +34,13 @@ def postPost(request):
             
             
             #adicionando a instancia do formulario o profile do usuario logado
-            form.instance.post_owner=request.user.profile
-            post=form.save()
+            post=form.save(owner=request.user.profile)
+
             #foi necessário salvar o objeto para
 
             #o metodo add adiciona objetos do tipo UsedPrograms a lista de manytomany
             #add recebe varios argumentos, podemos passar uma lista se utilizarmos o * antes dela
             post.used_programs.add(*usep)
-            post.save()
-        form=PostForm()
     return render(request,'post_art/postPost.html',{'form':form})
 
 @login_required()
@@ -74,9 +73,21 @@ class PostsArtView(generics.ListCreateAPIView):
     queryset=posts=PostArt.objects.all()
     serializer_class=PostArtSerializers
 
+
+class PaginationCustom(PageNumberPagination):
+    page_size=10
+
+class PostsArtViewRefresh(generics.ListCreateAPIView):
+    queryset=posts=PostArt.objects.all()
+    serializer_class=PostArtSerializerRefresh
+    pagination_class=PaginationCustom
+
 class PostArtView(generics.RetrieveUpdateDestroyAPIView):
     queryset=posts=PostArt.objects.all()
     serializer_class=PostArtSerializers
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
 
 """API v2"""
