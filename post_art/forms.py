@@ -1,9 +1,10 @@
 from django.forms.models import ModelForm
-from .models import PostArt,Profile
+from .models import PostArt,Profile,Comments
 from django.forms import CharField,Textarea,RadioSelect,ModelChoiceField
 
 
 class PostForm(ModelForm):
+
 
     programs=CharField(widget=Textarea)
     #como editar modelchoice para radio button
@@ -23,3 +24,11 @@ class PostForm(ModelForm):
     def clean_post_thumb(self):
         print(self.cleaned_data.get('post_thumb'))
         return self.cleaned_data.get('post_thumb')
+    
+class CommentForm(ModelForm):
+    class Meta:
+        model=Comments
+        fields=['comment_text']
+
+    # def __init__(self, comment_owner):
+    #     super().__init__()

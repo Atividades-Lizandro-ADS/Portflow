@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import PostArt
+from .models import PostArt,Comments
 
 class PostArtSerializers(serializers.ModelSerializer):
     class Meta:
@@ -28,3 +28,13 @@ class PostArtSerializerRefresh(serializers.ModelSerializer):
             if valor=="":
                 raise serializers.ValidationError("o titulo não deve ser vázio")
             return valor
+        
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Comments
+        fields=(
+            'id',
+               'comment_owner',
+               'comment_post',
+               'comment_text'
+               )

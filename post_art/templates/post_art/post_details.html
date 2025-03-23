@@ -1,5 +1,8 @@
 {%extends 'base.html'%}
 {%load static%}
+{%block head%}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{%endblock%}
 
 {%block content%}
 <main class="container">
@@ -90,11 +93,12 @@
                         
                     {%endfor%}
                     </div>
-                    </div>
 
+
+
+                    <h4>palavras chave</h4>
                     <!--palavras chave-->
                     <div class="post-card mt-5">
-                        <p>palavras chave</p>
                         <div class="container">
                             <div class="row gap-3 justify-content-around">
                                 {%for k in keywords%}
@@ -104,7 +108,33 @@
                         </div>
                         
                     </div>
+
+
                 
+            </div>
+
+            <div class="post-card gap-2">
+                <h4>Comentarios</h4>
+                <!--comentários-->
+                {%if request.user.profile%}
+                <form action="" data-post-id="{{post.id}}" data-profile-id="{{request.user.profile.id}}" data-comment-api-url="{%url 'add_comment'%}" data-token="{{csrf_token}}" id="comment_form">
+                    {{form}}
+                    <button type="submit">comentar</button>
+                </form>
+                {%endif%}
+                <br>
+                <div id="comment_div">
+                    {%for comment in post.comments_set.all%}
+                    <div class="comment">
+                        <img src="{{comment.comment_owner.user_picture.url}}" alt="">
+                        <div>
+                            <a href="{%url 'profile_index' comment.comment_owner.id%}">{{comment.comment_owner}}</a>
+                            <p>{{comment}}</p>
+                        </div>
+                    </div>
+                        
+                    {%endfor%}
+                </div>
             </div>
 
 
@@ -115,6 +145,7 @@
     
 </main>
 
+<script src="{%static 'js/comment.js' %}"></script>
     
     
 

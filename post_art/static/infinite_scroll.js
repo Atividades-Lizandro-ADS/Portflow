@@ -5,6 +5,8 @@ const postsContainer = document.getElementById('posts-container');
 let api_url=postsContainer.getAttribute('data-api-url')
 postsContainer.removeAttribute('data-api-url')
 
+
+
 $(window).scroll(function(){
     if(page!=0 && $(window).scrollTop()+$(window).height() == $(document).height()){
         loadPosts()

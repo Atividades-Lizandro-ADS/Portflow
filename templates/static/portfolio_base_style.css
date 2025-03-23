@@ -40,14 +40,17 @@ body{
 
 
 .post-side{
-    
-    
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;    
 }
 
 .post-side .post-card{
     background-color: var(--light-bg);
     border-radius: .5rem;
     padding: 3.4rem;
+    display: flex;
+    flex-direction: column;
     
 }
 
@@ -120,4 +123,24 @@ a{
 
 .flex{
     display: flex;
+}
+
+
+.comment{
+    display: flex;
+    gap: 1rem;
+    align-items: start;
+}
+
+.comment a{
+    font-size: 1.5rem;
+}
+
+.comment p{
+    font-size: 1.2rem;
+}
+.comment img{
+    width: auto;
+    height: 3rem;
+    border-radius: 50%;
 }

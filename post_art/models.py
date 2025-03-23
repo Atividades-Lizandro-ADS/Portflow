@@ -83,3 +83,13 @@ class PostArt(BasePost):
 
     def __str__(self) -> str:
         return self.tittle
+
+
+class Comments(models.Model):
+    comment_owner=models.ForeignKey(Profile,on_delete=models.CASCADE)
+    comment_post=models.ForeignKey(PostArt,on_delete=models.CASCADE)
+    comment_text=models.TextField()
+
+
+    def __str__(self):
+        return self.comment_text 

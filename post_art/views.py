@@ -1,13 +1,16 @@
 from django.shortcuts import render,HttpResponse
-from .models import PostArt,UsedPrograms
-from .forms import PostForm
+from .models import PostArt,UsedPrograms,Profile,Comments
+from .forms import PostForm,CommentForm
 from django.contrib.auth.decorators import login_required
 
-from rest_framework import generics
+from rest_framework import generics,permissions,authentication
 from rest_framework import viewsets
 
-from .serializers import PostArtSerializers,PostArtSerializerRefresh
+from .serializers import PostArtSerializers,PostArtSerializerRefresh,CommentSerializer
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
 
 
 def Index(request):
@@ -48,12 +51,16 @@ def post_details(request,post_pk):
 
     keywords=post.keywords.split("#")
     keywords=filter(None,keywords)
+
+    form=CommentForm()
     
 
-    return render(request,'post_art/post_details.html',{'post':post,'keywords':keywords})
+    return render(request,'post_art/post_details.html',{'post':post,'keywords':keywords,'form':form})
 
 
-
+def profile_index(request,profile_pk):
+    profile=Profile.objects.get(id=profile_pk)
+    return HttpResponse(profile)
 
 
 
@@ -85,8 +92,24 @@ class PostArtView(generics.RetrieveUpdateDestroyAPIView):
     queryset=posts=PostArt.objects.all()
     serializer_class=PostArtSerializers
 
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+
+class add_comment(generics.CreateAPIView):
+    serializer_class=CommentSerializer
+    authentication_classes=[authentication.SessionAuthentication]
+    permission_classes=[permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(comment_owner=self.request.user.profile)
+    
+    def create(self, request, *args, **kwargs):
+        response= super().create(request, *args, **kwargs)
+
+        response.data['owner']={
+            'user_picture':request.user.profile.user_picture.url,
+            'username':request.user.profile.first_name,
+            'user_id':request.user.profile.id
+        }
+        return response
 
 
 """API v2"""
