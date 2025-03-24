@@ -44,9 +44,9 @@
                         </div>
 
                         <div class="d-flex gap-5 justify-center">
-                            <div class="d-flex justify-center align-items-center gap-3" id="like">
+                            <div class="d-flex justify-center align-items-center gap-3" >
 
-                                <button class="post-button like-button" >
+                                <button class="post-button like-button {%if liked %}wh-btn{%endif%}" id="like-button" data-profile-id="{{request.user.profile.id}}" data-csrf="{{csrf_token}}" data-post="{{post.id}}" data-like-url="{% url 'add_like' %}">
                                     <i style="font-size: 2rem;" class="bi bi-hand-thumbs-up-fill" ></i>
                                     Like
                                 </button>
@@ -87,17 +87,17 @@
                     <div class="d-flex flex-row mt-4 justify-content-between">
                         <div class="d-flex flex-row gap-2 align-items-center" >
                             <i style="font-size: 12px;" class="bi bi-hand-thumbs-up-fill" ></i>
-                            <span style="font-size: 12px;">{{post.like_set.all|length}}</span>
+                            <span style="font-size: 12px;" id="like_num">{{post.like_num}}</span>
                         </div>
 
                         <div class="d-flex flex-row gap-2 align-items-center">
                             <i style="font-size: 12px;" class="bi bi-eye-fill"></i>
-                            <span style="font-size: 12px;">{{post.view_number}}</span>
+                            <span style="font-size: 12px;" id="view_num">{{post.view_number}}</span>
                         </div>
 
                         <div class="d-flex flex-row gap-2 align-items-center">
                             <i style="font-size: 12px;" class="bi bi-chat-left-text-fill"></i>
-                            <span style="font-size: 12px;">{{post.comments_set.all|length}}</span>
+                            <span style="font-size: 12px;" id="comments_num">{{post.comments_set.all|length}}</span>
                         </div>
                     </div>
                     
@@ -165,7 +165,8 @@
 </main>
 
 <script src="{%static 'js/comment.js' %}"></script>
-<script src="{%static 'js/save_post.js' %}"></script>
+<script src="{%static 'js/add_like.js' %}"></script>
+<script src="{%static 'js/save_fav_post.js' %}"></script>
     
     
 

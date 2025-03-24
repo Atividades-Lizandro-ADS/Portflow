@@ -1,10 +1,12 @@
 from django.http import JsonResponse
 from django.shortcuts import render,HttpResponse
-from .models import PostArt,UsedPrograms,Profile,Comments
+from .models import PostArt,UsedPrograms,Profile,Like
 from .forms import PostForm,CommentForm
 from django.contrib.auth.decorators import login_required
 
 from django.views.generic import UpdateView
+
+from .utility import get_object_or_none 
 
 
 
@@ -42,7 +44,6 @@ def postPost(request):
             post.used_programs.add(*usep)
     return render(request,'post_art/postPost.html',{'form':form})
 
-@login_required()
 def post_details(request,post_pk):
     post=PostArt.objects.get(id=post_pk)
     post.increase_view()
@@ -52,12 +53,14 @@ def post_details(request,post_pk):
 
     form=CommentForm()
 
+    favorited=False
     if request.user.is_authenticated:
        profile= request.user.profile
        favorited=profile.saved_posts.contains(post)
-    
+       _,liked=get_object_or_none(Like,like_owner=profile,like_post=post)
+       
 
-    return render(request,'post_art/post_details.html',{'post':post,'keywords':keywords,'form':form,'favorited':favorited})
+    return render(request,'post_art/post_details.html',{'post':post,'keywords':keywords,'form':form,'favorited':favorited,'liked':liked})
 
 
 def profile_index(request,profile_pk):

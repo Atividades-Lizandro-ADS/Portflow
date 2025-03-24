@@ -8,7 +8,6 @@ save_button.removeAttr('data-save-favorite-url')
 let favorited=save_button.attr('data-favorited')
 save_button.removeAttr('data-favorited')
 
-console.log(favorited)
 
 if(favorited=="True"){
     toggleIcons()

@@ -1,9 +1,12 @@
 from rest_framework import generics,permissions,authentication
 from rest_framework import viewsets
 
-from .serializers import PostArtSerializers,PostArtSerializerRefresh,CommentSerializer
+from .serializers import PostArtSerializers,PostArtSerializerRefresh,CommentSerializer,LikeSerializer
 from rest_framework.pagination import PageNumberPagination
-from .models import PostArt,UsedPrograms,Profile,Comments
+from .models import PostArt,UsedPrograms,Profile,Comments,Like
+from .utility import get_object_or_none
+from rest_framework import status
+from rest_framework.response import Response
 
 
 """API v1"""
@@ -44,6 +47,33 @@ class add_comment(generics.CreateAPIView):
             'user_id':request.user.profile.id
         }
         return response
+
+class add_like(generics.CreateAPIView):
+    serializer_class=LikeSerializer
+    authentication_classes=[authentication.SessionAuthentication]
+    permission_classes=[permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        self.instance=serializer.save(like_owner=self.request.user.profile,like=True)
+    
+    def create(self, request, *args, **kwargs):
+        like_owner=int(request.data.get('like_owner'))
+        like_post=int(request.data.get('like_post'))
+        like,_=get_object_or_none(Like,like_owner__id=like_owner,like_post__id=like_post)
+
+        if like is None:
+            response= super().create(request, *args, **kwargs)
+            response['likes']=self.instance.like_post.like_num
+            return response
+            
+        
+        like.like= not like.like
+        like.save()
+
+        return Response(data={
+            'success':True,
+            'likes':like.like_post.like_num
+        },status=status.HTTP_200_OK)
 
 
 """API v2"""

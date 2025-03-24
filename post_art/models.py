@@ -88,6 +88,14 @@ class PostArt(BasePost):
         self.save()
 
     @property
+    def like_num(self):
+        likes= self.like_set.filter(like=True).count()
+
+        if likes>=1000:
+           return f'{(likes/1000):.1f}k'
+        return likes
+
+    @property
     def view_number(self):
         if self.views_number>=1000:
            return f'{(self.views_number/1000):.1f}k'
@@ -111,4 +119,5 @@ class Like(models.Model):
 
 
     def __str__(self):
-        return self.like
+        return f'{self.like_owner} {self.like_post}'
+    

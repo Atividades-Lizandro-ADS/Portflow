@@ -33,18 +33,18 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model=Comments
         fields=(
-            'id',
+                'id',
                'comment_owner',
                'comment_post',
                'comment_text'
                )
         
-class CommentSerializer(serializers.ModelSerializer):
+class LikeSerializer(serializers.ModelSerializer):
     class Meta:
-        model=Comments
+        model=Like
         fields=(
-            'id',
+                'id',
                'like_owner',
                'like_post',
-               'like_text'
+               'like'
                )
