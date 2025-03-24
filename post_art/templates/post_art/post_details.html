@@ -11,7 +11,7 @@
         <div class="sides d-flex flex-row justify-content-center mt-5 mb-5">
 
 
-            <div  class="col-7 p-2 album-side">
+            <div  class="col-8 p-2 album-side">
                 {%for image in post.postimages_set.all%}
                 <div class="d-flex flex-column justify-content-center text-center">
                     <img class="album-img" src="{{image.post_img.url}}" alt="{{image.acessibility_caption}}">
@@ -30,7 +30,7 @@
                 {%endif%}
             </div>
             
-            <div class="col-5 post-side">
+            <div class="col-4 post-side">
                     <div class="post-card ">
                             <!--area do perfil-->
                         <div class="d-flex flex-row gap-3 align-items-center mb-5 mt-2 ">
@@ -41,6 +41,25 @@
                                 <h3>{{post.post_owner}}</h3>
                                 <a href="#">visite o perfil</a>
                             </div>
+                        </div>
+
+                        <div class="d-flex gap-5 justify-center">
+                            <div class="d-flex justify-center align-items-center gap-3" id="like">
+
+                                <button class="post-button like-button" >
+                                    <i style="font-size: 2rem;" class="bi bi-hand-thumbs-up-fill" ></i>
+                                    Like
+                                </button>
+
+                                <button class="post-button save-button" data-favorited="{{favorited}}" data-post="{{post.id}}" data-save-favorite-url="{% url 'save_favorite' %}" id="save-button">
+                                    <i style="font-size: 2rem;" class="bi bi-bookmark-fill" id="bookmark-ico"></i>
+                                    <i style="font-size: 2rem;" class="bi bi-bookmark-check-fill d-none" id="bookmark-check-ico"></i>
+                                    Save
+                                </button>
+                                
+                            </div>
+
+                                
                         </div>
 
 
@@ -68,17 +87,17 @@
                     <div class="d-flex flex-row mt-4 justify-content-between">
                         <div class="d-flex flex-row gap-2 align-items-center" >
                             <i style="font-size: 12px;" class="bi bi-hand-thumbs-up-fill" ></i>
-                            <span style="font-size: 12px;">{{post.likes}}</span>
+                            <span style="font-size: 12px;">{{post.like_set.all|length}}</span>
                         </div>
 
                         <div class="d-flex flex-row gap-2 align-items-center">
                             <i style="font-size: 12px;" class="bi bi-eye-fill"></i>
-                            <span style="font-size: 12px;">{{post.views}}</span>
+                            <span style="font-size: 12px;">{{post.view_number}}</span>
                         </div>
 
                         <div class="d-flex flex-row gap-2 align-items-center">
                             <i style="font-size: 12px;" class="bi bi-chat-left-text-fill"></i>
-                            <span style="font-size: 12px;">{{post.likes}}</span>
+                            <span style="font-size: 12px;">{{post.comments_set.all|length}}</span>
                         </div>
                     </div>
                     
@@ -146,6 +165,7 @@
 </main>
 
 <script src="{%static 'js/comment.js' %}"></script>
+<script src="{%static 'js/save_post.js' %}"></script>
     
     
 

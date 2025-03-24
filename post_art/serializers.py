@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import PostArt,Comments
+from .models import PostArt,Comments,Like
 
 class PostArtSerializers(serializers.ModelSerializer):
     class Meta:
@@ -37,4 +37,14 @@ class CommentSerializer(serializers.ModelSerializer):
                'comment_owner',
                'comment_post',
                'comment_text'
+               )
+        
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Comments
+        fields=(
+            'id',
+               'like_owner',
+               'like_post',
+               'like_text'
                )

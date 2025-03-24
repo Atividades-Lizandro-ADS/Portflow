@@ -64,10 +64,9 @@ class PostArt(BasePost):
     caption=models.CharField(max_length=250)
     description=models.TextField()
     art_type=models.CharField(default='2D',choices=art_type_choices,max_length=2)
-    likes=models.IntegerField(default=0)
 
     used_programs=models.ManyToManyField(UsedPrograms)
-    views=models.IntegerField(default=0)
+    views_number=models.IntegerField(default=0)
     category=models.ForeignKey(Category,on_delete=models.SET_NULL, blank=True, null=True)
 
     youtube_link=YoutubeUrlField(null=True, blank=True,)
@@ -83,6 +82,17 @@ class PostArt(BasePost):
 
     def __str__(self) -> str:
         return self.tittle
+    
+    def increase_view(self):
+        self.views_number+=1
+        self.save()
+
+    @property
+    def view_number(self):
+        if self.views_number>=1000:
+           return f'{(self.views_number/1000):.1f}k'
+        return self.views_number
+        
 
 
 class Comments(models.Model):
@@ -93,3 +103,12 @@ class Comments(models.Model):
 
     def __str__(self):
         return self.comment_text 
+    
+class Like(models.Model):
+    like_owner=models.ForeignKey(Profile,on_delete=models.CASCADE)
+    like_post=models.ForeignKey(PostArt,on_delete=models.CASCADE)
+    like=models.BooleanField(default=True)
+
+
+    def __str__(self):
+        return self.like

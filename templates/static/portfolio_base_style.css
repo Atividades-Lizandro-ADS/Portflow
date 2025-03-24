@@ -117,9 +117,9 @@ a{
     justify-content: center;
 }
 
-.gap-2{
+/* .gap-2{
     gap: 2px;
-}
+} */
 
 .flex{
     display: flex;
@@ -143,4 +143,23 @@ a{
     width: auto;
     height: 3rem;
     border-radius: 50%;
+}
+
+
+.post-button{
+    display: flex;
+    gap: .4rem;
+    align-items: center;
+    padding: .2rem 5rem;
+    font-size: 1.5rem;
+    border: none;
+    border-radius: 1rem;
+    font-weight: bold;
+}
+.like-button{
+    background-color: rgb(36, 186, 255);
+}
+.save-button{
+    background-color: #404044;
+    color: #fff;
 }

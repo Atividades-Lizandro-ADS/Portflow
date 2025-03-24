@@ -1,7 +1,11 @@
+from django.http import JsonResponse
 from django.shortcuts import render,HttpResponse
 from .models import PostArt,UsedPrograms,Profile,Comments
 from .forms import PostForm,CommentForm
 from django.contrib.auth.decorators import login_required
+
+from django.views.generic import UpdateView
+
 
 
 
@@ -41,14 +45,19 @@ def postPost(request):
 @login_required()
 def post_details(request,post_pk):
     post=PostArt.objects.get(id=post_pk)
+    post.increase_view()
 
     keywords=post.keywords.split("#")
     keywords=filter(None,keywords)
 
     form=CommentForm()
+
+    if request.user.is_authenticated:
+       profile= request.user.profile
+       favorited=profile.saved_posts.contains(post)
     
 
-    return render(request,'post_art/post_details.html',{'post':post,'keywords':keywords,'form':form})
+    return render(request,'post_art/post_details.html',{'post':post,'keywords':keywords,'form':form,'favorited':favorited})
 
 
 def profile_index(request,profile_pk):
@@ -59,7 +68,23 @@ def profile_index(request,profile_pk):
 
 
 
+class add_favorite(UpdateView):
+    def get(self, request, *args, **kwargs):
 
+        post_id=request.GET.get('post')
+        post=PostArt.objects.get(id=post_id)
+        profile=request.user.profile
+
+        if profile.saved_posts.contains(post):
+            profile.saved_posts.remove(post)
+        else:
+            profile.saved_posts.add(post)
+        response={}
+        response['success']=True
+
+        
+        
+        return JsonResponse(response)
 
 
 
