@@ -1,6 +1,8 @@
 {%extends 'base.html'%}
-
-
+{%load static%}
+{% block head%}
+<link rel="stylesheet" href="{%static 'css/postform.css' %}">
+{%endblock%}
 
 {%block content%}
 
@@ -9,8 +11,20 @@
         {%csrf_token%}
         {{form}}
 
+
+        <!--upload imagens-->
+        <div class="image_post-uploader" id="upload-container">
+            <p>image upload</p>
+            <input type="file" id="image-upload" accept="image/*" multiple>
+        </div>
+
+        <div class="image-preview" id="image-preview"></div>
+
+        <div id="form-inputs-container"></div>
         <button type="submit">enviar</button>
 
     </form>
+
+    <script src="{%static 'js/add_image_form.js'%}"></script>
 
 {%endblock%}

@@ -1,8 +1,11 @@
 from django.http import JsonResponse
-from django.shortcuts import render,HttpResponse
-from .models import PostArt,UsedPrograms,Profile,Like
+from django.shortcuts import render,HttpResponse,HttpResponseRedirect
+from .models import PostArt,UsedPrograms,Profile,Like,PostImages
 from .forms import PostForm,CommentForm
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+
+from django.views.generic import ListView
 
 from django.views.generic import UpdateView
 
@@ -11,10 +14,12 @@ from .utility import get_object_or_none
 
 
 
+class Index(ListView):
+    model=PostArt
+    queryset=PostArt.objects.all()[:12]
+    template_name='post_art/index.html'
+    context_object_name='posts'
 
-def Index(request):
-    posts=PostArt.objects.all()[:12]
-    return render(request,'post_art/index.html',{'posts':posts})
 
 
 
@@ -42,6 +47,16 @@ def postPost(request):
             #o metodo add adiciona objetos do tipo UsedPrograms a lista de manytomany
             #add recebe varios argumentos, podemos passar uma lista se utilizarmos o * antes dela
             post.used_programs.add(*usep)
+
+            files=request.FILES.getlist('post_img[]')
+            captions=request.POST.getlist('caption[]')
+            acessibility_captions=request.POST.getlist('acessibility_caption[]')
+            
+
+
+            for file,caption,a_caption in zip(files,captions,acessibility_captions):
+                PostImages.objects.create(post_img=file,acessibility_caption=a_caption,caption=caption,image_post_owner=post)
+            return HttpResponseRedirect(reverse('index'))
     return render(request,'post_art/postPost.html',{'form':form})
 
 def post_details(request,post_pk):
@@ -68,7 +83,8 @@ def profile_index(request,profile_pk):
     return HttpResponse(profile)
 
 
-
+def teste(request):
+    return render(request,'post_art/temp2.html')
 
 
 class add_favorite(UpdateView):

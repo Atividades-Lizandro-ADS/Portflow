@@ -1,0 +1,54 @@
+.image_post-uploader{
+    border: .2rem dashed #ccc;
+    padding: 10rem 4rem;
+    text-align: center;
+    margin: 2rem;
+    border-radius: 5px;
+}
+
+.image-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.upload_border_drag{
+    border-color: #4CAF50;
+    background-color: rgba(248, 248, 248, .1);
+}
+
+.image-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 2rem;
+    padding: 2rem;
+}
+
+.image-item{
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    width: 20rem;
+    margin-bottom: 2rem;
+}
+
+.image-item img{
+    max-width: 100%;
+    max-height: 20rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.caption-input{
+    border-radius: 0;
+    color: #fff;
+    border: solid .2rem #ffffff85;
+    background-color: transparent;
+    padding: .4rem;
+
+}
+.caption-input:focus{
+    outline: none;
+}

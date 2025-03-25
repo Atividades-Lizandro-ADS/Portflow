@@ -1,5 +1,5 @@
 from django.forms.models import ModelForm
-from .models import PostArt,Profile,Comments
+from .models import PostArt,Profile,Comments,PostImages
 from django.forms import CharField,Textarea,RadioSelect,ModelChoiceField
 
 
@@ -11,7 +11,7 @@ class PostForm(ModelForm):
     #post_owner=ModelChoiceField(queryset=Profile.objects.all(),widget=RadioSelect())
     class Meta:
         model=PostArt
-        exclude=["likes","views",'used_programs','post_owner']
+        exclude=["likes","views_number",'used_programs','post_owner']
 
     def save(self,owner=None, commit = True):
         post= self.instance
@@ -22,7 +22,6 @@ class PostForm(ModelForm):
         return post
     
     def clean_post_thumb(self):
-        print(self.cleaned_data.get('post_thumb'))
         return self.cleaned_data.get('post_thumb')
     
 class CommentForm(ModelForm):
@@ -32,3 +31,9 @@ class CommentForm(ModelForm):
 
     # def __init__(self, comment_owner):
     #     super().__init__()
+
+class PostImageForm(ModelForm):
+    class Meta:
+        model=PostImages
+        fields=['post_img','acessibility_caption','caption']
+
