@@ -33,11 +33,13 @@ imageUpload.addEventListener('change', function(e) {
             captionInput.type = 'textarea';
             captionInput.className = 'caption-input';
             captionInput.placeholder = 'legenda';
+            captionInput.name='caption[]'
 
             const acessibilityCaptionInput = document.createElement('input');
             acessibilityCaptionInput.type = 'textarea';
             acessibilityCaptionInput.className = 'caption-input';
             acessibilityCaptionInput.placeholder = 'legenda de acessibilidade';
+            acessibilityCaptionInput.name='acessibility_caption[]'
             
 
             const removeBtn = document.createElement('button');
@@ -57,25 +59,9 @@ imageUpload.addEventListener('change', function(e) {
             fileInput.files = dataTransfer.files;
             
 
-            const captionHidden = document.createElement('input');
-            captionHidden.type = 'hidden';
-            captionHidden.name = 'caption[]'; 
-
-            const acessibilityCaptionHidden = document.createElement('input');
-            acessibilityCaptionHidden.type = 'hidden';
-            acessibilityCaptionHidden.name = 'acessibility_caption[]';
-            
             formInputsContainer.appendChild(fileInput);
-            formInputsContainer.appendChild(captionHidden);
-            formInputsContainer.appendChild(acessibilityCaptionHidden);
             
-            captionInput.addEventListener('input', function() {
-                captionHidden.value = this.value;
-            });
 
-            acessibilityCaptionInput.addEventListener('input', function() {
-                acessibilityCaptionHidden.value = this.value;
-            });
             
             removeBtn.onclick = function() {
                 imagePreview.removeChild(imageItem);
