@@ -5,17 +5,19 @@ const postsContainer = document.getElementById('posts-container');
 let api_url=postsContainer.getAttribute('data-api-url')
 postsContainer.removeAttribute('data-api-url')
 
-
-
 $(window).scroll(function(){
-    if(page!=0 && $(window).scrollTop()+$(window).height() == $(document).height()){
+    if(page!=0 && ($(window).scrollTop()+$(window).height() >= $(document).height()-$(window).height())){
+        
+
         loadPosts()
     }
 })
 
 function loadPosts() {
+    
     if (loading) return;
     loading = true;
+    
 
     $.ajax({
         url: `${api_url}?page=${page}`,
