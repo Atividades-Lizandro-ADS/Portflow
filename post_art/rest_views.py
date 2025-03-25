@@ -63,7 +63,7 @@ class add_like(generics.CreateAPIView):
 
         if like is None:
             response= super().create(request, *args, **kwargs)
-            response['likes']=self.instance.like_post.like_num
+            response.data['likes']=self.instance.like_post.like_num
             return response
             
         
