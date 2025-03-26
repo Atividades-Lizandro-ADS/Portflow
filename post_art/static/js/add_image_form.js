@@ -31,13 +31,13 @@ imageUpload.addEventListener('change', function(e) {
 
             const captionInput = document.createElement('input');
             captionInput.type = 'textarea';
-            captionInput.className = 'caption-input';
+            captionInput.className = 'text-input';
             captionInput.placeholder = 'legenda';
             captionInput.name='caption[]'
 
             const acessibilityCaptionInput = document.createElement('input');
             acessibilityCaptionInput.type = 'textarea';
-            acessibilityCaptionInput.className = 'caption-input';
+            acessibilityCaptionInput.className = 'text-input';
             acessibilityCaptionInput.placeholder = 'legenda de acessibilidade';
             acessibilityCaptionInput.name='acessibility_caption[]'
             

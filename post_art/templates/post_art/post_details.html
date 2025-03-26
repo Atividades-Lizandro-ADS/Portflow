@@ -1,8 +1,11 @@
 {%extends 'base.html'%}
 {%load static%}
 {%block head%}
+<link rel="stylesheet" href="{%static 'css/postform.css' %}">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 {%endblock%}
+
+
 
 {%block content%}
 <main class="container">
@@ -137,8 +140,10 @@
                 <!--comentários-->
                 {%if request.user.profile%}
                 <form action="" data-post-id="{{post.id}}" data-profile-id="{{request.user.profile.id}}" data-comment-api-url="{%url 'add_comment'%}" data-token="{{csrf_token}}" id="comment_form">
-                    {{form}}
-                    <button type="submit">comentar</button>
+                    {{form.comment_text}}
+                    <div class="col-1"><button class="post-button like-button" type="submit">comentar</button></div>
+                    
+                    
                 </form>
                 {%endif%}
                 <br>

@@ -31,7 +31,7 @@ def postPost(request):
         if form.is_valid():
 
             #recebendo os dados do input de texto 'programs' e transformando o numa lista com o split
-            programas=form.cleaned_data['programs']
+            programas=form.cleaned_data.get('programs')
             programas=programas.split(';')
 
             #filtrando os objetos a partir da lista acima, todos os objetos encontrados no db que correspondam

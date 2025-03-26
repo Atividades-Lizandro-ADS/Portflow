@@ -24,13 +24,40 @@ class PostForm(ModelForm):
     def clean_post_thumb(self):
         return self.cleaned_data.get('post_thumb')
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        excluir_campos=['post_thumb','marmoview']
+
+        for field_name,field in self.fields.items():
+            if field_name not in excluir_campos:
+                field.widget.attrs.update({'class':'text-input'})
+
+        self.fields['tittle'].widget.attrs.update({'placeholder':'qual título da sua obra?'})
+        self.fields['tittle'].label='Título'
+        self.fields['caption'].widget.attrs.update({'placeholder':'uma breve descrição da sua obra'})
+        self.fields['caption'].label='Legenda'
+        self.fields['description'].widget.attrs.update({'placeholder':'descrição completa de sua obra'})
+        self.fields['description'].label='Descrição'
+        self.fields['youtube_link'].widget.attrs.update({'placeholder':'link do youtube apresentando sua obra'})
+        self.fields['youtube_link'].label='Link YouTube'
+        self.fields['art_type'].label='Tipo de Mídia'
+        self.fields['category'].label='Categoria'
+        self.fields['keywords'].label='Palavras-Chave'
+        
+        
+
+        
+    
 class CommentForm(ModelForm):
     class Meta:
         model=Comments
         fields=['comment_text']
 
-    # def __init__(self, comment_owner):
-    #     super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['comment_text'].widget.attrs.update({'class':'text-input textarea-input-height'})
 
 class PostImageForm(ModelForm):
     class Meta:

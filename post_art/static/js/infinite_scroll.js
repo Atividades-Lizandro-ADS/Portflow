@@ -31,7 +31,7 @@ function loadPosts() {
                       <h3 class="card-title">${post.tittle}</h3>
                     </div>
                 `;
-                postElement.href=`/postagem/${post.id}`
+                postElement.href=`/post/${post.id}`
                 postElement.className="card flex align-end justify-center bg-dark text-white"
                 postElement.style="width: 28rem; height: 28rem; padding: 0;"
                 postsContainer.appendChild(postElement);

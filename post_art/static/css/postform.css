@@ -2,7 +2,7 @@
     border: .2rem dashed #ccc;
     padding: 10rem 4rem;
     text-align: center;
-    margin: 2rem;
+    margin: 2rem 0rem;
     border-radius: 5px;
 }
 
@@ -41,14 +41,52 @@
     margin-bottom: 10px;
 }
 
-.caption-input{
-    border-radius: 0;
+.text-input{
+    border-radius: .4rem;
     color: #fff;
-    border: solid .2rem #ffffff85;
-    background-color: transparent;
-    padding: .4rem;
+    border: solid .1rem #505054;
+    background-color: #101014;
+    padding: .6rem;
+    width: 100%;
+    font-size: 1.6rem;
+    
 
 }
-.caption-input:focus{
+
+label{
+    color: #fff;
+    font-size: 1.5rem;
+}
+.text-input:focus{
     outline: none;
 }
+
+.graybox{
+    color: #fff;
+    width: 100%;
+    background-color: #18181c;
+    
+}
+
+.graybox .gray-title{
+    background-color: #303034;
+    padding: 1rem;
+    font-weight: bold;
+    font-size: 1.6rem;
+}
+
+.graybox .gray-input{
+    padding: 1rem;
+}
+
+
+
+.textarea-input-height {
+    height: 3rem; 
+    min-height: 1em; 
+    resize: vertical; 
+    padding: 4px 8px; 
+    box-sizing: border-box; 
+    line-height: 1.2;
+    overflow-y: hidden; 
+  }
