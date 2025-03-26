@@ -90,3 +90,28 @@ label{
     line-height: 1.2;
     overflow-y: hidden; 
   }
+
+.search-input{
+    border: solid .2rem #505054;
+    border-radius: 3rem;
+}
+
+.search-input input[type=text]{
+    border: none;
+    background-color: transparent;
+    color: #fff;
+}
+.search-input i{
+    font-size: 1.8rem;
+    color: #505054;
+}
+
+.coment-button{
+    height: 3rem;
+    width: 3rem;
+    background-color: #24baff;
+    border-radius: 20%;
+}
+.coment-button i{
+    font-size: 2rem;
+}

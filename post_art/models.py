@@ -74,6 +74,8 @@ class PostArt(BasePost):
 
     keywords=models.TextField(null=True, blank=True)
 
+    published=models.BooleanField(default=True)
+
 
     class Meta:
         verbose_name="post portfolio"

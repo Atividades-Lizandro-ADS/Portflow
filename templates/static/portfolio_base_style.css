@@ -139,6 +139,12 @@ a{
 }
 
 
+button{
+    display: flex;
+    gap: .4rem;
+    align-items: center;
+    border: none;
+}
 .post-button{
     display: flex;
     gap: .4rem;
@@ -160,3 +166,8 @@ a{
 .wh-btn{
     color: #fff;
 }
+
+.w-100{
+    width: 100%;
+}
+

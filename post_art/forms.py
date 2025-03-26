@@ -1,6 +1,7 @@
 from django.forms.models import ModelForm
 from .models import PostArt,Profile,Comments,PostImages
-from django.forms import CharField,Textarea,RadioSelect,ModelChoiceField
+from django.forms import CharField,Textarea,RadioSelect,ModelChoiceField,HiddenInput
+from django.core.exceptions import ValidationError
 
 
 class PostForm(ModelForm):
@@ -24,6 +25,8 @@ class PostForm(ModelForm):
     def clean_post_thumb(self):
         return self.cleaned_data.get('post_thumb')
     
+        
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -44,6 +47,7 @@ class PostForm(ModelForm):
         self.fields['art_type'].label='Tipo de Mídia'
         self.fields['category'].label='Categoria'
         self.fields['keywords'].label='Palavras-Chave'
+        self.fields['published'].widget=HiddenInput()
         
         
 

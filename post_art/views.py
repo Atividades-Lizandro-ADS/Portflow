@@ -5,9 +5,10 @@ from .forms import PostForm,CommentForm
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
-from django.views.generic import ListView
+from django.db.models import Q
 
-from django.views.generic import UpdateView
+from django.views.generic import ListView,UpdateView
+
 
 from .utility import get_object_or_none 
 
@@ -16,9 +17,18 @@ from .utility import get_object_or_none
 
 class Index(ListView):
     model=PostArt
-    queryset=PostArt.objects.all()[:12]
+    queryset=PostArt.objects.filter(published=True)[:12]
     template_name='post_art/index.html'
     context_object_name='posts'
+
+    def get_queryset(self):
+        search=self.request.GET.get('search')
+        if search:
+            return PostArt.objects.filter(Q(tittle__icontains=search) |
+                                           Q(caption__icontains=search) |
+                                             Q(description__icontains=search),published=True)[:12]
+        return super().get_queryset()
+        
 
 
 
@@ -33,6 +43,7 @@ def postPost(request):
             #recebendo os dados do input de texto 'programs' e transformando o numa lista com o split
             programas=form.cleaned_data.get('programs')
             programas=programas.split(';')
+
 
             #filtrando os objetos a partir da lista acima, todos os objetos encontrados no db que correspondam
             #a algum objeto acima serão trazidos

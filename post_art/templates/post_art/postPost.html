@@ -1,13 +1,14 @@
 {%extends 'base.html'%}
 {%load static%}
-{% block head%}
-<link rel="stylesheet" href="{%static 'css/postform.css' %}">
+
+{%block head%}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 {%endblock%}
 
 {%block content%}
 
 <main class="container">
-    <form action="" method="post" class="d-flex mt-5 flex-column gap-5 justify-content-center"
+    <form action="" id="formulario" method="post" class="d-flex mt-5 flex-column gap-5 justify-content-center"
         enctype="multipart/form-data">
         {%csrf_token%}
 
@@ -103,8 +104,9 @@
                 <!--fim thumbnail-->
 
 
-                <button type="submit" class="post-button like-button d-flex justify-content-center">Publicar</button>
-
+                <button type="submit" id="draft" class="post-button like-button d-flex justify-content-center" >Salvar Rascunho</button>
+                <button type="submit" id="publish" class="post-button like-button d-flex justify-content-center">Publicar</button>
+                {{form.published}}
 
                 <!--input marmoset-->
                 <div class="graybox">
@@ -184,5 +186,6 @@
 
 
 <script src="{%static 'js/add_image_form.js'%}"></script>
+<script src="{%static 'js/draft_publish.js'%}"></script>
 
 {%endblock%}
