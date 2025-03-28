@@ -17,9 +17,9 @@
                 {%for image in post.postimages_set.all%}
                 <div class="d-flex flex-column justify-content-center text-center">
                     <img class="album-img" src="{{image.post_img.url}}" alt="{{image.acessibility_caption}}">
-                    <p>{{image.caption}}</p>
+                    <p class="album-img">{{image.caption}}</p>
                 </div>
-                    
+                 
                 {%endfor%}
 
                 {%if post.marmoview%}
@@ -41,7 +41,7 @@
                             {%endif%}
                             <div class="d-flex flex-column gap-1">
                                 <h3>{{post.post_owner}}</h3>
-                                <a href="#">visite o perfil</a>
+                                <a href="{%url 'profile_index' post.post_owner.id%}">visite o perfil</a>
                             </div>
                         </div>
 

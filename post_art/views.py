@@ -91,7 +91,13 @@ def post_details(request,post_pk):
 
 def profile_index(request,profile_pk):
     profile=Profile.objects.get(id=profile_pk)
-    return HttpResponse(profile)
+    published_posts=profile.postart_set.filter(published=True)
+    context={'profile':profile,'posts':published_posts}
+
+    if request.user.is_authenticated and profile==request.user.profile:
+        context['is_profile_owner']=True
+        context['drafts']=profile.postart_set.filter(published=False)
+    return render(request,'post_art/profile_page.html',context)
 
 
 def teste(request):
