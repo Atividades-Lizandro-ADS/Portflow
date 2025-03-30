@@ -100,10 +100,6 @@ def profile_index(request,profile_pk):
     return render(request,'post_art/profile_page.html',context)
 
 
-def teste(request):
-    return render(request,'post_art/temp2.html')
-
-
 class add_favorite(UpdateView):
     def get(self, request, *args, **kwargs):
 
