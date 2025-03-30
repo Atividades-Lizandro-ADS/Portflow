@@ -115,3 +115,17 @@ label{
 .coment-button i{
     font-size: 2rem;
 }
+
+.lt-graybox{
+    background-color: #303034;
+    color: #e6e6ea;
+}
+
+.inner-grid{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.inner-grid p{
+    white-space: nowrap;
+}

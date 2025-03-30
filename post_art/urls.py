@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import Index,postPost,post_details,profile_index,add_favorite,teste
+from .views import Index,postPost,post_details,profile_index,add_favorite
 
 
 urlpatterns = [

@@ -105,11 +105,11 @@
                     
                 
                     <h4 class="mt-5">programas usados</h4>
-                    <div class="mt-5 d-flex flex-row gap-2 justify-content-around">
+                    <div class="graybox round-5 px-4 py-5 mt-3 inner-grid">
                         {%for c in post.used_programs.all%}
-                            <div class="d-flex flex-row gap-2 p-auto col align-items-center">
+                            <div class="lt-graybox p-2 pe-3 rounded fs-4 d-flex gap-3 align-items-start">
                                 <img class="software-logo" src="{{c.program_logo.url}}" alt="">
-                                <p class="software-text m-0">{{c}}</p>
+                                <p >{{c}}</p>
                             </div>
                         
                     {%endfor%}
@@ -119,14 +119,10 @@
 
                     <h4>palavras chave</h4>
                     <!--palavras chave-->
-                    <div class="post-card mt-5">
-                        <div class="container">
-                            <div class="row gap-3 justify-content-around">
+                    <div class="graybox round-5 px-4 py-5 mt-3 inner-grid">
                                 {%for k in keywords%}
-                                    <span class="col keywords">#{{k}}</span>
+                                    <span class="lt-graybox p-2 pe-3 rounded fs-4 d-flex gap-3 align-items-start">#{{k}}</span>
                                 {%endfor%}
-                            </div>
-                        </div>
                         
                     </div>
 

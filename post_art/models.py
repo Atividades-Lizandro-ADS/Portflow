@@ -19,6 +19,28 @@ class Profile(models.Model):
     def __str__(self):
         return self.first_name
 
+class Hiring(models.Model):
+    hire_type=models.CharField(max_length=140)
+
+    def __str__(self):
+        return self.hire_type
+
+class Skill(models.Model):
+    skill_type=models.CharField(max_length=140)
+
+    def __str__(self):
+        return self.skill_type
+
+class About(models.Model):
+    prof=models.OneToOneField(Profile,on_delete=models.CASCADE)
+    programs_known=models.ManyToManyField('UsedPrograms')
+    hiring=models.ManyToManyField(Hiring)
+    skills=models.ManyToManyField(Skill)
+    summary=models.TextField(null=True,blank=True)
+
+
+
+
 
 class UsedPrograms(models.Model):
     program_name=models.CharField(max_length=100)

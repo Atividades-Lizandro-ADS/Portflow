@@ -7,8 +7,25 @@
 
 {%block content%}
 
-<main class="container">
-    <div >
+<main class="container ">
+
+    <div class="prof-selector-container gap-5 px-5" >
+        <div class="prof-selector sl-on" id="port">
+            <p class="fs-2">Portfolio</p>
+        </div>
+
+        <div class="prof-selector" id="sobre">
+            <p class="fs-2">Sobre</p>
+        </div>
+
+        <div class="prof-selector" id="likes">
+            <p class="fs-2">Likes</p>
+        </div>
+
+    </div>
+
+
+    <div id="portfolio-container" class="portfolio-container">
 
         <div class="col">
             <h1 class="d-inline fw-bold">Trabalhos publicados</h1>
@@ -54,8 +71,91 @@
 
 
     </div>
+
+    <div id="sobre-container" class="row justify-content-center d-none">
+        <div class="col-8 gap-5">
+            <h2 class="fs-1 fw-bold">Resumo</h2>
+            <div class="graybox round-5 px-4 py-5 mt-3">
+                <p class="fs-4">{{profile.about.summary}}</p>
+            </div>
+
+            <h2 class="fs-1 fw-bold mt-5">Contratação</h2>
+            <div class="graybox round-5 px-4 py-5 mt-3 inner-grid ">
+                
+                {%for hire in profile.about.hiring.all%}
+                
+
+
+                        <p class="lt-graybox p-2 rounded fs-4">
+                            {{hire}}
+                        </p>
+
+                    
+                {%endfor%}
+            </div>
+
+            <h2 class="fs-1 fw-bold">Habilidades</h2>
+            <div class="graybox round-5 px-4 py-5 mt-3 inner-grid ">
+                
+                {%for skill in profile.about.skills.all%}
+                
+
+
+                        <p class="lt-graybox p-2 rounded fs-4">
+                            {{skill}}
+                        </p>
+
+                    
+                {%endfor%}
+            </div>
+
+
+            <h2 class="fs-1 fw-bold">Experiência com Programas</h2>
+            <div class="graybox round-5 px-4 py-5 mt-3 inner-grid ">
+                
+                {%for prog in profile.about.programs_known.all%}
+                
+
+
+                        <div class="lt-graybox p-2 pe-3 rounded fs-4 d-flex gap-3 align-items-start">
+                            <img class="software-logo" src="{{prog.program_logo.url}}" alt="">
+                            <p >{{prog}}</p>
+                        </div>
+                        
+
+                    
+                {%endfor%}
+            </div>
+        </div>
+        
+
+
+
+    </div>
+
+    <div id="like-container" class="portfolio-container d-none">
+
+        <div class="col">
+            <h1 class="d-inline fw-bold">Likes</h1>
+            <p class="d-inline fs-4">&nbsp;&nbsp; {{profile.like_set.all|length}} trabalhos gostados</p>
+        </div>
+        
+
+        <div class="row gap-2 justify-content-start" id="posts-container" data-api-url="{%url 'post_refresh'%}">
+            {%for like in profile.like_set.all%}
+                <a href="{%url 'post_details' like.like_post.id%}" class="card pos-relative ov-hidden bg-dark text-white"  style="width: 28rem; height: 28rem; padding: 0;">
+                    <img class="card-img" src="{{like.like_post.post_thumb.url}}" alt="Card image" style="object-fit: cover; width: 100%; height: 100%;">
+                    <div class="card-tx">
+                      <h3>{{like.like_post.tittle}}</h3>
+                    </div>
+                </a>
+                  
+            {%endfor%}
+        </div>
+
+    </div>
 </main>
 
 
-
+<script src="{%static 'js/profile_switch.js'%}"></script>
 {%endblock%}
