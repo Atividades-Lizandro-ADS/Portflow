@@ -7,7 +7,7 @@ from django.urls import reverse
 
 from django.db.models import Q
 
-from django.views.generic import ListView,UpdateView
+from django.views.generic import ListView,UpdateView,DetailView
 
 
 from .utility import get_object_or_none 
@@ -70,35 +70,54 @@ def postPost(request):
             return HttpResponseRedirect(reverse('index'))
     return render(request,'post_art/postPost.html',{'form':form})
 
-def post_details(request,post_pk):
-    post=PostArt.objects.get(id=post_pk)
-    post.increase_view()
+class post_details(DetailView):
+    template_name='post_art/post_details.html'
+    model=PostArt
+    pk_url_kwarg='post_pk'
+    context_object_name='post'
 
-    keywords=post.keywords.split("#")
-    keywords=filter(None,keywords)
+    def get_context_data(self, **kwargs):
+        context= super().get_context_data(**kwargs)
+        post=context.get('post')
 
-    form=CommentForm()
+        post.increase_view()
 
-    favorited=False
-    if request.user.is_authenticated:
-       profile= request.user.profile
-       favorited=profile.saved_posts.contains(post)
-       _,liked=get_object_or_none(Like,like_owner=profile,like_post=post)
-       
+        keywords=post.keywords.split("#")
+        keywords=filter(None,keywords)
 
-    return render(request,'post_art/post_details.html',{'post':post,'keywords':keywords,'form':form,'favorited':favorited,'liked':liked})
+        form=CommentForm()
+
+        favorited=False
+        liked=None
+        if self.request.user.is_authenticated:
+            profile= self.request.user.profile
+            favorited=profile.saved_posts.contains(post)
+            _,liked=get_object_or_none(Like,like_owner=profile,like_post=post)
+        
+        context['form']=form
+        context['favorited']=favorited
+        context['liked']=liked
+
+        return context
 
 
-def profile_index(request,profile_pk):
-    profile=Profile.objects.get(id=profile_pk)
-    published_posts=profile.postart_set.filter(published=True)
-    context={'profile':profile,'posts':published_posts}
+class profile_index(DetailView):
+    template_name='post_art/profile_page.html'
+    model=Profile
+    pk_url_kwarg='profile_pk'
+    context_object_name='profile'
+    
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        profile=context.get('profile')
+        published_posts=profile.postart_set.filter(published=True)
+        context['posts']=published_posts
 
-    if request.user.is_authenticated and profile==request.user.profile:
-        context['is_profile_owner']=True
-        context['drafts']=profile.postart_set.filter(published=False)
-    return render(request,'post_art/profile_page.html',context)
-
+        if self.request.user.is_authenticated and profile==self.request.user.profile:
+            context['is_profile_owner']=True
+            context['drafts']=profile.postart_set.filter(published=False)
+        return context
+        
 
 class add_favorite(UpdateView):
     def get(self, request, *args, **kwargs):
