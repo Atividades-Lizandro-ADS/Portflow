@@ -69,43 +69,16 @@ class postPost(FormView):
             PostImages.objects.create(post_img=file,acessibility_caption=a_caption,caption=caption,image_post_owner=post)
         return HttpResponseRedirect(reverse('index'))
 
-# def postPost(request):
-
-#     form=PostForm(request.POST or None,request.FILES)
+class update_postArt(UpdateView):
+    template_name='post_art/postPost_update.html'
+    model=PostArt
+    form_class=PostForm
+    pk_url_kwarg='post_pk'
     
-#     if request.method=='POST':
-#         if form.is_valid():
-
-#             #recebendo os dados do input de texto 'programs' e transformando o numa lista com o split
-#             programas=form.cleaned_data.get('programs')
-#             programas=programas.split(';')
-#             programas=[programa.title() for programa in programas]
-
-
-#             #filtrando os objetos a partir da lista acima, todos os objetos encontrados no db que correspondam
-#             #a algum objeto acima serão trazidos
-#             usep=UsedPrograms.objects.filter(program_name__in=programas)
-            
-            
-#             #adicionando a instancia do formulario o profile do usuario logado
-#             post=form.save(owner=request.user.profile)
-
-#             #foi necessário salvar o objeto para
-
-#             #o metodo add adiciona objetos do tipo UsedPrograms a lista de manytomany
-#             #add recebe varios argumentos, podemos passar uma lista se utilizarmos o * antes dela
-#             post.used_programs.add(*usep)
-
-#             files=request.FILES.getlist('post_img[]')
-#             captions=request.POST.getlist('caption[]')
-#             acessibility_captions=request.POST.getlist('acessibility_caption[]')
-            
-
-
-#             for file,caption,a_caption in zip(files,captions,acessibility_captions):
-#                 PostImages.objects.create(post_img=file,acessibility_caption=a_caption,caption=caption,image_post_owner=post)
-#             return HttpResponseRedirect(reverse('index'))
-#     return render(request,'post_art/postPost.html',{'form':form})
+    def get_success_url(self):
+        url=reverse('post_details',kwargs={'post_pk':self.kwargs.get('post_pk')})
+        return url
+        
 
 class post_details(DetailView):
     template_name='post_art/post_details.html'

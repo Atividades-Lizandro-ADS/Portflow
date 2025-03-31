@@ -1,0 +1,192 @@
+{%extends 'base.html'%}
+{%load static%}
+
+{%block head%}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{%endblock%}
+
+{%block content%}
+
+<main class="container">
+    <form action="" id="formulario" method="post" class="d-flex mt-5 flex-column gap-5 justify-content-center"
+        enctype="multipart/form-data">
+        {%csrf_token%}
+
+        <div class="d-flex gap-5">
+
+            <div class="col-8 d-flex flex-column  gap-3">
+                <div class="graybox">
+                    <div class="gray-title">
+                        {{form.tittle.label}}
+                    </div>
+                    <div class="gray-input">
+                        {{form.tittle}}
+                    </div>
+
+                </div>
+
+
+                <div class="graybox">
+                    <div class="gray-title">
+                        {{form.caption.label}}
+                    </div>
+                    <div class="gray-input">
+                        {{form.caption}}
+                    </div>
+
+                </div>
+
+
+
+                <div class="graybox">
+                    <div class="gray-title">
+                        {{form.description.label}}
+                    </div>
+                    <div class="gray-input">
+                        {{form.description}}
+                    </div>
+
+                </div>
+
+
+                <div class="graybox">
+                    <div class="gray-title">
+                        {{form.keywords.label}}
+                    </div>
+                    <div class="gray-input">
+                        {{form.keywords}}
+                    </div>
+
+                </div>
+
+
+
+                <!--upload imagens-->
+                <div class="graybox">
+                    <div class="gray-title">imagens do post</div>
+
+                    <div class="gray-input">
+                        <div class="image_post-uploader" id="upload-container">
+                                <p>arraste suas imagens aqui</p>
+                                <input type="file" id="image-upload" accept="image/*" multiple>
+                        </div> 
+                    </div>
+                </div>
+
+
+                <div class="image-preview" id="image-preview"></div>
+
+                <div id="form-inputs-container"></div>
+
+                <!--fim upload imagem-->
+            </div>
+
+
+            <div class="col-4 d-flex flex-column gap-4 px-2 align-items-center ">
+
+                <!--input thumbnail-->
+                <div class="graybox">
+                    <div class="gray-title">
+                        {{form.post_thumb.label}}
+                    </div>
+
+                    <div class="gray-input">
+                        <div class="image_post-uploader">
+                            <label for="id_post_thumb">
+                                <p>Thumbnail da sua obra</p>
+                                {{form.post_thumb}}
+                            </label>
+                        </div>
+
+                    </div>
+
+                </div>
+                <!--fim thumbnail-->
+
+
+                <button type="submit" id="draft" class="post-button like-button d-flex justify-content-center" >Rascunho</button>
+                <button type="submit" id="publish" class="post-button like-button d-flex justify-content-center">Publicar</button>
+                {{form.published}}
+
+                <!--input marmoset-->
+                <div class="graybox">
+                    <div class="gray-title">
+                        {{form.marmoview.label}}
+                    </div>
+
+                    <div class="gray-input">
+                        <div class="image_post-uploader">
+                            <label for="id_post_thumb">
+                                <p>visualizador marmoset</p>
+                                {{form.marmoview}}
+                            </label>
+                        </div>
+
+                    </div>
+
+                </div>
+                <!--fim thumbnail-->
+
+
+                <!--midia de arte e categoria thumbnail-->
+                <div class="graybox d-flex row justify-content-center">
+                    <div class="col-6 px-1">
+                        <div class="gray-title">
+                            {{form.art_type.label}}
+                        </div>
+                        <div class="gray-input">
+                            {{form.art_type}}
+                        </div>
+                    </div>
+
+                    <div class="col-6 px-1">
+                        <div class="gray-title">
+                            {{form.category.label}}
+                        </div>
+                        <div class="gray-input">
+                            {{form.category}}
+                        </div>
+                    </div>
+
+                </div>
+                <!--fim midia de arte e categoria thumbnail-->
+
+
+                <!--link youtube-->
+                <div class="graybox">
+                    <div class="gray-title">
+                        {{form.youtube_link.label}}
+                    </div>
+                    <div class="gray-input">
+                        {{form.youtube_link}}
+                    </div>
+
+                </div>
+                <!--fim youtube-->
+
+
+                <!--proframas usados-->
+                <div class="graybox">
+                    <div class="gray-title">
+                        {{form.programs.label}}
+                    </div>
+                    <div class="gray-input">
+                        {{form.programs}}
+                    </div>
+
+                </div>
+                <!--fim proframas usados-->
+
+
+            </div>
+
+        </div>
+    </form>
+</main>
+
+
+
+<script src="{%static 'js/add_image_form.js'%}"></script>
+<script src="{%static 'js/draft_publish.js'%}"></script>
+
+{%endblock%}
