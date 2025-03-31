@@ -7,7 +7,7 @@ from django.urls import reverse
 
 from django.db.models import Q
 
-from django.views.generic import ListView,UpdateView,DetailView
+from django.views.generic import ListView,UpdateView,DetailView,FormView
 
 
 from .utility import get_object_or_none 
@@ -31,44 +31,81 @@ class Index(ListView):
         
 
 
+class postPost(FormView):
+    form_class=PostForm
+    template_name='post_art/postPost.html'
 
-
-def postPost(request):
-
-    form=PostForm(request.POST or None,request.FILES)
+    def get_form_kwargs(self):
+        kwargs= super().get_form_kwargs()
+        kwargs.update({'files':self.request.FILES})
+        return kwargs
     
-    if request.method=='POST':
-        if form.is_valid():
+    def form_valid(self, form):
+        programas=form.cleaned_data.get('programs')
+        programas=programas.split(';')
+        programas=[programa.title() for programa in programas]
 
-            #recebendo os dados do input de texto 'programs' e transformando o numa lista com o split
-            programas=form.cleaned_data.get('programs')
-            programas=programas.split(';')
-
-
-            #filtrando os objetos a partir da lista acima, todos os objetos encontrados no db que correspondam
-            #a algum objeto acima serão trazidos
-            usep=UsedPrograms.objects.filter(program_name__in=programas)
+        #filtrando os objetos a partir da lista acima, todos os objetos encontrados no db que correspondam
+        #a algum objeto acima serão trazidos
+        usep=UsedPrograms.objects.filter(program_name__in=programas)
             
             
-            #adicionando a instancia do formulario o profile do usuario logado
-            post=form.save(owner=request.user.profile)
+        #adicionando a instancia do formulario o profile do usuario logado
+        post=form.save(owner=self.request.user.profile)
 
-            #foi necessário salvar o objeto para
+        #foi necessário salvar o objeto para
 
-            #o metodo add adiciona objetos do tipo UsedPrograms a lista de manytomany
-            #add recebe varios argumentos, podemos passar uma lista se utilizarmos o * antes dela
-            post.used_programs.add(*usep)
+        #o metodo add adiciona objetos do tipo UsedPrograms a lista de manytomany
+        #add recebe varios argumentos, podemos passar uma lista se utilizarmos o * antes dela
+        post.used_programs.add(*usep)
 
-            files=request.FILES.getlist('post_img[]')
-            captions=request.POST.getlist('caption[]')
-            acessibility_captions=request.POST.getlist('acessibility_caption[]')
+        files=self.request.FILES.getlist('post_img[]')
+        captions=self.request.POST.getlist('caption[]')
+        acessibility_captions=self.request.POST.getlist('acessibility_caption[]')
             
 
 
-            for file,caption,a_caption in zip(files,captions,acessibility_captions):
-                PostImages.objects.create(post_img=file,acessibility_caption=a_caption,caption=caption,image_post_owner=post)
-            return HttpResponseRedirect(reverse('index'))
-    return render(request,'post_art/postPost.html',{'form':form})
+        for file,caption,a_caption in zip(files,captions,acessibility_captions):
+            PostImages.objects.create(post_img=file,acessibility_caption=a_caption,caption=caption,image_post_owner=post)
+        return HttpResponseRedirect(reverse('index'))
+
+# def postPost(request):
+
+#     form=PostForm(request.POST or None,request.FILES)
+    
+#     if request.method=='POST':
+#         if form.is_valid():
+
+#             #recebendo os dados do input de texto 'programs' e transformando o numa lista com o split
+#             programas=form.cleaned_data.get('programs')
+#             programas=programas.split(';')
+#             programas=[programa.title() for programa in programas]
+
+
+#             #filtrando os objetos a partir da lista acima, todos os objetos encontrados no db que correspondam
+#             #a algum objeto acima serão trazidos
+#             usep=UsedPrograms.objects.filter(program_name__in=programas)
+            
+            
+#             #adicionando a instancia do formulario o profile do usuario logado
+#             post=form.save(owner=request.user.profile)
+
+#             #foi necessário salvar o objeto para
+
+#             #o metodo add adiciona objetos do tipo UsedPrograms a lista de manytomany
+#             #add recebe varios argumentos, podemos passar uma lista se utilizarmos o * antes dela
+#             post.used_programs.add(*usep)
+
+#             files=request.FILES.getlist('post_img[]')
+#             captions=request.POST.getlist('caption[]')
+#             acessibility_captions=request.POST.getlist('acessibility_caption[]')
+            
+
+
+#             for file,caption,a_caption in zip(files,captions,acessibility_captions):
+#                 PostImages.objects.create(post_img=file,acessibility_caption=a_caption,caption=caption,image_post_owner=post)
+#             return HttpResponseRedirect(reverse('index'))
+#     return render(request,'post_art/postPost.html',{'form':form})
 
 class post_details(DetailView):
     template_name='post_art/post_details.html'

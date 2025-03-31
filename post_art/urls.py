@@ -4,7 +4,7 @@ from .views import Index,postPost,post_details,profile_index,add_favorite
 
 urlpatterns = [
     path('',Index.as_view(),name='index'),
-    path('postagem/',postPost,name='postPost'),
+    path('postagem/',postPost.as_view(),name='postPost'),
     path('post/<int:post_pk>',post_details.as_view(),name='post_details'),
     path('profile/<int:profile_pk>',profile_index.as_view(),name='profile_index'),
     path('profile/save_favorite',add_favorite.as_view(),name='save_favorite'),
