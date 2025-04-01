@@ -224,3 +224,23 @@ button{
 .prof-selector p{
     margin: 0;
 }
+
+.modal{
+    position: fixed;
+    z-index: 1000;
+    left: 25%;
+    top: 25%;
+    width: 60%;
+    height: 60%;
+    padding: 1rem;
+    background-color: #404044;
+}
+.modal-content{
+    color: white;
+    background-color: #404044;
+}
+.delete-btn{
+    background: transparent;
+    color: red;
+    border: none;
+}

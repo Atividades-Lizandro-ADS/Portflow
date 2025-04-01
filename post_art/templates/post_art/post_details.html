@@ -2,6 +2,7 @@
 {%load static%}
 {%block head%}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<meta name="csrf-token" content="{{ csrf_token }}">
 {%endblock%}
 
 
@@ -145,10 +146,31 @@
                         <div>
                             <a href="{%url 'profile_index' comment.comment_owner.id%}">{{comment.comment_owner}}</a>
                             <p>{{comment}}</p>
+
+                            <div class="d-flex gap-3 justify-content-between">
+                                <span class="fs-5 ">{{comment.created|date:"d/M/Y"}} &nbsp;-</span>
+                                {%if request.user.profile == comment.comment_owner %}
+                                    <button class="delete-btn fs-5" data-id="{{ comment.id }}" >excluir</button>
+                                {%endif%}
+                            </div>
+                            
                         </div>
+
+                        
                     </div>
                         
                     {%endfor%}
+
+
+                    <div id="deleteModal" class="modal d-none">
+                        <div class="modal-content">
+                          <h3>Confirmar Exclusão</h3>
+                          <p>Tem certeza que deseja excluir este comentário?</p>
+                          <div>
+                            <button id="cancelDelete">Cancelar</button>
+                            <button id="confirmDelete">Excluir</button>
+                          </div>
+                        </div>
                 </div>
             </div>
 
@@ -164,6 +186,7 @@
 <script src="{%static 'js/add_like.js' %}"></script>
 <script src="{%static 'js/save_fav_post.js' %}"></script>
 <script src="{%static 'js/read_more.js' %}"></script>
+<script src="{%static 'js/delete_comment_modal.js' %}"></script>
     
     
 

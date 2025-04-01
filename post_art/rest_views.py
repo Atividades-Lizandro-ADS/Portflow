@@ -1,4 +1,4 @@
-from rest_framework import generics,permissions,authentication
+from rest_framework import generics,permissions,authentication,exceptions
 from rest_framework import viewsets
 
 from .serializers import PostArtSerializers,PostArtSerializerRefresh,CommentSerializer,LikeSerializer
@@ -7,6 +7,7 @@ from .models import PostArt,UsedPrograms,Profile,Comments,Like
 from .utility import get_object_or_none
 from rest_framework import status
 from rest_framework.response import Response
+
 
 
 """API v1"""
@@ -47,6 +48,19 @@ class add_comment(generics.CreateAPIView):
             'user_id':request.user.profile.id
         }
         return response
+    
+class delete_comment(generics.DestroyAPIView):
+    serializer_class=CommentSerializer
+    authentication_classes=[authentication.SessionAuthentication]
+    permission_classes=[permissions.IsAuthenticated]
+    lookup_field='id'
+    lookup_url_kwarg='comment_pk'
+
+
+
+    def get_queryset(self):
+        comment=Comments.objects.filter(comment_owner=self.request.user.profile)
+        return comment
 
 class add_like(generics.CreateAPIView):
     serializer_class=LikeSerializer

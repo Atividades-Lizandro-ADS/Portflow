@@ -36,7 +36,8 @@ class CommentSerializer(serializers.ModelSerializer):
                 'id',
                'comment_owner',
                'comment_post',
-               'comment_text'
+               'comment_text',
+               'created'
                )
         
 class LikeSerializer(serializers.ModelSerializer):

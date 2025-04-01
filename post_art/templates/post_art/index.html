@@ -7,7 +7,7 @@
 {%block content%}
 
     <div class="container">
-       
+ 
         <div class="row gap-2 justify-content-start" id="posts-container" data-api-url="{%url 'post_refresh'%}">
             {%for post in posts%}
                 <a href="{%url 'post_details' post.id%}" class="card pos-relative ov-hidden bg-dark text-white"  style="width: 28rem; height: 28rem; padding: 0;">
