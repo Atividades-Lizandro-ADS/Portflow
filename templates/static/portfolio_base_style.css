@@ -69,23 +69,10 @@ body{
 }
 
 
-.desc-content{
-    display: none;
-}
-#read-more{
-    display: none;
-}
 
-#read-more:checked ~ .desc-content{
-    display: block;
-}
 
-#read-more:checked ~ label{
-    display: none;
-}
-
-label.read-more{
-    color: var(--light-gray);
+.read-more{
+    color: rgb(157, 157, 168);
     cursor: pointer;
 }
 

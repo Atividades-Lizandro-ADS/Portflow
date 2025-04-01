@@ -35,7 +35,7 @@
             <div class="col-4 post-side">
                     <div class="post-card ">
                             <!--area do perfil-->
-                        <div class="d-flex flex-row gap-3 align-items-center mb-5 mt-2 ">
+                        <div class="d-flex flex-row gap-3 align-items-center mb-5 mt-2 p-1">
                             {%if post.post_owner.user_picture%}
                             <img class="profile-picture rounded-circle" src="{{post.post_owner.user_picture.url}}" alt="">
                             {%endif%}
@@ -69,16 +69,9 @@
 
 
                     <div class="">
-                        <h3>{{post.tittle}}</h3>
-
-                        <div class="collapsable">
-                            <input type="checkbox" name="" id="read-more">
-                            <span>{{post.description|slice:":244"}}</span>
-                            <div class="desc-content">
-                                <span>{{post.description|slice:"244:"}}</span>
-                                <label class="read-more" for="read-more">mostrar menos</label>
-                            </div>
-                        <label class="read-more" for="read-more">mostrar mais</label>
+                        <h3 class="mt-5">{{post.tittle}}</h3>
+                        <div class="description" id="description-container">
+                            <span id="readmore-text">{{post.description}}</span>
                         </div>
                         
 
@@ -170,6 +163,7 @@
 <script src="{%static 'js/comment.js' %}"></script>
 <script src="{%static 'js/add_like.js' %}"></script>
 <script src="{%static 'js/save_fav_post.js' %}"></script>
+<script src="{%static 'js/read_more.js' %}"></script>
     
     
 
