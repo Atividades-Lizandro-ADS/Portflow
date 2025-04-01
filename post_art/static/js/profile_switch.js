@@ -6,32 +6,21 @@ const portfolio_container=document.getElementById("portfolio-container")
 const sobre_container=document.getElementById("sobre-container")
 const like_container=document.getElementById("like-container")
 
-console.log(like_container)
+let no_container_ativo=portfolio_container
+let no_switch_ativo=port
 
 
 port.addEventListener("click",function(e){
     e.preventDefault()
 
-    port.classList.add('sl-on');
-    sobre.classList.remove('sl-on');
-    likes.classList.remove('sl-on');
-
-    portfolio_container.classList.remove("d-none")
-    sobre_container.classList.add("d-none")
-    like_container.classList.add("d-none")
+    pageSwitch(portfolio_container,port)
 
 })
 
 sobre.addEventListener("click",function(e){
     e.preventDefault()
 
-    port.classList.remove('sl-on');
-    sobre.classList.add('sl-on');
-    likes.classList.remove('sl-on');
-
-    portfolio_container.classList.add("d-none")
-    sobre_container.classList.remove("d-none")
-    like_container.classList.add("d-none")
+    pageSwitch(sobre_container,sobre)
 
 })
 
@@ -39,12 +28,22 @@ sobre.addEventListener("click",function(e){
 likes.addEventListener("click",function(e){
     e.preventDefault()
 
-    port.classList.remove('sl-on');
-    sobre.classList.remove('sl-on');
-    likes.classList.add('sl-on');
-
-    portfolio_container.classList.add("d-none")
-    sobre_container.classList.add("d-none")
-    like_container.classList.remove("d-none")
+    pageSwitch(like_container,likes)
+    
 
 })
+
+
+function pageSwitch(no_container,no_switch){
+    if(no_container==no_container_ativo) return;
+    
+    no_container.classList.remove("d-none");
+    no_container_ativo.classList.add("d-none");
+    no_container_ativo=no_container
+
+    
+    no_switch_ativo.classList.remove("sl-on")
+    no_switch.classList.add("sl-on")
+    no_switch_ativo=no_switch
+    
+}
