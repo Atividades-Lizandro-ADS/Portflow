@@ -5,6 +5,7 @@ const confirm_delete_btn=document.getElementById('confirmDelete');
 let currentObjectId = null;
 let current_btn = null;
 
+
 let csrf_token=document.querySelector('meta[name="csrf-token"]').content;
 
 deleteButtons.forEach(button=>{
@@ -14,6 +15,7 @@ deleteButtons.forEach(button=>{
         modal.classList.add("d-block");
         current_btn=this;
 
+        
     })
 })
 
@@ -25,14 +27,14 @@ cancel_delete_btn.addEventListener('click',function(){
 confirm_delete_btn.addEventListener('click',function(){
     if(currentObjectId==null) return;
     $.ajax({
-        url: `/api/v1/posts/comment/delete/${currentObjectId}`,
+        url: `/api/v1/postagem/update/post_image/delete/${currentObjectId}`,
         type: 'DELETE',
         headers: {
             'X-CSRFToken': csrf_token
         },
         success: function(response) {
             console.log('deletado com sucesso')
-            current_btn.parentElement.parentElement.parentElement.remove();
+            current_btn.parentElement.remove();
             close_form();
 
         },

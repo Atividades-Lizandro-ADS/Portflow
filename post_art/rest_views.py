@@ -87,7 +87,7 @@ class delete_post_image(generics.DestroyAPIView):
 
 
     def get_queryset(self):
-        image=PostImages.objects.filter(image_post_owner=self.request.user.profile)
+        image=PostImages.objects.filter(image_post_owner__post_owner=self.request.user.profile)
         return image
 
 class add_like(generics.CreateAPIView):

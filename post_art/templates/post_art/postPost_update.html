@@ -193,10 +193,23 @@
             {%csrf_token%}
             {{i.img_form}}
             <button type="submit">enviar</button>
+            
+            <button class="delete-btn fs-5" data-id="{{ i.img_form.instance.id }}" >excluir</button>
         </form>
-
         
+    
     {%endfor%}
+
+    <div id="deleteModal" class="modal d-none">
+        <div class="modal-content">
+          <h3>Confirmar Exclusão</h3>
+          <p>Tem certeza que deseja excluir esta imagem?</p>
+          <div>
+            <button id="cancelDelete">Cancelar</button>
+            <button id="confirmDelete">Excluir</button>
+          </div>
+        </div>
+    </div>
 </main>
 
 
@@ -204,5 +217,6 @@
 <script src="{%static 'js/add_image_form.js'%}"></script>
 <script src="{%static 'js/draft_publish.js'%}"></script>
 <script src="{%static 'js/update_image.js'%}"></script>
+<script src="{%static 'js/delete_image_modal.js'%}"></script>
 
 {%endblock%}
