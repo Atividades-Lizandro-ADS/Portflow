@@ -1,9 +1,9 @@
 from rest_framework import generics,permissions,authentication,exceptions
 from rest_framework import viewsets
 
-from .serializers import PostArtSerializers,PostArtSerializerRefresh,CommentSerializer,LikeSerializer
+from .serializers import PostArtSerializers,PostArtSerializerRefresh,CommentSerializer,LikeSerializer,PostImageSerializer
 from rest_framework.pagination import PageNumberPagination
-from .models import PostArt,UsedPrograms,Profile,Comments,Like
+from .models import PostArt,UsedPrograms,Profile,Comments,Like,PostImages
 from .utility import get_object_or_none
 from rest_framework import status
 from rest_framework.response import Response
@@ -26,7 +26,7 @@ class PostsArtViewRefresh(generics.ListCreateAPIView):
     serializer_class=PostArtSerializerRefresh
     pagination_class=PaginationCustom
 
-class PostArtView(generics.RetrieveUpdateDestroyAPIView):
+class PostArtView(generics.RetrieveUpdateDestroyAPIView): 
     queryset=posts=PostArt.objects.all()
     serializer_class=PostArtSerializers
 
@@ -61,6 +61,34 @@ class delete_comment(generics.DestroyAPIView):
     def get_queryset(self):
         comment=Comments.objects.filter(comment_owner=self.request.user.profile)
         return comment
+    
+class update_postArt_Image(generics.UpdateAPIView):
+    serializer_class=PostImageSerializer
+    authentication_classes=[authentication.SessionAuthentication]
+    permission_classes=[permissions.IsAuthenticated]
+    lookup_field='id'
+    lookup_url_kwarg='post_img_pk'
+    queryset=PostImages.objects.all()
+
+    def get_object(self):
+        obj= super().get_object()
+        if obj.image_post_owner.post_owner != self.request.user.profile:
+            raise exceptions.PermissionDenied("você não pode editar essa imagem")
+        return obj
+
+    
+class delete_post_image(generics.DestroyAPIView):
+    serializer_class=PostImageSerializer
+    authentication_classes=[authentication.SessionAuthentication]
+    permission_classes=[permissions.IsAuthenticated]
+    lookup_field='id'
+    lookup_url_kwarg='post_image_pk'
+
+
+
+    def get_queryset(self):
+        image=PostImages.objects.filter(image_post_owner=self.request.user.profile)
+        return image
 
 class add_like(generics.CreateAPIView):
     serializer_class=LikeSerializer

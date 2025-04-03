@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render,HttpResponse,HttpResponseRedirect
 from .models import PostArt,UsedPrograms,Profile,Like,PostImages
-from .forms import PostForm,CommentForm
+from .forms import PostForm,CommentForm,PostImageForm
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
@@ -74,11 +74,23 @@ class update_postArt(UpdateView):
     model=PostArt
     form_class=PostForm
     pk_url_kwarg='post_pk'
+
+    def get_context_data(self, **kwargs):
+        context= super().get_context_data(**kwargs)
+        images=context.get('object').postimages_set.all()
+        print(images[0].post_img.url)
+
+        context['img_forms']=[]
+
+        for image in images:
+            con={'img':images[0].post_img.url,'img_form':PostImageForm(instance=image)}
+            context['img_forms'].append(con)
+
+        return context
     
     def get_success_url(self):
         url=reverse('post_details',kwargs={'post_pk':self.kwargs.get('post_pk')})
         return url
-        
 
 class post_details(DetailView):
     template_name='post_art/post_details.html'

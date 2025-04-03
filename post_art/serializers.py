@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import PostArt,Comments,Like
+from .models import PostArt,Comments,Like,PostImages
 
 class PostArtSerializers(serializers.ModelSerializer):
     class Meta:
@@ -49,3 +49,19 @@ class LikeSerializer(serializers.ModelSerializer):
                'like_post',
                'like'
                )
+        
+
+class PostImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=PostImages
+        fields=(
+                'id',
+               'post_img',
+               'acessibility_caption',
+               'caption',
+               'image_post_owner'
+               )
+        
+        extra_kwargs = {
+            'post_img': {'required': False}
+        }

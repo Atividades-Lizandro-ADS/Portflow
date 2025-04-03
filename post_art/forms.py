@@ -49,10 +49,7 @@ class PostForm(ModelForm):
         self.fields['keywords'].label='Palavras-Chave'
         self.fields['published'].widget=HiddenInput()
         
-        
-
-        
-    
+          
 class CommentForm(ModelForm):
     class Meta:
         model=Comments

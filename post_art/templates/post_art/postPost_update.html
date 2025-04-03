@@ -3,6 +3,7 @@
 
 {%block head%}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<meta name="csrf-token" content="{{ csrf_token }}">
 {%endblock%}
 
 {%block content%}
@@ -182,11 +183,26 @@
 
         </div>
     </form>
+
+
+
+
+    {%for i in img_forms%}
+        <!-- <img src="{{i.img}}" alt=""> -->
+        <form name="form-image-update" action="{%url 'post_image_update' i.img_form.instance.id%}" method="post" enctype="multipart/form-data">
+            {%csrf_token%}
+            {{i.img_form}}
+            <button type="submit">enviar</button>
+        </form>
+
+        
+    {%endfor%}
 </main>
 
 
 
 <script src="{%static 'js/add_image_form.js'%}"></script>
 <script src="{%static 'js/draft_publish.js'%}"></script>
+<script src="{%static 'js/update_image.js'%}"></script>
 
 {%endblock%}
