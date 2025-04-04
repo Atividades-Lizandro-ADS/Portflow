@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import PostArt,Comments,Like,PostImages
+from .models import PostArt,Comments,Like,PostImages, UsedPrograms
 
 class PostArtSerializers(serializers.ModelSerializer):
     class Meta:
@@ -62,6 +62,13 @@ class PostImageSerializer(serializers.ModelSerializer):
                'image_post_owner'
                )
         
-        extra_kwargs = {
-            'post_img': {'required': False}
-        }
+
+
+class UsedProgramsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=UsedPrograms
+        fields=(
+                'id',
+               'program_name',
+               'program_logo'
+               )

@@ -77,6 +77,7 @@ label{
 
 .graybox .gray-input{
     padding: 1rem;
+    position: relative;
 }
 
 
@@ -128,4 +129,15 @@ label{
 
 .inner-grid p{
     white-space: nowrap;
+}
+
+
+.programs-dropdown{
+    position: absolute;
+    background-color: #fff;
+    max-height: 30rem;
+    overflow-y: auto;
+    width: 100%;
+    color: black;
+    padding: .5rem 1.5rem;
 }

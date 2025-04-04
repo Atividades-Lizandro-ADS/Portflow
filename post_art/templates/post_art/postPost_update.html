@@ -4,6 +4,7 @@
 {%block head%}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <meta name="csrf-token" content="{{ csrf_token }}">
+<meta name="used_programs_api" content="{%url 'used_programs' %}">
 {%endblock%}
 
 {%block content%}
@@ -12,6 +13,8 @@
     <form action="" id="formulario" method="post" class="d-flex mt-5 flex-column gap-5 justify-content-center"
         enctype="multipart/form-data">
         {%csrf_token%}
+
+        
 
         <div class="d-flex gap-5">
 
@@ -79,7 +82,16 @@
 
                 <div id="form-inputs-container"></div>
 
+
                 <!--fim upload imagem-->
+                <div id="programs_preview">
+                    {%for program in form.instance.used_programs.all%}
+                        <img class="software-logo" src="{{program.program_logo.url}}" alt="">
+                        <p>{{program.program_name}}</p>
+                        <input type="hidden" name="used_programs[]" value="{{program.program_name}}">
+                    {%endfor%}
+
+                </div>
             </div>
 
 
@@ -173,7 +185,11 @@
                     </div>
                     <div class="gray-input">
                         {{form.programs}}
+
+                        <div class="programs-dropdown d-none" id="programs-dropdown"></div>
                     </div>
+                    
+                    
 
                 </div>
                 <!--fim proframas usados-->
@@ -188,7 +204,7 @@
 
 
     {%for i in img_forms%}
-        <!-- <img src="{{i.img}}" alt=""> -->
+        <!-- <img src="{{i.img_form.instance.post_img.url}}" alt=""> -->
         <form name="form-image-update" action="{%url 'post_image_update' i.img_form.instance.id%}" method="post" enctype="multipart/form-data">
             {%csrf_token%}
             {{i.img_form}}
@@ -218,5 +234,6 @@
 <script src="{%static 'js/draft_publish.js'%}"></script>
 <script src="{%static 'js/update_image.js'%}"></script>
 <script src="{%static 'js/delete_image_modal.js'%}"></script>
+<script src="{%static 'js/search_softwares.js'%}"></script>
 
 {%endblock%}

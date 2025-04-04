@@ -1,5 +1,5 @@
 from django.urls import path
-from .rest_views import PostArtView,PostsArtView,PostArtViewset,PostsArtViewRefresh,add_comment,add_like,delete_comment,delete_post_image,update_postArt_Image
+from .rest_views import PostArtView,PostsArtView,PostArtViewset,PostsArtViewRefresh,add_comment,add_like,delete_comment,delete_post_image,update_postArt_Image,UsedProgramsView
 
 from rest_framework.routers import SimpleRouter
 router=SimpleRouter()
@@ -7,6 +7,7 @@ router=SimpleRouter()
 router.register('postart',PostArtViewset)
 
 urlpatterns = [
+    path('used_programs/',UsedProgramsView.as_view(),name='used_programs'),
     path('posts/',PostsArtView.as_view(),name='posts'),
     path('posts/refresh',PostsArtViewRefresh.as_view(),name='post_refresh'),
     path('posts/<int:pk>',PostArtView.as_view(),name='post'),

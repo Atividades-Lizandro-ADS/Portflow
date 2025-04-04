@@ -1,5 +1,5 @@
 from django.forms.models import ModelForm
-from .models import PostArt,Profile,Comments,PostImages
+from .models import PostArt,Profile,Comments,PostImages,UsedPrograms
 from django.forms import CharField,Textarea,RadioSelect,ModelChoiceField,HiddenInput
 from django.core.exceptions import ValidationError
 
@@ -7,19 +7,30 @@ from django.core.exceptions import ValidationError
 class PostForm(ModelForm):
 
 
-    programs=CharField(widget=Textarea)
-    #como editar modelchoice para radio button
-    #post_owner=ModelChoiceField(queryset=Profile.objects.all(),widget=RadioSelect())
+    programs=CharField(widget=Textarea,required=False)
     class Meta:
         model=PostArt
         exclude=["likes","views_number",'used_programs','post_owner']
 
-    def save(self,owner=None, commit = True):
+    def save(self,files, captions,acessibility_captions,used_programs,owner=None, commit = True):
         post= self.instance
         if owner:
             post.post_owner=owner
         if commit:
             post.save()
+
+                
+            
+            programas=[programa.title() for programa in used_programs]
+            usep=UsedPrograms.objects.filter(program_name__in=programas)
+
+            post.used_programs.add(*usep)
+
+            for file,caption,a_caption in zip(files,captions,acessibility_captions):
+                PostImages.objects.create(post_img=file,acessibility_caption=a_caption,caption=caption,image_post_owner=post)
+
+
+            
         return post
     
     def clean_post_thumb(self):

@@ -3,6 +3,7 @@
 
 {%block head%}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<meta name="used_programs_api" content="{%url 'used_programs' %}">
 {%endblock%}
 
 {%block content%}
@@ -79,6 +80,8 @@
                 <div id="form-inputs-container"></div>
 
                 <!--fim upload imagem-->
+
+                <div id="programs_preview"></div>
             </div>
 
 
@@ -172,8 +175,11 @@
                     </div>
                     <div class="gray-input">
                         {{form.programs}}
-                    </div>
 
+                        <div class="programs-dropdown d-none" id="programs-dropdown"></div>
+                    </div>
+                    
+                    
                 </div>
                 <!--fim proframas usados-->
 
@@ -187,5 +193,6 @@
 
 <script src="{%static 'js/add_image_form.js'%}"></script>
 <script src="{%static 'js/draft_publish.js'%}"></script>
+<script src="{%static 'js/search_softwares.js'%}"></script>
 
 {%endblock%}

@@ -1,7 +1,7 @@
 from rest_framework import generics,permissions,authentication,exceptions
 from rest_framework import viewsets
 
-from .serializers import PostArtSerializers,PostArtSerializerRefresh,CommentSerializer,LikeSerializer,PostImageSerializer
+from .serializers import PostArtSerializers,PostArtSerializerRefresh,CommentSerializer,LikeSerializer,PostImageSerializer,UsedProgramsSerializer
 from rest_framework.pagination import PageNumberPagination
 from .models import PostArt,UsedPrograms,Profile,Comments,Like,PostImages
 from .utility import get_object_or_none
@@ -29,6 +29,19 @@ class PostsArtViewRefresh(generics.ListCreateAPIView):
 class PostArtView(generics.RetrieveUpdateDestroyAPIView): 
     queryset=posts=PostArt.objects.all()
     serializer_class=PostArtSerializers
+
+class UsedProgramsView(generics.ListAPIView):
+    serializer_class=UsedProgramsSerializer
+    queryset=UsedPrograms.objects.all()
+    
+
+    def get_queryset(self):
+        search=self.request.GET.get('search')
+        queryset=UsedPrograms.objects.all()
+        if search:
+            queryset=UsedPrograms.objects.filter(program_name__icontains=search) 
+        return queryset
+
 
 
 class add_comment(generics.CreateAPIView):

@@ -40,33 +40,14 @@ class postPost(FormView):
         kwargs.update({'files':self.request.FILES})
         return kwargs
     
-    def form_valid(self, form):
-        programas=form.cleaned_data.get('programs')
-        programas=programas.split(';')
-        programas=[programa.title() for programa in programas]
-
-        #filtrando os objetos a partir da lista acima, todos os objetos encontrados no db que correspondam
-        #a algum objeto acima serão trazidos
-        usep=UsedPrograms.objects.filter(program_name__in=programas)
-            
-            
-        #adicionando a instancia do formulario o profile do usuario logado
-        post=form.save(owner=self.request.user.profile)
-
-        #foi necessário salvar o objeto para
-
-        #o metodo add adiciona objetos do tipo UsedPrograms a lista de manytomany
-        #add recebe varios argumentos, podemos passar uma lista se utilizarmos o * antes dela
-        post.used_programs.add(*usep)
-
+    def form_valid(self, form):  
         files=self.request.FILES.getlist('post_img[]')
         captions=self.request.POST.getlist('caption[]')
         acessibility_captions=self.request.POST.getlist('acessibility_caption[]')
-            
 
+        programs=self.request.POST.getlist('used_programs[]')
 
-        for file,caption,a_caption in zip(files,captions,acessibility_captions):
-            PostImages.objects.create(post_img=file,acessibility_caption=a_caption,caption=caption,image_post_owner=post)
+        post=form.save(files,captions,acessibility_captions,used_programs=programs,owner=self.request.user.profile)   
         return HttpResponseRedirect(reverse('index'))
 
 class update_postArt(UpdateView):
@@ -78,7 +59,6 @@ class update_postArt(UpdateView):
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
         images=context.get('object').postimages_set.all()
-        print(images[0].post_img.url)
 
         context['img_forms']=[]
 
@@ -87,6 +67,18 @@ class update_postArt(UpdateView):
             context['img_forms'].append(con)
 
         return context
+    
+    def form_valid(self, form):
+        files=self.request.FILES.getlist('post_img[]')
+        captions=self.request.POST.getlist('caption[]')
+        acessibility_captions=self.request.POST.getlist('acessibility_caption[]')
+
+        programs=self.request.POST.getlist('used_programs[]')
+
+        form.save(files,captions,acessibility_captions,used_programs=programs,owner=self.request.user.profile)
+        
+        url=self.get_success_url()
+        return HttpResponseRedirect(url)
     
     def get_success_url(self):
         url=reverse('post_details',kwargs={'post_pk':self.kwargs.get('post_pk')})
