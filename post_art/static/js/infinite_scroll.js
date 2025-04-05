@@ -27,12 +27,12 @@ function loadPosts() {
                 const postElement = document.createElement('a');
                 postElement.innerHTML = `
                     <img class="card-img" src="${post.post_thumb}" alt="Card image" style="object-fit: cover; width: 100%; height: 100%;">
-                    <div class="card-img-overlay">
-                      <h3 class="card-title">${post.tittle}</h3>
+                    <div class="card-tx">
+                      <h3 >${post.tittle}</h3>
                     </div>
                 `;
-                postElement.href=`/postagem/${post.id}`
-                postElement.className="card flex align-end justify-center bg-dark text-white"
+                postElement.href=`/post/${post.id}`
+                postElement.className="card pos-relative ov-hidden bg-dark text-white"
                 postElement.style="width: 28rem; height: 28rem; padding: 0;"
                 postsContainer.appendChild(postElement);
             });

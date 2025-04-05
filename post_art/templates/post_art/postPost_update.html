@@ -3,7 +3,9 @@
 
 {%block head%}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<meta name="csrf-token" content="{{ csrf_token }}">
 <meta name="used_programs_api" content="{%url 'used_programs' %}">
+<meta name="remove_used_programs_api" content="{%url 'remove_used_programs' 1 2%}">
 {%endblock%}
 
 {%block content%}
@@ -12,6 +14,8 @@
     <form action="" id="formulario" method="post" class="d-flex mt-5 flex-column gap-5 justify-content-center"
         enctype="multipart/form-data">
         {%csrf_token%}
+
+        
 
         <div class="d-flex gap-5">
 
@@ -79,12 +83,12 @@
                     <div class="gray-title">preview adição de imagens</div>
                     <div class=" gray-input image-preview" id="image-preview"></div>
                 </div>
-                
 
                 <div id="form-inputs-container"></div>
 
-                <!--fim upload imagem-->
 
+                <!--fim upload imagem-->
+                
             </div>
 
 
@@ -100,7 +104,7 @@
                         <div class="image_post-uploader">
                             <label for="id_post_thumb">
                                 <p>Thumbnail da sua obra</p>
-                                {{form.post_thumb}}
+                                <input type="file" class="d-none" name="post_thumb" accept="image/*" id="id_post_thumb">
                             </label>
                         </div>
 
@@ -124,7 +128,7 @@
                         <div class="image_post-uploader">
                             <label for="id_post_thumb">
                                 <p>visualizador marmoset</p>
-                                {{form.marmoview}}
+                                <input type="file" class="d-none" name="marmoview" id="id_marmoview">
                             </label>
                         </div>
 
@@ -187,18 +191,92 @@
                     <div class="gray-title"><p>preview adição de programas</p></div>
                     <div id="programs_preview" class="gray-input round-5 px-4 py-5 mt-3 inner-grid"></div>
                 </div>
-                <!--fim proframas usados-->
+                <!--fim programas usados-->
 
 
             </div>
 
         </div>
     </form>
+
+    <div id="programs_already_in" class="graybox mt-5">
+        <div class="gray-title">programas já adicionados</div>
+
+        <div class="gray-input round-5 px-4 py-5 mt-3 inner-grid">
+            {%for program in form.instance.used_programs.all%}
+
+            <div class="lt-graybox p-2 pe-3 rounded fs-4 d-flex gap-3 align-items-center">
+                <img class="software-logo" src="{{program.program_logo.url}}" alt="">
+                <p>{{program.program_name}}</p>
+                <p class="fs-3" name="button-remove-program-already" data-post="{{form.instance.id}}" data-program="{{program.id}}"><i class="bi bi-cloud-arrow-down-fill"></i></p>
+            </div>
+            
+            
+            <input type="hidden" name="used_programs[]" value="{{program.program_name}}">
+        {%endfor%}
+        </div>
+        
+    </div>
+
+
+    <div class="graybox mt-5">
+        <div class="gray-title">imagens já adicionadas</div>
+        <div class="gray-input row gap-3">
+            {%for i in img_forms%}
+                
+                <form class="gr-border-1 p-0 col-3 align-items-center" name="form-image-update" action="{%url 'post_image_update' i.img_form.instance.id%}" method="post" enctype="multipart/form-data">
+                    
+                    {%csrf_token%}
+                    <!-- {{i.img_form}} -->
+
+                    <label class="img-input">
+                        <input class="d-none" type="file" id="id_post_img" name="post_img" accept="image/*" onchange="previewImage(this)">
+                        <img src="{{i.img_form.instance.post_img.url}}" alt="">
+                        <span class="fs-1" ><i class="bi bi-cloud-arrow-down-fill"></i></span>
+                    </label>
+
+
+                    <div class="p-3 d-flex flex-column gap-5">
+                        <div class="d-flex flex-column gap-3 align-items-start">
+                            <label for="">Legenda</label>
+                            {{i.img_form.caption}}
+    
+                            <label for="">Legenda de acessibilidade</label>
+                            {{i.img_form.acessibility_caption}}
+                        </div>
+    
+                        <div class="d-flex flex-column gap-3 align-items-center">
+                            <button class="post-button like-button" type="submit">enviar</button>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <button class="delete-btn-top fs-2" name="delete-btn" data-id="{{ i.img_form.instance.id }}" ><i class="bi bi-trash-fill"></i></button>
+                </form>
+            {%endfor%}
+        </div>
+    </div>
+    
+
+    <div id="deleteModal" class="modal d-none">
+        <div class="modal-content">
+          <h3>Confirmar Exclusão</h3>
+          <p>Tem certeza que deseja excluir esta imagem?</p>
+          <div>
+            <button id="cancelDelete">Cancelar</button>
+            <button id="confirmDelete">Excluir</button>
+          </div>
+        </div>
+    </div>
 </main>
+
 
 
 <script src="{%static 'js/add_image_form.js'%}"></script>
 <script src="{%static 'js/draft_publish.js'%}"></script>
+<script src="{%static 'js/update_image.js'%}"></script>
+<script src="{%static 'js/delete_image_modal.js'%}"></script>
 <script src="{%static 'js/search_softwares.js'%}"></script>
 
 {%endblock%}

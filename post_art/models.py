@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from .custom_model_fields import YoutubeUrlField,MarmosetFileField
+from datetime import datetime
 
 
 class BasePost(models.Model):
@@ -18,6 +19,28 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.first_name
+
+class Hiring(models.Model):
+    hire_type=models.CharField(max_length=140)
+
+    def __str__(self):
+        return self.hire_type
+
+class Skill(models.Model):
+    skill_type=models.CharField(max_length=140)
+
+    def __str__(self):
+        return self.skill_type
+
+class About(models.Model):
+    prof=models.OneToOneField(Profile,on_delete=models.CASCADE)
+    programs_known=models.ManyToManyField('UsedPrograms')
+    hiring=models.ManyToManyField(Hiring)
+    skills=models.ManyToManyField(Skill)
+    summary=models.TextField(null=True,blank=True)
+
+
+
 
 
 class UsedPrograms(models.Model):
@@ -74,6 +97,8 @@ class PostArt(BasePost):
 
     keywords=models.TextField(null=True, blank=True)
 
+    published=models.BooleanField(default=True)
+
 
     class Meta:
         verbose_name="post portfolio"
@@ -107,8 +132,11 @@ class Comments(models.Model):
     comment_owner=models.ForeignKey(Profile,on_delete=models.CASCADE)
     comment_post=models.ForeignKey(PostArt,on_delete=models.CASCADE)
     comment_text=models.TextField()
+    created=models.DateTimeField(default=datetime.now)
 
 
+    class Meta:
+        ordering=['created','-id']
     def __str__(self):
         return self.comment_text 
     

@@ -2,7 +2,7 @@
     border: .2rem dashed #ccc;
     padding: 10rem 4rem;
     text-align: center;
-    margin: 2rem;
+    margin: 2rem 0rem;
     border-radius: 5px;
 }
 
@@ -41,14 +41,148 @@
     margin-bottom: 10px;
 }
 
-.caption-input{
-    border-radius: 0;
+.text-input{
+    border-radius: .4rem;
     color: #fff;
-    border: solid .2rem #ffffff85;
-    background-color: transparent;
-    padding: .4rem;
+    border: solid .1rem #505054;
+    background-color: #101014;
+    padding: .6rem;
+    width: 100%;
+    font-size: 1.6rem;
+    
 
 }
-.caption-input:focus{
+
+label{
+    color: #fff;
+    font-size: 1.5rem;
+}
+.text-input:focus{
     outline: none;
+}
+
+.graybox{
+    color: #fff;
+    width: 100%;
+    background-color: #18181c;
+    
+}
+.gr-border-1{
+    border: 1px solid #303034;
+    position: relative;
+}
+
+.graybox .gray-title{
+    background-color: #303034;
+    padding: 1rem;
+    font-weight: bold;
+    font-size: 1.6rem;
+}
+
+.graybox .gray-input{
+    padding: 1rem;
+    position: relative;
+}
+
+
+
+.textarea-input-height {
+    height: 3rem; 
+    min-height: 1em; 
+    resize: vertical; 
+    padding: 4px 8px; 
+    box-sizing: border-box; 
+    line-height: 1.2;
+    overflow-y: hidden; 
+  }
+
+.search-input{
+    border: solid .2rem #505054;
+    border-radius: 3rem;
+}
+
+.search-input input[type=text]{
+    border: none;
+    background-color: transparent;
+    color: #fff;
+}
+.search-input i{
+    font-size: 1.8rem;
+    color: #505054;
+}
+
+.coment-button{
+    height: 3rem;
+    width: 3rem;
+    background-color: #24baff;
+    border-radius: 20%;
+}
+.coment-button i{
+    font-size: 2rem;
+}
+
+.lt-graybox{
+    background-color: #303034;
+    color: #e6e6ea;
+}
+.lt-graybox p{
+    margin: 0;
+}
+.inner-grid{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.inner-grid p{
+    white-space: nowrap;
+}
+
+
+.programs-dropdown{
+    position: absolute;
+    background-color: #fff;
+    max-height: 30rem;
+    overflow-y: auto;
+    width: 100%;
+    color: black;
+    padding: .5rem 1.5rem;
+    cursor: pointer;
+}
+
+.img-input{
+    width: 100%;
+    padding-top: 100%;
+    overflow: hidden;
+    position: relative;
+}
+.img-input img{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    object-fit: cover;
+    display: block;
+    object-position: center;
+    top: 0;
+    left: 0;
+}
+
+.img-input span{
+    position: absolute;
+    z-index: 1000;
+    bottom: 1rem;
+    left: 50%;
+    transform:translateX(-50%) ;
+}
+
+.delete-btn-top{
+    position: absolute;
+    top: .5rem;
+    right: .5rem;
+    border: none;
+    background-color: rgba(248, 248, 248, .6);
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    justify-content: center;
 }

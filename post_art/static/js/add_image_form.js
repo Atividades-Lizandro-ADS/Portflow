@@ -22,7 +22,7 @@ imageUpload.addEventListener('change', function(e) {
         reader.onload = function(event) {
 
             const imageItem = document.createElement('div');
-            imageItem.className = 'image-item';
+            imageItem.classList.add('image-item','gr-border-1');
             
 
             const img = document.createElement('img');
@@ -31,21 +31,21 @@ imageUpload.addEventListener('change', function(e) {
 
             const captionInput = document.createElement('input');
             captionInput.type = 'textarea';
-            captionInput.className = 'caption-input';
+            captionInput.className = 'text-input';
             captionInput.placeholder = 'legenda';
             captionInput.name='caption[]'
 
             const acessibilityCaptionInput = document.createElement('input');
             acessibilityCaptionInput.type = 'textarea';
-            acessibilityCaptionInput.className = 'caption-input';
+            acessibilityCaptionInput.className = 'text-input';
             acessibilityCaptionInput.placeholder = 'legenda de acessibilidade';
             acessibilityCaptionInput.name='acessibility_caption[]'
             
 
             const removeBtn = document.createElement('button');
             removeBtn.type = 'button';
-            removeBtn.className = 'remove-btn';
-            removeBtn.textContent = 'Remover';
+            removeBtn.className = 'delete-btn-top', 'fs-2';
+            removeBtn.innerHTML = '<i class="bi bi-trash-fill"></i>';
             
 
             const fileInput = document.createElement('input');
@@ -66,12 +66,23 @@ imageUpload.addEventListener('change', function(e) {
             removeBtn.onclick = function() {
                 imagePreview.removeChild(imageItem);
                 formInputsContainer.removeChild(fileInput);
-                formInputsContainer.removeChild(captionHidden);
             };
             
-            imageItem.appendChild(img);
-            imageItem.appendChild(captionInput);
-            imageItem.appendChild(acessibilityCaptionInput);
+            const inputs_container=document.createElement('div')
+            inputs_container.classList.add('p-3', 'd-flex', 'flex-column', 'gap-3','align-items-start');
+            inputs_container.innerHTML=`
+                <label for="">Legenda</label>
+                <input type="textarea" name="caption[]" maxlength="240" class="text-input" required="" placeholder="legenda">
+                <label for="">Legenda de acessibilidade</label>
+                <input type="textarea" name="acessibility_caption[]" maxlength="120" class="text-input" required="" placeholder="legenda de acessibilidade">
+            `
+
+            const img_container=document.createElement('div');
+            img_container.className='img-input';
+            img_container.appendChild(img);
+            
+            imageItem.appendChild(img_container);
+            imageItem.appendChild(inputs_container)
             imageItem.appendChild(removeBtn);
             
             imagePreview.appendChild(imageItem);
@@ -103,3 +114,16 @@ uploadContainer.addEventListener('drop', function(e) {
     imageUpload.dispatchEvent(event);
 });
 
+
+function previewImage(input) {
+    const label = input.closest('.img-input');
+    const img = label.querySelector('img');
+
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        
+        const imageUrl = URL.createObjectURL(file);
+        img.src = imageUrl; 
+
+    }
+}

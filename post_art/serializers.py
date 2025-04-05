@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import PostArt,Comments,Like
+from .models import PostArt,Comments,Like,PostImages, UsedPrograms
 
 class PostArtSerializers(serializers.ModelSerializer):
     class Meta:
@@ -36,7 +36,8 @@ class CommentSerializer(serializers.ModelSerializer):
                 'id',
                'comment_owner',
                'comment_post',
-               'comment_text'
+               'comment_text',
+               'created'
                )
         
 class LikeSerializer(serializers.ModelSerializer):
@@ -47,4 +48,27 @@ class LikeSerializer(serializers.ModelSerializer):
                'like_owner',
                'like_post',
                'like'
+               )
+        
+
+class PostImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=PostImages
+        fields=(
+                'id',
+               'post_img',
+               'acessibility_caption',
+               'caption',
+               'image_post_owner'
+               )
+        
+
+
+class UsedProgramsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=UsedPrograms
+        fields=(
+                'id',
+               'program_name',
+               'program_logo'
                )

@@ -1,12 +1,13 @@
-from rest_framework import generics,permissions,authentication
+from rest_framework import generics,permissions,authentication,exceptions
 from rest_framework import viewsets
 
-from .serializers import PostArtSerializers,PostArtSerializerRefresh,CommentSerializer,LikeSerializer
+from .serializers import PostArtSerializers,PostArtSerializerRefresh,CommentSerializer,LikeSerializer,PostImageSerializer,UsedProgramsSerializer
 from rest_framework.pagination import PageNumberPagination
-from .models import PostArt,UsedPrograms,Profile,Comments,Like
+from .models import PostArt,UsedPrograms,Profile,Comments,Like,PostImages
 from .utility import get_object_or_none
 from rest_framework import status
 from rest_framework.response import Response
+
 
 
 """API v1"""
@@ -25,11 +26,36 @@ class PostsArtViewRefresh(generics.ListCreateAPIView):
     serializer_class=PostArtSerializerRefresh
     pagination_class=PaginationCustom
 
-class PostArtView(generics.RetrieveUpdateDestroyAPIView):
+class PostArtView(generics.RetrieveUpdateDestroyAPIView): 
     queryset=posts=PostArt.objects.all()
     serializer_class=PostArtSerializers
 
+class UsedProgramsView(generics.ListAPIView):
+    serializer_class=UsedProgramsSerializer
+    queryset=UsedPrograms.objects.all()
+    
 
+    def get_queryset(self):
+        search=self.request.GET.get('search')
+        queryset=UsedPrograms.objects.all()
+        if search:
+            queryset=UsedPrograms.objects.filter(program_name__icontains=search) 
+        return queryset
+
+
+class RemoveUsedPrograms(generics.GenericAPIView):
+    def get(self,request,*args,**kwargs):
+        post_id=self.kwargs.get('post_pk')
+        program_id=self.kwargs.get('program_pk')
+        post,_=get_object_or_none(PostArt,id=post_id)
+        program,_=get_object_or_none(UsedPrograms,id=program_id)
+
+        if post is None or program is None:
+            return Response(data={'error'},status=status.HTTP_404_NOT_FOUND)
+        
+        post.used_programs.remove(program)
+
+        return Response(data={'sucesso':True,'program':program.program_name,},status=status.HTTP_200_OK)
 class add_comment(generics.CreateAPIView):
     serializer_class=CommentSerializer
     authentication_classes=[authentication.SessionAuthentication]
@@ -47,6 +73,47 @@ class add_comment(generics.CreateAPIView):
             'user_id':request.user.profile.id
         }
         return response
+    
+class delete_comment(generics.DestroyAPIView):
+    serializer_class=CommentSerializer
+    authentication_classes=[authentication.SessionAuthentication]
+    permission_classes=[permissions.IsAuthenticated]
+    lookup_field='id'
+    lookup_url_kwarg='comment_pk'
+
+
+
+    def get_queryset(self):
+        comment=Comments.objects.filter(comment_owner=self.request.user.profile)
+        return comment
+    
+class update_postArt_Image(generics.UpdateAPIView):
+    serializer_class=PostImageSerializer
+    authentication_classes=[authentication.SessionAuthentication]
+    permission_classes=[permissions.IsAuthenticated]
+    lookup_field='id'
+    lookup_url_kwarg='post_img_pk'
+    queryset=PostImages.objects.all()
+
+    def get_object(self):
+        obj= super().get_object()
+        if obj.image_post_owner.post_owner != self.request.user.profile:
+            raise exceptions.PermissionDenied("você não pode editar essa imagem")
+        return obj
+
+    
+class delete_post_image(generics.DestroyAPIView):
+    serializer_class=PostImageSerializer
+    authentication_classes=[authentication.SessionAuthentication]
+    permission_classes=[permissions.IsAuthenticated]
+    lookup_field='id'
+    lookup_url_kwarg='post_image_pk'
+
+
+
+    def get_queryset(self):
+        image=PostImages.objects.filter(image_post_owner__post_owner=self.request.user.profile)
+        return image
 
 class add_like(generics.CreateAPIView):
     serializer_class=LikeSerializer

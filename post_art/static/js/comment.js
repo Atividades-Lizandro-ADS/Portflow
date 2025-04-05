@@ -30,6 +30,7 @@ comment_form.on('submit',function(event){
         },
         data:formdata,
         success:function(data){
+            console.log(data)
             const comment=document.createElement('div');
             $('#id_comment_text').val('')
             comment.innerHTML=
@@ -38,6 +39,11 @@ comment_form.on('submit',function(event){
                         <div>
                             <a href="/profile/${data.owner.user_id}">${data.owner.username}</a>
                             <p>${data.comment_text}</p>
+                        </div>
+
+                        <div class="d-flex gap-3 justify-content-between">
+                                <span class="fs-5 ">agora</span>
+                                
                         </div>
             `;
             comment.className="comment"

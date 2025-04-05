@@ -2,7 +2,10 @@
 {%load static%}
 {%block head%}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<meta name="csrf-token" content="{{ csrf_token }}">
 {%endblock%}
+
+
 
 {%block content%}
 <main class="container">
@@ -15,9 +18,9 @@
                 {%for image in post.postimages_set.all%}
                 <div class="d-flex flex-column justify-content-center text-center">
                     <img class="album-img" src="{{image.post_img.url}}" alt="{{image.acessibility_caption}}">
-                    <p>{{image.caption}}</p>
+                    <p class="album-img">{{image.caption}}</p>
                 </div>
-                    
+                 
                 {%endfor%}
 
                 {%if post.marmoview%}
@@ -33,13 +36,13 @@
             <div class="col-4 post-side">
                     <div class="post-card ">
                             <!--area do perfil-->
-                        <div class="d-flex flex-row gap-3 align-items-center mb-5 mt-2 ">
+                        <div class="d-flex flex-row gap-3 align-items-center mb-5 mt-2 p-1">
                             {%if post.post_owner.user_picture%}
                             <img class="profile-picture rounded-circle" src="{{post.post_owner.user_picture.url}}" alt="">
                             {%endif%}
                             <div class="d-flex flex-column gap-1">
                                 <h3>{{post.post_owner}}</h3>
-                                <a href="#">visite o perfil</a>
+                                <a href="{%url 'profile_index' post.post_owner.id%}">visite o perfil</a>
                             </div>
                         </div>
 
@@ -67,16 +70,9 @@
 
 
                     <div class="">
-                        <h3>{{post.tittle}}</h3>
-
-                        <div class="collapsable">
-                            <input type="checkbox" name="" id="read-more">
-                            <span>{{post.description|slice:":244"}}</span>
-                            <div class="desc-content">
-                                <span>{{post.description|slice:"244:"}}</span>
-                                <label class="read-more" for="read-more">mostrar menos</label>
-                            </div>
-                        <label class="read-more" for="read-more">mostrar mais</label>
+                        <h3 class="mt-5">{{post.tittle}}</h3>
+                        <div class="description" id="description-container">
+                            <span id="readmore-text">{{post.description}}</span>
                         </div>
                         
 
@@ -103,11 +99,11 @@
                     
                 
                     <h4 class="mt-5">programas usados</h4>
-                    <div class="mt-5 d-flex flex-row gap-2 justify-content-around">
+                    <div class="graybox round-5 px-4 py-5 mt-3 inner-grid">
                         {%for c in post.used_programs.all%}
-                            <div class="d-flex flex-row gap-2 p-auto col align-items-center">
+                            <div class="lt-graybox p-2 pe-3 rounded fs-4 d-flex gap-3 align-items-center">
                                 <img class="software-logo" src="{{c.program_logo.url}}" alt="">
-                                <p class="software-text m-0">{{c}}</p>
+                                <p >{{c}}</p>
                             </div>
                         
                     {%endfor%}
@@ -117,14 +113,10 @@
 
                     <h4>palavras chave</h4>
                     <!--palavras chave-->
-                    <div class="post-card mt-5">
-                        <div class="container">
-                            <div class="row gap-3 justify-content-around">
+                    <div class="graybox round-5 px-4 py-5 mt-3 inner-grid">
                                 {%for k in keywords%}
-                                    <span class="col keywords">#{{k}}</span>
+                                    <span class="lt-graybox p-2 pe-3 rounded fs-4 d-flex gap-3 align-items-start">#{{k}}</span>
                                 {%endfor%}
-                            </div>
-                        </div>
                         
                     </div>
 
@@ -136,9 +128,14 @@
                 <h4>Comentarios</h4>
                 <!--comentários-->
                 {%if request.user.profile%}
-                <form action="" data-post-id="{{post.id}}" data-profile-id="{{request.user.profile.id}}" data-comment-api-url="{%url 'add_comment'%}" data-token="{{csrf_token}}" id="comment_form">
-                    {{form}}
-                    <button type="submit">comentar</button>
+                <form action="" class="d-flex gap-3 justify-content-center align-items-center" data-post-id="{{post.id}}" data-profile-id="{{request.user.profile.id}}" data-comment-api-url="{%url 'add_comment'%}" data-token="{{csrf_token}}" id="comment_form">
+                    <div class="col-10">
+                        {{form.comment_text}}
+                    </div>
+                    
+                    <div class="col-2"><button class="coment-button p-2 d-flex align-items-center justify-content-center" type="submit"><i class="bi bi-send-fill"></i></button></div>
+                    
+                    
                 </form>
                 {%endif%}
                 <br>
@@ -149,12 +146,33 @@
                         <div>
                             <a href="{%url 'profile_index' comment.comment_owner.id%}">{{comment.comment_owner}}</a>
                             <p>{{comment}}</p>
+
+                            <div class="d-flex gap-3 justify-content-between">
+                                <span class="fs-5 ">{{comment.created|date:"d/M/Y"}} &nbsp;-</span>
+                                {%if request.user.profile == comment.comment_owner %}
+                                    <button class="delete-btn fs-5" data-id="{{ comment.id }}" >excluir</button>
+                                {%endif%}
+                            </div>
+                            
                         </div>
+
+                        
                     </div>
                         
                     {%endfor%}
+
+
+                    <div id="deleteModal" class="modal d-none">
+                        <div class="modal-content">
+                          <h3>Confirmar Exclusão</h3>
+                          <p>Tem certeza que deseja excluir este comentário?</p>
+                          <div>
+                            <button id="cancelDelete">Cancelar</button>
+                            <button id="confirmDelete">Excluir</button>
+                          </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
 
         </div>
@@ -167,6 +185,8 @@
 <script src="{%static 'js/comment.js' %}"></script>
 <script src="{%static 'js/add_like.js' %}"></script>
 <script src="{%static 'js/save_fav_post.js' %}"></script>
+<script src="{%static 'js/read_more.js' %}"></script>
+<script src="{%static 'js/delete_comment_modal.js' %}"></script>
     
     
 
