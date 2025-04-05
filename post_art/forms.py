@@ -2,12 +2,14 @@ from django.forms.models import ModelForm
 from .models import PostArt,Profile,Comments,PostImages,UsedPrograms
 from django.forms import CharField,Textarea,RadioSelect,ModelChoiceField,HiddenInput
 from django.core.exceptions import ValidationError
+from django.forms import ClearableFileInput
+
 
 
 class PostForm(ModelForm):
 
 
-    programs=CharField(widget=Textarea,required=False)
+    programs=CharField(required=False)
     class Meta:
         model=PostArt
         exclude=["likes","views_number",'used_programs','post_owner']
@@ -75,4 +77,11 @@ class PostImageForm(ModelForm):
     class Meta:
         model=PostImages
         fields=['post_img','acessibility_caption','caption']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['caption'].widget.attrs.update({'class':'text-input'})
+        self.fields['acessibility_caption'].widget.attrs.update({'class':'text-input'})
+
 

@@ -66,7 +66,6 @@ imageUpload.addEventListener('change', function(e) {
             removeBtn.onclick = function() {
                 imagePreview.removeChild(imageItem);
                 formInputsContainer.removeChild(fileInput);
-                formInputsContainer.removeChild(captionHidden);
             };
             
             imageItem.appendChild(img);
@@ -103,3 +102,16 @@ uploadContainer.addEventListener('drop', function(e) {
     imageUpload.dispatchEvent(event);
 });
 
+
+function previewImage(input) {
+    const label = input.closest('.img-input');
+    const img = label.querySelector('img');
+
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        
+        const imageUrl = URL.createObjectURL(file);
+        img.src = imageUrl; 
+
+    }
+}

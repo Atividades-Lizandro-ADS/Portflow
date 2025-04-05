@@ -63,7 +63,7 @@ class update_postArt(UpdateView):
         context['img_forms']=[]
 
         for image in images:
-            con={'img':images[0].post_img.url,'img_form':PostImageForm(instance=image)}
+            con={'img_form':PostImageForm(instance=image)}
             context['img_forms'].append(con)
 
         return context

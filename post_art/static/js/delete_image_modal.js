@@ -1,5 +1,5 @@
 const modal = document.getElementById('deleteModal');
-const deleteButtons = document.querySelectorAll('.delete-btn');
+const deleteButtons = document.querySelectorAll('[name="delete-btn"]');
 const cancel_delete_btn=document.getElementById('cancelDelete');
 const confirm_delete_btn=document.getElementById('confirmDelete');
 let currentObjectId = null;
@@ -9,7 +9,8 @@ let current_btn = null;
 let csrf_token=document.querySelector('meta[name="csrf-token"]').content;
 
 deleteButtons.forEach(button=>{
-    button.addEventListener('click',function(){
+    button.addEventListener('click',function(e){
+        e.preventDefault()
         currentObjectId=this.getAttribute('data-id');
         modal.classList.remove("d-none");
         modal.classList.add("d-block");

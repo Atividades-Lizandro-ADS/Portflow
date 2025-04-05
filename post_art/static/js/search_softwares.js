@@ -2,7 +2,6 @@ const input_programas=document.getElementById('id_programs')
 const programs_api_url=document.querySelector('meta[name="used_programs_api"]').content;
 const used_form=document.getElementById("formulario");
 const programs_preview=document.getElementById("programs_preview");
-programs_preview.classList.add("lt-graybox", "p-2", "pe-3", "rounded", "fs-4", "d-flex", "gap-3", "align-items-start")
 
 
 const programs_dropdown=document.getElementById("programs-dropdown");
@@ -49,13 +48,17 @@ input_programas.addEventListener('input',function(e){
                             clear_dropdown();
                         });
 
+                        
+
                         programs_dropdown.appendChild(item);
                     }
                     
                 });
 
-                // To-do:colocar um feedback de usuario caso dropdownContainer.children.length < 0, pois nenhum item foi retornado
-                // nessa parte, apos o foreach
+
+                if(programs_dropdown.children.length <= 0){
+                    programs_dropdown.innerHTML='nenhum programa encontrado'
+                                }
                 
             },
             error: function (xhr, status, error) {
@@ -96,8 +99,31 @@ function add_program_input(p){
 
     const preview_software=document.createElement('div')
     preview_software.classList.add('lt-graybox', 'p-2', 'pe-3', 'rounded', 'fs-4', 'd-flex', 'gap-3', 'align-items-start')
+
+
+    const rmv_button=document.createElement('p');
+    rmv_button.innerHTML='<i class="bi bi-x-lg"></i>'
+    rmv_button.classList.add( 'fs-5');
+
+
+    rmv_button.addEventListener('click', function (e) {
+        programs_preview.removeChild(preview_software);
+        used_form.removeChild(usedprogram_input);
+
+        const index = already_in_programs.indexOf(p.program_name);
+        if (index > -1) { 
+            already_in_programs.splice(index, 1); 
+        }
+
+    })
+
     preview_software.innerHTML=
     `<img class="software-logo" src="${p.program_logo}" alt="">
      <p>${p.program_name}</p>`
+
+    preview_software.appendChild(rmv_button)
+
     programs_preview.appendChild(preview_software)
+
+    
 }

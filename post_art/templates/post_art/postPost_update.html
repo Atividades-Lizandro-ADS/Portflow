@@ -78,20 +78,16 @@
                 </div>
 
 
-                <div class="image-preview" id="image-preview"></div>
+                <div class="graybox">
+                    <div class="gray-title">preview adição de imagens</div>
+                    <div class=" gray-input image-preview" id="image-preview"></div>
+                </div>
 
                 <div id="form-inputs-container"></div>
 
 
                 <!--fim upload imagem-->
-                <div id="programs_preview">
-                    {%for program in form.instance.used_programs.all%}
-                        <img class="software-logo" src="{{program.program_logo.url}}" alt="">
-                        <p>{{program.program_name}}</p>
-                        <input type="hidden" name="used_programs[]" value="{{program.program_name}}">
-                    {%endfor%}
-
-                </div>
+                
             </div>
 
 
@@ -188,11 +184,13 @@
 
                         <div class="programs-dropdown d-none" id="programs-dropdown"></div>
                     </div>
-                    
-                    
-
                 </div>
-                <!--fim proframas usados-->
+
+                <div  class="graybox">
+                    <div class="gray-title"><p>preview adição de programas</p></div>
+                    <div id="programs_preview" class="gray-input round-5 px-4 py-5 mt-3 inner-grid"></div>
+                </div>
+                <!--fim programas usados-->
 
 
             </div>
@@ -200,21 +198,63 @@
         </div>
     </form>
 
+    <div id="programs_already_in" class="graybox mt-5">
+        <div class="gray-title">programas já adicionados</div>
 
+        <div class="gray-input round-5 px-4 py-5 mt-3 inner-grid">
+            {%for program in form.instance.used_programs.all%}
 
-
-    {%for i in img_forms%}
-        <!-- <img src="{{i.img_form.instance.post_img.url}}" alt=""> -->
-        <form name="form-image-update" action="{%url 'post_image_update' i.img_form.instance.id%}" method="post" enctype="multipart/form-data">
-            {%csrf_token%}
-            {{i.img_form}}
-            <button type="submit">enviar</button>
+            <div class="lt-graybox p-2 pe-3 rounded fs-4 d-flex gap-3 align-items-start">
+                <img class="software-logo" src="{{program.program_logo.url}}" alt="">
+                <p>{{program.program_name}}</p>
+            </div>
             
-            <button class="delete-btn fs-5" data-id="{{ i.img_form.instance.id }}" >excluir</button>
-        </form>
+            <input type="hidden" name="used_programs[]" value="{{program.program_name}}">
+        {%endfor%}
+        </div>
         
+    </div>
+
+
+    <div class="graybox mt-5">
+        <div class="gray-title">imagens já adicionadas</div>
+        <div class="gray-input row gap-3">
+            {%for i in img_forms%}
+                
+                <form class="gr-border-1 p-0 col-3 align-items-center" name="form-image-update" action="{%url 'post_image_update' i.img_form.instance.id%}" method="post" enctype="multipart/form-data">
+                    
+                    {%csrf_token%}
+                    <!-- {{i.img_form}} -->
+
+                    <label class="img-input">
+                        <input class="d-none" type="file" id="id_post_img" name="post_img" accept="image/*" onchange="previewImage(this)">
+                        <img src="{{i.img_form.instance.post_img.url}}" alt="">
+                        <span class="fs-1" ><i class="bi bi-cloud-arrow-down-fill"></i></span>
+                    </label>
+
+
+                    <div class="p-3 d-flex flex-column gap-5">
+                        <div class="d-flex flex-column gap-3 align-items-start">
+                            <label for="">Legenda</label>
+                            {{i.img_form.caption}}
     
-    {%endfor%}
+                            <label for="">Legenda de acessibilidade</label>
+                            {{i.img_form.acessibility_caption}}
+                        </div>
+    
+                        <div class="d-flex flex-column gap-3 align-items-center">
+                            <button class="post-button like-button" type="submit">enviar</button>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <button class="delete-btn-top fs-2" name="delete-btn" data-id="{{ i.img_form.instance.id }}" ><i class="bi bi-trash-fill"></i></button>
+                </form>
+            {%endfor%}
+        </div>
+    </div>
+    
 
     <div id="deleteModal" class="modal d-none">
         <div class="modal-content">
