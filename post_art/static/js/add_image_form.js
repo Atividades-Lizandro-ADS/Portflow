@@ -22,7 +22,7 @@ imageUpload.addEventListener('change', function(e) {
         reader.onload = function(event) {
 
             const imageItem = document.createElement('div');
-            imageItem.className = 'image-item';
+            imageItem.classList.add('image-item','gr-border-1');
             
 
             const img = document.createElement('img');
@@ -44,8 +44,8 @@ imageUpload.addEventListener('change', function(e) {
 
             const removeBtn = document.createElement('button');
             removeBtn.type = 'button';
-            removeBtn.className = 'remove-btn';
-            removeBtn.textContent = 'Remover';
+            removeBtn.className = 'delete-btn-top', 'fs-2';
+            removeBtn.innerHTML = '<i class="bi bi-trash-fill"></i>';
             
 
             const fileInput = document.createElement('input');
@@ -68,9 +68,21 @@ imageUpload.addEventListener('change', function(e) {
                 formInputsContainer.removeChild(fileInput);
             };
             
-            imageItem.appendChild(img);
-            imageItem.appendChild(captionInput);
-            imageItem.appendChild(acessibilityCaptionInput);
+            const inputs_container=document.createElement('div')
+            inputs_container.classList.add('p-3', 'd-flex', 'flex-column', 'gap-3','align-items-start');
+            inputs_container.innerHTML=`
+                <label for="">Legenda</label>
+                <input type="textarea" name="caption[]" maxlength="240" class="text-input" required="" placeholder="legenda">
+                <label for="">Legenda de acessibilidade</label>
+                <input type="textarea" name="acessibility_caption[]" maxlength="120" class="text-input" required="" placeholder="legenda de acessibilidade">
+            `
+
+            const img_container=document.createElement('div');
+            img_container.className='img-input';
+            img_container.appendChild(img);
+            
+            imageItem.appendChild(img_container);
+            imageItem.appendChild(inputs_container)
             imageItem.appendChild(removeBtn);
             
             imagePreview.appendChild(imageItem);

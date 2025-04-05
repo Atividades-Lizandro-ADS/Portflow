@@ -98,7 +98,7 @@ function add_program_input(p){
     used_form.appendChild(usedprogram_input);
 
     const preview_software=document.createElement('div')
-    preview_software.classList.add('lt-graybox', 'p-2', 'pe-3', 'rounded', 'fs-4', 'd-flex', 'gap-3', 'align-items-start')
+    preview_software.classList.add('lt-graybox', 'p-2', 'pe-3', 'rounded', 'fs-4', 'd-flex', 'gap-3', 'align-items-center')
 
 
     const rmv_button=document.createElement('p');

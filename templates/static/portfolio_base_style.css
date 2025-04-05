@@ -163,6 +163,16 @@ button{
 .pos-relative{
     position: relative;
 }
+
+.edit-btn{
+    position: absolute;
+    top: -21rem;
+    right: .5rem;
+    border: none;
+    background-color: rgba(248, 248, 248, .6);
+    border-radius: 1rem;
+    
+}
 .ov-hidden{
     overflow: hidden;
 }

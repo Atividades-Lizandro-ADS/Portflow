@@ -125,7 +125,9 @@ label{
     background-color: #303034;
     color: #e6e6ea;
 }
-
+.lt-graybox p{
+    margin: 0;
+}
 .inner-grid{
     display: flex;
     flex-wrap: wrap;

@@ -101,7 +101,7 @@
                     <h4 class="mt-5">programas usados</h4>
                     <div class="graybox round-5 px-4 py-5 mt-3 inner-grid">
                         {%for c in post.used_programs.all%}
-                            <div class="lt-graybox p-2 pe-3 rounded fs-4 d-flex gap-3 align-items-start">
+                            <div class="lt-graybox p-2 pe-3 rounded fs-4 d-flex gap-3 align-items-center">
                                 <img class="software-logo" src="{{c.program_logo.url}}" alt="">
                                 <p >{{c}}</p>
                             </div>
