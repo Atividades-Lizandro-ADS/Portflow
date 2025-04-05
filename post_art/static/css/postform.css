@@ -146,6 +146,7 @@ label{
     width: 100%;
     color: black;
     padding: .5rem 1.5rem;
+    cursor: pointer;
 }
 
 .img-input{
@@ -167,7 +168,7 @@ label{
 
 .img-input span{
     position: absolute;
-    z-index: 10000;
+    z-index: 1000;
     bottom: 1rem;
     left: 50%;
     transform:translateX(-50%) ;

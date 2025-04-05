@@ -5,6 +5,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <meta name="csrf-token" content="{{ csrf_token }}">
 <meta name="used_programs_api" content="{%url 'used_programs' %}">
+<meta name="remove_used_programs_api" content="{%url 'remove_used_programs' 1 2%}">
 {%endblock%}
 
 {%block content%}
@@ -204,10 +205,12 @@
         <div class="gray-input round-5 px-4 py-5 mt-3 inner-grid">
             {%for program in form.instance.used_programs.all%}
 
-            <div class="lt-graybox p-2 pe-3 rounded fs-4 d-flex gap-3 align-items-start">
+            <div class="lt-graybox p-2 pe-3 rounded fs-4 d-flex gap-3 align-items-center">
                 <img class="software-logo" src="{{program.program_logo.url}}" alt="">
                 <p>{{program.program_name}}</p>
+                <p class="fs-3" name="button-remove-program-already" data-post="{{form.instance.id}}" data-program="{{program.id}}"><i class="bi bi-cloud-arrow-down-fill"></i></p>
             </div>
+            
             
             <input type="hidden" name="used_programs[]" value="{{program.program_name}}">
         {%endfor%}

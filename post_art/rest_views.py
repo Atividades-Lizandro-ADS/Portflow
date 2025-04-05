@@ -43,7 +43,19 @@ class UsedProgramsView(generics.ListAPIView):
         return queryset
 
 
+class RemoveUsedPrograms(generics.GenericAPIView):
+    def get(self,request,*args,**kwargs):
+        post_id=self.kwargs.get('post_pk')
+        program_id=self.kwargs.get('program_pk')
+        post,_=get_object_or_none(PostArt,id=post_id)
+        program,_=get_object_or_none(UsedPrograms,id=program_id)
 
+        if post is None or program is None:
+            return Response(data={'error'},status=status.HTTP_404_NOT_FOUND)
+        
+        post.used_programs.remove(program)
+
+        return Response(data={'sucesso':True,'program':program.program_name,},status=status.HTTP_200_OK)
 class add_comment(generics.CreateAPIView):
     serializer_class=CommentSerializer
     authentication_classes=[authentication.SessionAuthentication]

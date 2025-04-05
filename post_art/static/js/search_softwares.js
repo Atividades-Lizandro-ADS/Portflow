@@ -120,6 +120,7 @@ function add_program_input(p){
     preview_software.innerHTML=
     `<img class="software-logo" src="${p.program_logo}" alt="">
      <p>${p.program_name}</p>`
+     input_programas.value=''
 
     preview_software.appendChild(rmv_button)
 
@@ -127,3 +128,32 @@ function add_program_input(p){
 
     
 }
+
+
+
+const rmv_software_button=document.getElementsByName("button-remove-program-already")
+const remove_used_programs_api=document.querySelector('meta[name="remove_used_programs_api"]').content;
+
+rmv_software_button.forEach(item => {
+    item.addEventListener('click',function(e){
+
+        const id_post=item.getAttribute('data-post');
+        const id_program=item.getAttribute('data-program');
+        $.ajax({
+            url: remove_used_programs_api.replace('/1/',`/${id_post}/`).replace('/2/',`/${id_program}/`),
+            method: 'GET',
+            success: function (data) {
+                item.parentElement.remove()
+                
+                const index = already_in_programs.indexOf(data.program);
+                if (index > -1) { 
+                    already_in_programs.splice(index, 1); 
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Erro ao carregar posts:", error);
+            }
+        });
+
+    });
+});
