@@ -1,3 +1,5 @@
+from django.shortcuts import HttpResponseRedirect
+from django.urls import reverse
 
 def get_object_or_none(classModel,**kwargs):
     '''
@@ -10,3 +12,7 @@ def get_object_or_none(classModel,**kwargs):
     except classModel.DoesNotExist:
         return None,False
     
+def owned_by_request(request,obj_profiele,redirect_name='index'):
+    if request.user.profile==obj_profiele:
+        return True
+    return HttpResponseRedirect(reverse(redirect_name))

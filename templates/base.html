@@ -35,6 +35,13 @@
                 <a href="{%url 'postPost'%}"><i style="font-size: 3rem; color: #505054;" class="bi bi-file-arrow-up-fill"></i></a>
             </div>
 
+            <div class="col">
+                <form action="{%url 'logout'%}" method="post">
+                    {%csrf_token%}
+                    <button type="submit">sair</button>
+                </form>
+            </div>
+
         </div>
     </header>
     {%block content%}{%endblock%}

@@ -39,6 +39,9 @@ class About(models.Model):
     skills=models.ManyToManyField(Skill)
     summary=models.TextField(null=True,blank=True)
 
+    def __str__(self):
+        return self.prof.first_name
+
 
 
 

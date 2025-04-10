@@ -1,10 +1,13 @@
 from django.forms.models import ModelForm
+from django.forms import Form
 from .models import PostArt,Profile,Comments,PostImages,UsedPrograms
-from django.forms import CharField,Textarea,RadioSelect,ModelChoiceField,HiddenInput
+from django.forms import CharField,HiddenInput,BooleanField,PasswordInput
 from django.core.exceptions import ValidationError
 from django.forms import ClearableFileInput
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 
-
+from django.contrib.auth.forms import AuthenticationForm
 
 class PostForm(ModelForm):
 
@@ -85,3 +88,17 @@ class PostImageForm(ModelForm):
         self.fields['acessibility_caption'].widget.attrs.update({'class':'text-input'})
 
 
+class UserForm(UserCreationForm):
+    class Meta:
+        model=User
+        fields=['first_name','email','username','password1','password2']
+        labels={'first_name':'nome','email':'email','username':'nome de Usuario','password1':'Senha','password2':'Confirmar senha'}
+
+    def __init__(self,*args,**kwargs):
+        super(UserForm,self).__init__(*args,**kwargs)
+
+        for name,field in self.fields.items():
+            field.widget.attrs.update({'class':'input input--text'})
+
+class LoginForm(AuthenticationForm):
+    remember_me = BooleanField(required=False , initial=False)

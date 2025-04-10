@@ -1,19 +1,21 @@
 from django.http import JsonResponse
 from django.shortcuts import render,HttpResponse,HttpResponseRedirect
-from .models import PostArt,UsedPrograms,Profile,Like,PostImages
-from .forms import PostForm,CommentForm,PostImageForm
+from .models import PostArt,UsedPrograms,Profile,Like
+from .forms import PostForm,CommentForm,PostImageForm,LoginForm,UserCreationForm
+from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
 from django.db.models import Q
 
 from django.views.generic import ListView,UpdateView,DetailView,FormView
+from django.contrib.auth.views import LogoutView,LoginView
 
 
 from .utility import get_object_or_none 
 
-
-
+from django.contrib.auth import login,authenticate,logout
+from django.contrib.auth.models import User
 
 class Index(ListView):
     model=PostArt
@@ -30,7 +32,7 @@ class Index(ListView):
         return super().get_queryset()
         
 
-
+@method_decorator(login_required,name='dispatch')
 class postPost(FormView):
     form_class=PostForm
     template_name='post_art/postPost.html'
@@ -49,7 +51,8 @@ class postPost(FormView):
 
         post=form.save(files,captions,acessibility_captions,used_programs=programs,owner=self.request.user.profile)   
         return HttpResponseRedirect(reverse('index'))
-
+    
+@method_decorator(login_required,name='dispatch')
 class update_postArt(UpdateView):
     template_name='post_art/postPost_update.html'
     model=PostArt
@@ -132,7 +135,7 @@ class profile_index(DetailView):
             context['drafts']=profile.postart_set.filter(published=False)
         return context
         
-
+@method_decorator(login_required,name='dispatch')
 class add_favorite(UpdateView):
     def get(self, request, *args, **kwargs):
 
@@ -152,6 +155,54 @@ class add_favorite(UpdateView):
         return JsonResponse(response)
 
 
+@method_decorator(login_required,name='dispatch')
+class Logout(LogoutView):
 
+    def post(self, request, *args, **kwargs):
+        logout(request)
 
+        return HttpResponseRedirect(reverse('index'))
+
+class Login(LoginView):
+    form_class=LoginForm
+    template_name='post_art/login.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('index'))
+        return super().dispatch(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        
+        username=form.cleaned_data.get('username')
+        password=form.cleaned_data.get('password')
+        remember_me=form.cleaned_data.get('remember_me')
+
+        user=authenticate(self.request,username=username,password=password)
+        if user is not None:
+            login(self.request, user)
+            if remember_me:
+                self.request.session.set_expiry(2592000)
+            else:
+                self.request.session.set_expiry(0)
+            return HttpResponseRedirect(reverse('profile_index',kwargs={'profile_pk':user.profile.id}))
+        return super().form_invalid(form=form)
+
+class RegisterUser(FormView):
+    form_class=UserCreationForm
+    template_name='post_art/register.html'
+    
+    def get_success_url(self):
+        return reverse('index')
+
+    def dispatch(self, request, *args, **kwargs):
+            if self.request.user.is_authenticated:
+                return HttpResponseRedirect(reverse('index'))
+            return super().dispatch(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        user=form.save()
+        login(self.request,user=user)
+        
+        return super().form_valid(form)
 
