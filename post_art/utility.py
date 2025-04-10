@@ -13,7 +13,9 @@ def get_object_or_none(classModel,**kwargs):
         return None,False
     
 def owned_by_request(request,obj_profile,redirect_name='index'):
-    if request.user.profile==obj_profile:
-        
-        return True
-    return HttpResponseRedirect(reverse(redirect_name))
+    try:
+        if request.user.profile==obj_profile:
+            return True
+        return HttpResponseRedirect(reverse(redirect_name))
+    except:
+        return HttpResponseRedirect(reverse(redirect_name))

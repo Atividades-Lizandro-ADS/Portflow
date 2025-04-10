@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render,HttpResponse,HttpResponseRedirect
 from .models import PostArt,UsedPrograms,Profile,Like
-from .forms import PostForm,CommentForm,PostImageForm,LoginForm,UserCreationForm
+from .forms import PostForm,CommentForm,PostImageForm,LoginForm,UserCreationForm,ProfileForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -146,7 +146,25 @@ class profile_index(DetailView):
             context['is_profile_owner']=True
             context['drafts']=profile.postart_set.filter(published=False)
         return context
-        
+
+class ProfileUpdate(UpdateView):
+    form_class=ProfileForm
+    template_name='post_art/profile_update.html'  
+    pk_url_kwarg='profile_pk'  
+    queryset=Profile.objects.all()
+    success_url='index'
+
+    def dispatch(self, request, *args, **kwargs):
+        obj=self.get_object()
+
+        owned=owned_by_request(request,obj_profile=obj)
+        if owned != True:
+            return owned
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_success_url(self):
+        return reverse(self.success_url)
+    
 @method_decorator(login_required,name='dispatch')
 class add_favorite(UpdateView):
     def get(self, request, *args, **kwargs):

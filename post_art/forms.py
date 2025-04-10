@@ -102,3 +102,16 @@ class UserForm(UserCreationForm):
 
 class LoginForm(AuthenticationForm):
     remember_me = BooleanField(required=False , initial=False)
+
+class ProfileForm(ModelForm):
+    class Meta:
+        model=Profile
+        fields=['user_picture','profile_banner']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['user_picture'].widget.attrs.update({'class':'text-input'})
+        self.fields['profile_banner'].widget.attrs.update({'class':'text-input'})
+        
+        

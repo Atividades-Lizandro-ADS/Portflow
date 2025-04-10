@@ -1,0 +1,14 @@
+{%extends 'base.html'%}
+{%load static%}
+{%block head%}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{%endblock%}
+
+{%block content%}
+<form action="" method="post" enctype="multipart/form-data">
+    {%csrf_token%}
+    {{form}}
+    <button type="submit">salvar</button>
+</form>
+    
+{%endblock%}
