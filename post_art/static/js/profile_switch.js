@@ -1,10 +1,13 @@
 const port=document.getElementById("port");
 const sobre=document.getElementById("sobre");
 const likes=document.getElementById("likes");
+const fav=document.getElementById("favoritos");
+
 
 const portfolio_container=document.getElementById("portfolio-container")
 const sobre_container=document.getElementById("sobre-container")
 const like_container=document.getElementById("like-container")
+const fav_container=document.getElementById("fav-container")
 
 let no_container_ativo=portfolio_container
 let no_switch_ativo=port
@@ -32,7 +35,13 @@ likes.addEventListener("click",function(e){
     
 
 })
+fav.addEventListener("click",function(e){
+    e.preventDefault()
 
+    pageSwitch(fav_container,fav)
+    
+
+})
 
 function pageSwitch(no_container,no_switch){
     if(no_container==no_container_ativo) return;

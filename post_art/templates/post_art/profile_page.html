@@ -22,6 +22,12 @@
             <p class="fs-2">Likes</p>
         </div>
 
+        {%if is_profile_owner%}
+        <div class="prof-selector" id="favoritos">
+            <p class="fs-2">Favoritos</p>
+        </div>
+        {%endif%}
+
     </div>
 
 
@@ -39,8 +45,9 @@
                     <img class="card-img" src="{{post.post_thumb.url}}" alt="Card image" style="object-fit: cover; width: 100%; height: 100%;">
                     <div class="card-tx">
                         <h3>{{post.tittle}}</h3>
-                        <button class="edit-btn fs-4" onclick="event.preventDefault();event.stopPropagation();window.location.href='{% url 'post_update' post.id %}'" >editar</button>
-                        
+                        {%if is_profile_owner%}
+                            <button class="edit-btn fs-4" onclick="event.preventDefault();event.stopPropagation();window.location.href='{% url 'post_update' post.id %}'" >editar</button>
+                        {%endif%}
                     </div>
                 </a>
                   
@@ -77,12 +84,12 @@
     <div id="sobre-container" class="row justify-content-center d-none">
         <div class="col-8 gap-5">
             <h2 class="fs-1 fw-bold">Resumo</h2>
-            <div class="graybox round-5 px-4 py-5 mt-3">
+            <div class="graybox round-5 px-4 py-5 mt-3 mb-5">
                 <p class="fs-4">{{profile.about.summary}}</p>
             </div>
 
-            <h2 class="fs-1 fw-bold mt-5">Contratação</h2>
-            <div class="graybox round-5 px-4 py-5 mt-3 inner-grid ">
+            <h2 class="fs-1 fw-bold ">Contratação</h2>
+            <div class="graybox round-5 px-4 py-5 mt-3 mb-5 inner-grid ">
                 
                 {%for hire in profile.about.hiring.all%}
                 
@@ -97,7 +104,7 @@
             </div>
 
             <h2 class="fs-1 fw-bold">Habilidades</h2>
-            <div class="graybox round-5 px-4 py-5 mt-3 inner-grid ">
+            <div class="graybox round-5 px-4 py-5 mt-3 mb-5 inner-grid ">
                 
                 {%for skill in profile.about.skills.all%}
                 
@@ -113,7 +120,7 @@
 
 
             <h2 class="fs-1 fw-bold">Experiência com Programas</h2>
-            <div class="graybox round-5 px-4 py-5 mt-3 inner-grid ">
+            <div class="graybox round-5 px-4 py-5 my-3 inner-grid ">
                 
                 {%for prog in profile.about.programs_known.all%}
                 
@@ -156,6 +163,29 @@
         </div>
 
     </div>
+
+    {%if is_profile_owner%}
+        <div class="portfolio-container d-none" id="fav-container">
+
+            <div class="col">
+                <h1 class="d-inline fw-bold">Favoritos</h1>
+                <p class="d-inline fs-4">&nbsp;&nbsp; {{profile.saved_posts.all|length}} Favoritos</p>
+            </div>
+
+            <div class="row gap-2 justify-content-start" id="posts-container" data-api-url="{%url 'post_refresh'%}">
+                {%for fav in profile.saved_posts.all%}
+                    <a href="{%url 'post_details' fav.id%}" class="card pos-relative ov-hidden bg-dark text-white"  style="width: 28rem; height: 28rem; padding: 0;">
+                        <img class="card-img" src="{{fav.post_thumb.url}}" alt="Card image" style="object-fit: cover; width: 100%; height: 100%;">
+                        <div class="card-tx">
+                          <h3>{{fav.tittle}}</h3>
+                        </div>
+                    </a>
+                      
+                {%endfor%}
+            </div>
+
+        </div>
+    {%endif%}
 </main>
 
 

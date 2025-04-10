@@ -12,7 +12,7 @@ from django.views.generic import ListView,UpdateView,DetailView,FormView
 from django.contrib.auth.views import LogoutView,LoginView
 
 
-from .utility import get_object_or_none 
+from .utility import get_object_or_none,owned_by_request
 
 from django.contrib.auth import login,authenticate,logout
 from django.contrib.auth.models import User
@@ -59,6 +59,17 @@ class update_postArt(UpdateView):
     form_class=PostForm
     pk_url_kwarg='post_pk'
 
+    def dispatch(self, request, *args, **kwargs):
+        
+
+
+        context=self.get_object()
+        owned=owned_by_request(request=self.request,obj_profile=context.post_owner)
+        if owned != True:
+            return owned
+        return super().dispatch(request, *args, **kwargs)
+        
+        
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
         images=context.get('object').postimages_set.all()
@@ -86,6 +97,7 @@ class update_postArt(UpdateView):
     def get_success_url(self):
         url=reverse('post_details',kwargs={'post_pk':self.kwargs.get('post_pk')})
         return url
+    
 
 class post_details(DetailView):
     template_name='post_art/post_details.html'
