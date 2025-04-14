@@ -1,9 +1,7 @@
 from django.forms.models import ModelForm
-from django.forms import Form
-from .models import PostArt,Profile,Comments,PostImages,UsedPrograms
-from django.forms import CharField,HiddenInput,BooleanField,PasswordInput
+from .models import PostArt,Profile,Comments,PostImages,UsedPrograms,About,Hiring,Skill
+from django.forms import CharField,HiddenInput,BooleanField,ModelMultipleChoiceField,CheckboxSelectMultiple
 from django.core.exceptions import ValidationError
-from django.forms import ClearableFileInput
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -94,14 +92,21 @@ class UserForm(UserCreationForm):
         fields=['first_name','email','username','password1','password2']
         labels={'first_name':'nome','email':'email','username':'nome de Usuario','password1':'Senha','password2':'Confirmar senha'}
 
-    def __init__(self,*args,**kwargs):
-        super(UserForm,self).__init__(*args,**kwargs)
-
-        for name,field in self.fields.items():
-            field.widget.attrs.update({'class':'input input--text'})
+    def __init__(self, request = ..., *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password1'].label="Senha da sua conta"
+        for field_name,field in self.fields.items():
+            field.widget.attrs.update({'class':'text-input'})
 
 class LoginForm(AuthenticationForm):
     remember_me = BooleanField(required=False , initial=False)
+
+    def __init__(self, request = ..., *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name,field in self.fields.items():
+            field.widget.attrs.update({'class':'text-input'})
+
+
 
 class ProfileForm(ModelForm):
     class Meta:
@@ -114,4 +119,28 @@ class ProfileForm(ModelForm):
         self.fields['user_picture'].widget.attrs.update({'class':'text-input'})
         self.fields['profile_banner'].widget.attrs.update({'class':'text-input'})
         
-        
+class AboutForm(ModelForm):
+    programs=CharField(required=False)
+    hiring=ModelMultipleChoiceField(
+            queryset=Hiring.objects.all(),
+            widget=CheckboxSelectMultiple
+            )
+    skills=ModelMultipleChoiceField(
+            queryset=Skill.objects.all(),
+            widget=CheckboxSelectMultiple
+            )
+    class Meta:
+        model=About
+        exclude=['prof','programs_known']
+
+    def save(self,used_programs, commit = True):
+            about= self.instance
+
+            if commit:
+                about.save()
+
+                programas=[programa.title() for programa in used_programs]
+                usep=UsedPrograms.objects.filter(program_name__in=programas)
+
+                about.programs_known.add(*usep)
+            return about

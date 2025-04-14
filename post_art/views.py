@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render,HttpResponse,HttpResponseRedirect
-from .models import PostArt,UsedPrograms,Profile,Like
-from .forms import PostForm,CommentForm,PostImageForm,LoginForm,UserCreationForm,ProfileForm
+from .models import PostArt,UsedPrograms,Profile,Like,About
+from .forms import PostForm,CommentForm,PostImageForm,LoginForm,UserForm,ProfileForm,AboutForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -165,6 +165,21 @@ class ProfileUpdate(UpdateView):
     def get_success_url(self):
         return reverse(self.success_url)
     
+    def get_context_data(self, **kwargs):
+        context= super().get_context_data(**kwargs)
+        context['form_about']=AboutForm(instance=context.get('profile').about)
+        return context
+
+def about_update(request,about_pk):
+    if request.method=='POST':
+        instance,_=get_object_or_none(About,id=about_pk)
+        form=AboutForm(request.POST,instance=instance) 
+        programs=request.POST.getlist('used_programs[]')
+
+        if form.is_valid():
+            form.save(used_programs=programs)
+            return JsonResponse({'success':True})
+            
 @method_decorator(login_required,name='dispatch')
 class add_favorite(UpdateView):
     def get(self, request, *args, **kwargs):
@@ -219,7 +234,7 @@ class Login(LoginView):
         return super().form_invalid(form=form)
 
 class RegisterUser(FormView):
-    form_class=UserCreationForm
+    form_class=UserForm
     template_name='post_art/register.html'
     
     def get_success_url(self):
