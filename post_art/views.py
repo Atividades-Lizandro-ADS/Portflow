@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.shortcuts import render,HttpResponse,HttpResponseRedirect
+from django.shortcuts import HttpResponseRedirect
 from .models import PostArt,UsedPrograms,Profile,Like,About
 from .forms import PostForm,CommentForm,PostImageForm,LoginForm,UserForm,ProfileForm,AboutForm
 from django.utils.decorators import method_decorator

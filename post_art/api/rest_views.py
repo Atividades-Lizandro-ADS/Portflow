@@ -1,25 +1,15 @@
 from rest_framework import generics,permissions,authentication,exceptions
-from rest_framework import viewsets
-
-from .serializers import PostArtSerializers,PostArtSerializerRefresh,CommentSerializer,LikeSerializer,PostImageSerializer,UsedProgramsSerializer
-from rest_framework.pagination import PageNumberPagination
-from .models import PostArt,UsedPrograms,Profile,Comments,Like,PostImages,About
-from .utility import get_object_or_none
+from .custom_paginators import PaginationCustom
+from ..serializers import PostArtSerializers,PostArtSerializerRefresh,CommentSerializer,LikeSerializer,PostImageSerializer,UsedProgramsSerializer
+from ..models import PostArt,UsedPrograms,Profile,Comments,Like,PostImages,About
+from ..utility import get_object_or_none
 from rest_framework import status
 from rest_framework.response import Response
-
-
-
-"""API v1"""
 
 
 class PostsArtView(generics.ListCreateAPIView):
     queryset=posts=PostArt.objects.all()
     serializer_class=PostArtSerializers
-
-
-class PaginationCustom(PageNumberPagination):
-    page_size=12
 
 class PostsArtViewRefresh(generics.ListCreateAPIView):
     queryset=posts=PostArt.objects.all()
@@ -156,10 +146,3 @@ class add_like(generics.CreateAPIView):
             'success':True,
             'likes':like.like_post.like_num
         },status=status.HTTP_200_OK)
-
-
-"""API v2"""
-
-class PostArtViewset(viewsets.ModelViewSet):
-    queryset=PostArt.objects.all()
-    serializer_class=PostArtSerializers

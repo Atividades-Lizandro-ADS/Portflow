@@ -1,13 +1,9 @@
 from django.urls import path
-from .rest_views import (PostArtView,PostsArtView,PostArtViewset,PostsArtViewRefresh,
+from .rest_views import (PostArtView,PostsArtView,PostsArtViewRefresh,
                          add_comment,add_like,delete_comment,delete_post_image,
                          update_postArt_Image,UsedProgramsView,RemoveUsedPrograms,
                          RemoveUsedProgramsAbout)
 
-from rest_framework.routers import SimpleRouter
-router=SimpleRouter()
-
-router.register('postart',PostArtViewset)
 
 urlpatterns = [
     path('used_programs/',UsedProgramsView.as_view(),name='used_programs'),
