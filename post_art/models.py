@@ -139,7 +139,7 @@ class Comments(models.Model):
 
 
     class Meta:
-        ordering=['created','-id']
+        ordering=['-created','-id']
     def __str__(self):
         return self.comment_text 
     
