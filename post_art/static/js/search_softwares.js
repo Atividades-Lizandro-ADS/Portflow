@@ -1,9 +1,7 @@
 const input_programas=document.getElementById('id_programs')
 const programs_api_url=document.querySelector('meta[name="used_programs_api"]').content;
-const used_form=document.getElementById("formulario");
 const programs_preview=document.getElementById("programs_preview");
-
-
+const used_form=document.getElementById("formulario");
 const programs_dropdown=document.getElementById("programs-dropdown");
 
 
@@ -102,7 +100,7 @@ function add_program_input(p){
 
 
     const rmv_button=document.createElement('p');
-    rmv_button.innerHTML='<i class="bi bi-x-lg"></i>'
+    rmv_button.innerHTML='<i class="bi bi-trash-fill"></i>'
     rmv_button.classList.add( 'fs-5');
 
 
@@ -137,10 +135,10 @@ const remove_used_programs_api=document.querySelector('meta[name="remove_used_pr
 rmv_software_button.forEach(item => {
     item.addEventListener('click',function(e){
 
-        const id_post=item.getAttribute('data-post');
+        const id_obj_remove=item.getAttribute('data-post');
         const id_program=item.getAttribute('data-program');
         $.ajax({
-            url: remove_used_programs_api.replace('/1/',`/${id_post}/`).replace('/2/',`/${id_program}/`),
+            url: remove_used_programs_api.replace('/1/',`/${id_obj_remove}/`).replace('/2/',`/${id_program}/`),
             method: 'GET',
             success: function (data) {
                 item.parentElement.remove()

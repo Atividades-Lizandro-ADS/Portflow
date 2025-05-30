@@ -1,0 +1,41 @@
+body{
+    overflow: hidden;
+}
+.form-bd-wh{
+    border: solid 1px #808080;
+    border-radius: 2rem;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    background-color: #18181c;
+    height: 80vh;
+    width: 60vw;
+    
+}
+
+.form-bd-wh form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-bd-wh img{
+    height: 40vh;
+}
+
+.form-bd-wh a{
+    margin: 0px;
+    color: rgb(36, 186, 255);
+    text-decoration: underline;
+}
+
+.form-bd-wh p{
+    margin: 0px;
+    color: rgba(255, 255, 255, .65);
+}
+.form-bd-wh button{
+    width: 100%;
+}
+
+.side-border{
+    border-left: solid 1px #808080;
+}

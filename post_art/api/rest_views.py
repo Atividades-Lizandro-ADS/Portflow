@@ -1,25 +1,15 @@
 from rest_framework import generics,permissions,authentication,exceptions
-from rest_framework import viewsets
-
-from .serializers import PostArtSerializers,PostArtSerializerRefresh,CommentSerializer,LikeSerializer,PostImageSerializer,UsedProgramsSerializer
-from rest_framework.pagination import PageNumberPagination
-from .models import PostArt,UsedPrograms,Profile,Comments,Like,PostImages
-from .utility import get_object_or_none
+from .custom_paginators import PaginationCustom
+from ..serializers import PostArtSerializers,PostArtSerializerRefresh,CommentSerializer,LikeSerializer,PostImageSerializer,UsedProgramsSerializer
+from ..models import PostArt,UsedPrograms,Profile,Comments,Like,PostImages,About
+from ..utility import get_object_or_none
 from rest_framework import status
 from rest_framework.response import Response
-
-
-
-"""API v1"""
 
 
 class PostsArtView(generics.ListCreateAPIView):
     queryset=posts=PostArt.objects.all()
     serializer_class=PostArtSerializers
-
-
-class PaginationCustom(PageNumberPagination):
-    page_size=12
 
 class PostsArtViewRefresh(generics.ListCreateAPIView):
     queryset=posts=PostArt.objects.all()
@@ -56,6 +46,21 @@ class RemoveUsedPrograms(generics.GenericAPIView):
         post.used_programs.remove(program)
 
         return Response(data={'sucesso':True,'program':program.program_name,},status=status.HTTP_200_OK)
+    
+class RemoveUsedProgramsAbout(generics.GenericAPIView):
+    def get(self,request,*args,**kwargs):
+        post_id=self.kwargs.get('post_pk')
+        program_id=self.kwargs.get('program_pk')
+        about,_=get_object_or_none(About,id=post_id)
+        program,_=get_object_or_none(UsedPrograms,id=program_id)
+
+        if about is None or program is None:
+            return Response(data={'error'},status=status.HTTP_404_NOT_FOUND)
+        
+        about.programs_known.remove(program)
+
+        return Response(data={'sucesso':True,'program':program.program_name,},status=status.HTTP_200_OK)
+    
 class add_comment(generics.CreateAPIView):
     serializer_class=CommentSerializer
     authentication_classes=[authentication.SessionAuthentication]
@@ -141,10 +146,3 @@ class add_like(generics.CreateAPIView):
             'success':True,
             'likes':like.like_post.like_num
         },status=status.HTTP_200_OK)
-
-
-"""API v2"""
-
-class PostArtViewset(viewsets.ModelViewSet):
-    queryset=PostArt.objects.all()
-    serializer_class=PostArtSerializers

@@ -172,3 +172,5 @@ REST_FRAMEWORK ={
         'user':'10/minute',
     }
 }
+
+LOGIN_URL = '/authentication/login'

@@ -39,6 +39,9 @@ class About(models.Model):
     skills=models.ManyToManyField(Skill)
     summary=models.TextField(null=True,blank=True)
 
+    def __str__(self):
+        return self.prof.first_name
+
 
 
 
@@ -136,7 +139,7 @@ class Comments(models.Model):
 
 
     class Meta:
-        ordering=['created','-id']
+        ordering=['-created','-id']
     def __str__(self):
         return self.comment_text 
     

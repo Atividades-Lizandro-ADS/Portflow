@@ -255,3 +255,55 @@ button{
     border: none;
     cursor: pointer;
 }
+
+.dropdown-menu{
+    border-radius: 1rem;
+    box-shadow: rgba(0, 0, 0, 0.65) 0px 5px 15px;
+    background-color: #18181c;
+    color: #fff;
+    overflow: hidden;
+}
+
+.dropdown-menu li{
+    
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+.dropdown-menu li a{
+    
+    color: #fff;
+}
+
+.dropdown-menu li button{
+    background: transparent;
+    color: #fff;
+    margin: 0px;
+    padding: 0;
+}
+
+.dropdown-menu li form{
+    padding: 0rem 1rem;
+}
+
+.toggle-dropdown-nav{
+    display: flex;
+    justify-content: end;
+    align-items: end;
+    position: relative;
+    overflow: hidden;
+    width: 5rem;
+    height: 5rem;
+    cursor: pointer;
+    border-radius: 50%;
+    border: solid 1px rgba(255, 255, 255, 0.35);
+}
+
+.toggle-dropdown-nav img{
+    object-fit: cover;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    
+
+}

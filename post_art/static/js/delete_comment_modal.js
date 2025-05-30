@@ -8,13 +8,7 @@ let current_btn = null;
 let csrf_token=document.querySelector('meta[name="csrf-token"]').content;
 
 deleteButtons.forEach(button=>{
-    button.addEventListener('click',function(){
-        currentObjectId=this.getAttribute('data-id');
-        modal.classList.remove("d-none");
-        modal.classList.add("d-block");
-        current_btn=this;
-
-    })
+    buttonDeleteAddEvent(button);
 })
 
 
@@ -45,4 +39,13 @@ function close_form(){
     modal.classList.remove("d-block");
     currentObjectId=null;
     current_btn=null;
+}
+
+function buttonDeleteAddEvent(button){
+    button.addEventListener('click',function(){
+        currentObjectId=this.getAttribute('data-id');
+        modal.classList.remove("d-none");
+        modal.classList.add("d-block");
+        current_btn=this;
+    })
 }

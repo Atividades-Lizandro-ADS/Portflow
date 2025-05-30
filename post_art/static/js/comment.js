@@ -12,9 +12,6 @@ comment_form.removeAttr('data-comment-api-url')
 let token=comment_form.attr('data-token')
 comment_form.removeAttr('data-token')
 
-
-
-
 comment_form.on('submit',function(event){
     event.preventDefault()
 
@@ -39,15 +36,20 @@ comment_form.on('submit',function(event){
                         <div>
                             <a href="/profile/${data.owner.user_id}">${data.owner.username}</a>
                             <p>${data.comment_text}</p>
+
+                            <div class="d-flex gap-3 justify-content-between">
+                                <span class="fs-5 ">agora</span>
+                                <button class="delete-btn fs-5" data-id="${data.id}" >excluir</button>
+                                
+                            </div>
                         </div>
 
-                        <div class="d-flex gap-3 justify-content-between">
-                                <span class="fs-5 ">agora</span>
-                                
-                        </div>
+                        
             `;
             comment.className="comment"
             comment_div.insertBefore(comment,comment_div.firstChild);
+            const deleteButton = comment.querySelector('.delete-btn');
+            buttonDeleteAddEvent(deleteButton);
         },
         error: function(error){
             console.log('Erro', error)

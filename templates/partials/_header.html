@@ -1,0 +1,46 @@
+{%load static%}
+<header  class="d-flex flex-row w-100">
+    <div  class="d-flex row p-5 align-items-center w-100">
+        <div class="col">
+
+            <a class="navbar-brand"  href="{%url 'index'%}"><img width="50" src="{%static 'system/icon_davi.png'%}" alt=""></a>
+
+        </div>
+
+        <div class="col-6 mx-5">
+            <form action="" class="search-input px-5 d-flex align-items-center " method="get">
+                <i class="bi bi-search"></i>
+                <input type="text" class="text-input mx-2" name="search" id="search" placeholder="search">
+            </form>
+        </div>
+
+        <div class="col">
+            <a class="d-flex justify-content-center" href="{%url 'postPost'%}"><i style="font-size: 3rem; color: #505054;" class="bi bi-file-arrow-up-fill"></i></a>
+        </div>
+
+        <div class="col  d-flex align-items-center justify-content-center">
+            {%if request.user.is_authenticated%}
+            <div class="dropdown">
+                <div class="toggle-dropdown-nav" data-bs-toggle="dropdown" aria-expanded="false">
+                    {%if request.user.profile.user_picture%}
+                    <img src="{{request.user.profile.user_picture.url}}" alt="">
+                    {%endif%}
+                </div>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{% url 'profile_index' request.user.profile.id%}">Perfil</a></li>
+                  <li>
+                        <form class="dropdown-item" action="{%url 'logout'%}" method="post">
+                            {%csrf_token%}
+                            <button type="submit">sair</button>
+                        </form>
+                    </li>
+                </ul>
+              </div>
+              {%else%}
+              <a href="{%url 'login'%}">login</a>
+              {%endif%}
+            
+        </div>
+
+    </div>
+</header>

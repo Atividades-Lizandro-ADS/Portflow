@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{%static 'portfolio_base_style.css'%}">
     <link rel="stylesheet" href="{%static 'css/postform.css' %}">
+    <link rel="stylesheet" href="{%static 'css/auth.css' %}">
     <link rel="icon" type="image/x-icon" href="{%static 'system/icon_davi.png'%}">
 
     {%block head%}
@@ -18,13 +19,22 @@
     <title>{%block title%}Portflow{%endblock%}</title>
 </head>
 <body>
-    {%include 'partials/_header.html' %}
 
-    {%block content%}{%endblock%}
+    
 
-
-
-    {%block scripts%}{%endblock%}
+    <div class="container p-5 d-flex align-items-center justify-content-center my-5">
+        <div class="row form-bd-wh p-5">
+            <div class="col-6 d-flex flex-column justify-content-center align-items-center p-5">
+                <h1>Portflow</h1>
+                <div class="">
+                    <img src="{%static 'system/icon_davi.png'%}" alt="">
+                </div>
+            </div>
+            <div class="col-6 d-flex justify-content-center align-items-center p-5 side-border">
+                {%block content%}{%endblock%}
+            </div>
+        </div>
+    </div>
 
 
     

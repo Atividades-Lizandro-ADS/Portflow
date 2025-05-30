@@ -19,11 +19,9 @@ from django.urls import path,include
 from django.conf.urls.static import static
 from django.conf import settings
 
-from post_art.api_urls import router
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('post_art.urls')),
-    path('api/v1/',include('post_art.api_urls')),
-    path('v2/',include(router.urls)),
+    path('api/v1/',include('post_art.api.api_urls')),
     path('api_auth/',include('rest_framework.urls')),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,27 @@
+{%extends 'auth_base.html'%}
+{%block content%}
+    <form class="" action="" method="post">
+        {%csrf_token%}
+        <div class="my-2">
+           <h2>Bem-Vindo Novamente!</h2>
+        </div>
+        
+        <div class="my-2">
+            <label for="id_username">{{form.username.label}}</label>
+            {{form.username}}
+        </div>
+        
+        <div class="my-2">
+            <label for="id_password">{{form.password.label}}</label>
+            {{form.password}}
+        </div>
+
+        <div class="my-2 d-flex flex-column align-items-center justify-content-center gap-1 fs-4">
+            <button class="post-button like-button mb-1 fs-2" type="submit">login</button>
+            <p>Não tem uma conta?</p>
+            <a href="{%url 'register'%}">Cadastre-se!</a>
+        </div>
+        
+        
+    </form>
+{%endblock%}
