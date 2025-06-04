@@ -61,7 +61,15 @@ class PostImageSerializer(serializers.ModelSerializer):
                'caption',
                'image_post_owner'
                )
-        
+        extra_kwargs = {
+            'post_img': {'required': False},
+            'image_post_owner': {'read_only': True}
+        }
+
+    def update(self, instance, validated_data):
+        if 'post_img' not in validated_data:
+            validated_data['post_img'] = instance.post_img
+        return super().update(instance, validated_data)
 
 
 class UsedProgramsSerializer(serializers.ModelSerializer):

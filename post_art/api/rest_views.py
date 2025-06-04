@@ -6,11 +6,11 @@ from ..utility import get_object_or_none
 from rest_framework import status
 from rest_framework.response import Response
 
-class PostsArtView(generics.ListCreateAPIView):
+class PostsArtView(generics.ListAPIView):
     queryset=posts=PostArt.objects.all()
     serializer_class=PostArtSerializers
 
-class PostsArtViewRefresh(generics.ListCreateAPIView):
+class PostsArtViewRefresh(generics.ListAPIView):
     queryset=posts=PostArt.objects.all()
     serializer_class=PostArtSerializerRefresh
     pagination_class=PaginationCustom
@@ -91,30 +91,16 @@ class delete_comment(generics.DestroyAPIView):
         comment=Comments.objects.filter(comment_owner=self.request.user.profile)
         return comment
     
-class update_postArt_Image(generics.UpdateAPIView):
-    serializer_class=PostImageSerializer
-    authentication_classes=[authentication.SessionAuthentication]
-    permission_classes=[permissions.IsAuthenticated]
+class ImagePostArtAPIView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class=serializer_class=PostImageSerializer
     lookup_field='id'
     lookup_url_kwarg='post_img_pk'
     queryset=PostImages.objects.all()
 
     def get_object(self):
-        obj= super().get_object()
-        if obj.image_post_owner.post_owner != self.request.user.profile:
-            raise exceptions.PermissionDenied("você não pode editar essa imagem")
-        return obj
-
-    
-class delete_post_image(generics.DestroyAPIView):
-    serializer_class=PostImageSerializer
-    authentication_classes=[authentication.SessionAuthentication]
-    permission_classes=[permissions.IsAuthenticated]
-    lookup_field='id'
-    lookup_url_kwarg='post_image_pk'
-
-    def get_queryset(self):
-        image=PostImages.objects.filter(image_post_owner__post_owner=self.request.user.profile)
+        image= super().get_object()
+        if image.image_post_owner.post_owner!=self.request.user.profile:
+            raise exceptions.PermissionDenied("você não pode manipular essa imagem")
         return image
 
 class AddLike(viewsets.ModelViewSet):
@@ -125,19 +111,24 @@ class AddLike(viewsets.ModelViewSet):
 
     def get_object(self):
         profile=self.request.user.profile
-        liked_post_id=int(self.request.data.get('like_post'))
-        like_instance=Like.objects.get(like_owner=profile,like_post=liked_post_id)
+        self.liked_post_id=int(self.request.data.get('like_post'))
+        liked_post=PostArt.objects.get(id=self.liked_post_id)
+        like_instance=Like.objects.get(like_owner=profile,like_post=liked_post)
         return like_instance
     
     def perform_create(self, serializer):
         try:
             like=self.get_object()
             like.like_invert()
+            self._response_data=like.like_post.like_num
         except:
             profile=self.request.user.profile
-            like=serializer.save(like_owner=profile)
+            
+            liked_post=PostArt.objects.get(id=self.liked_post_id)
+            like=serializer.save(like_owner=profile,like_post=liked_post,like=True)
+            self._response_data=liked_post.like_num
     
-        self._response_data=like.like_post.like_num
+        
 
     def create(self, request, *args, **kwargs):
         super().create(request, *args, **kwargs)
