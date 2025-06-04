@@ -1,14 +1,11 @@
-from rest_framework import generics,permissions,authentication,exceptions,viewsets
+from rest_framework import generics,exceptions,viewsets
 from .custom_paginators import PaginationCustom
 from ..serializers import PostArtSerializers,PostArtSerializerRefresh,CommentSerializer,LikeSerializer,PostImageSerializer,UsedProgramsSerializer
-from ..models import PostArt,UsedPrograms,Profile,Comments,Like,PostImages,About
+from ..models import PostArt,UsedPrograms,Comments,Like,PostImages,About
 from ..utility import get_object_or_none
 from rest_framework import status
 from rest_framework.response import Response
 
-class PostsArtView(generics.ListAPIView):
-    queryset=posts=PostArt.objects.all()
-    serializer_class=PostArtSerializers
 
 class PostsArtViewRefresh(generics.ListAPIView):
     queryset=posts=PostArt.objects.all()
@@ -59,11 +56,10 @@ class RemoveUsedProgramsAbout(generics.GenericAPIView):
         about.programs_known.remove(program)
 
         return Response(data={'sucesso':True,'program':program.program_name,},status=status.HTTP_200_OK)
-    
+
+     
 class add_comment(generics.CreateAPIView):
     serializer_class=CommentSerializer
-    authentication_classes=[authentication.SessionAuthentication]
-    permission_classes=[permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(comment_owner=self.request.user.profile)
@@ -80,8 +76,6 @@ class add_comment(generics.CreateAPIView):
     
 class delete_comment(generics.DestroyAPIView):
     serializer_class=CommentSerializer
-    authentication_classes=[authentication.SessionAuthentication]
-    permission_classes=[permissions.IsAuthenticated]
     lookup_field='id'
     lookup_url_kwarg='comment_pk'
 
@@ -105,8 +99,6 @@ class ImagePostArtAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 class AddLike(viewsets.ModelViewSet):
     serializer_class=LikeSerializer
-    authentication_classes=[authentication.SessionAuthentication]
-    permission_classes=[permissions.IsAuthenticated]
     queryset=Like.objects.all()
 
     def get_object(self):
