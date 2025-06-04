@@ -1,11 +1,10 @@
-from rest_framework import generics,permissions,authentication,exceptions
+from rest_framework import generics,permissions,authentication,exceptions,viewsets
 from .custom_paginators import PaginationCustom
 from ..serializers import PostArtSerializers,PostArtSerializerRefresh,CommentSerializer,LikeSerializer,PostImageSerializer,UsedProgramsSerializer
 from ..models import PostArt,UsedPrograms,Profile,Comments,Like,PostImages,About
 from ..utility import get_object_or_none
 from rest_framework import status
 from rest_framework.response import Response
-
 
 class PostsArtView(generics.ListCreateAPIView):
     queryset=posts=PostArt.objects.all()
@@ -114,35 +113,33 @@ class delete_post_image(generics.DestroyAPIView):
     lookup_field='id'
     lookup_url_kwarg='post_image_pk'
 
-
-
     def get_queryset(self):
         image=PostImages.objects.filter(image_post_owner__post_owner=self.request.user.profile)
         return image
 
-class add_like(generics.CreateAPIView):
+class AddLike(viewsets.ModelViewSet):
     serializer_class=LikeSerializer
     authentication_classes=[authentication.SessionAuthentication]
     permission_classes=[permissions.IsAuthenticated]
+    queryset=Like.objects.all()
 
-    def perform_create(self, serializer):
-        self.instance=serializer.save(like_owner=self.request.user.profile,like=True)
+    def get_object(self):
+        profile=self.request.user.profile
+        liked_post_id=int(self.request.data.get('like_post'))
+        like_instance=Like.objects.get(like_owner=profile,like_post=liked_post_id)
+        return like_instance
     
+    def perform_create(self, serializer):
+        try:
+            like=self.get_object()
+            like.like_invert()
+        except:
+            profile=self.request.user.profile
+            like=serializer.save(like_owner=profile)
+    
+        self._response_data=like.like_post.like_num
+
     def create(self, request, *args, **kwargs):
-        like_owner=int(request.data.get('like_owner'))
-        like_post=int(request.data.get('like_post'))
-        like,_=get_object_or_none(Like,like_owner__id=like_owner,like_post__id=like_post)
+        super().create(request, *args, **kwargs)
+        return Response({'likes':self._response_data})
 
-        if like is None:
-            response= super().create(request, *args, **kwargs)
-            response.data['likes']=self.instance.like_post.like_num
-            return response
-            
-        
-        like.like= not like.like
-        like.save()
-
-        return Response(data={
-            'success':True,
-            'likes':like.like_post.like_num
-        },status=status.HTTP_200_OK)

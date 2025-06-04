@@ -121,7 +121,7 @@ class post_details(DetailView):
         if self.request.user.is_authenticated:
             profile= self.request.user.profile
             favorited=profile.saved_posts.contains(post)
-            _,liked=get_object_or_none(Like,like_owner=profile,like_post=post)
+            _,liked=get_object_or_none(Like,like_owner=profile,like_post=post,like=True)
         
         context['form']=form
         context['favorited']=favorited

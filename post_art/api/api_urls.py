@@ -1,8 +1,8 @@
 from django.urls import path
 from .rest_views import (PostArtView,PostsArtView,PostsArtViewRefresh,
-                         add_comment,add_like,delete_comment,delete_post_image,
+                         add_comment,delete_comment,delete_post_image,
                          update_postArt_Image,UsedProgramsView,RemoveUsedPrograms,
-                         RemoveUsedProgramsAbout)
+                         RemoveUsedProgramsAbout,AddLike)
 
 
 urlpatterns = [
@@ -16,6 +16,6 @@ urlpatterns = [
     path('posts/comment/delete/<int:comment_pk>',delete_comment.as_view(),name='delete_comment'),
     path('postagem/update/post_image/delete/<int:post_image_pk>',delete_post_image.as_view(),name='delete_post_image'),
     path('postagem/update/post_image/<int:post_img_pk>',update_postArt_Image.as_view(),name='post_image_update'),
-    path('posts/like',add_like.as_view(),name='add_like'),
+    path('posts/like',AddLike.as_view({"post":"create"}),name='add_like'),
 ]
 

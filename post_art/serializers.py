@@ -41,11 +41,11 @@ class CommentSerializer(serializers.ModelSerializer):
                )
         
 class LikeSerializer(serializers.ModelSerializer):
+    like_post=serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model=Like
         fields=(
                 'id',
-               'like_owner',
                'like_post',
                'like'
                )
