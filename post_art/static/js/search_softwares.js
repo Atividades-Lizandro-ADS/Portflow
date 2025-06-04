@@ -3,7 +3,7 @@ const programs_api_url=document.querySelector('meta[name="used_programs_api"]').
 const programs_preview=document.getElementById("programs_preview");
 const used_form=document.getElementById("formulario");
 const programs_dropdown=document.getElementById("programs-dropdown");
-
+const csrfToken_removeobj = document.querySelector('meta[name="csrf-token"]').content;
 
 let already_in_programs=[]
 document.querySelectorAll('input[name="used_programs[]"]').forEach(input=>{
@@ -139,7 +139,10 @@ rmv_software_button.forEach(item => {
         const id_program=item.getAttribute('data-program');
         $.ajax({
             url: remove_used_programs_api.replace('/1/',`/${id_obj_remove}/`).replace('/2/',`/${id_program}/`),
-            method: 'GET',
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': csrfToken_removeobj
+            },
             success: function (data) {
                 item.parentElement.remove()
                 
@@ -149,7 +152,7 @@ rmv_software_button.forEach(item => {
                 }
             },
             error: function (xhr, status, error) {
-                console.error("Erro ao carregar posts:", error);
+                console.error("Erro remover programas usados:", error);
             }
         });
 

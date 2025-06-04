@@ -5,7 +5,11 @@ from ..models import PostArt,UsedPrograms,Comments,Like,PostImages,About
 from ..utility import get_object_or_none
 from rest_framework import status
 from rest_framework.response import Response
+from .customApiViews import RemoveUsedProgramBase
 
+class PostsArtView(generics.ListAPIView):
+    queryset=posts=PostArt.objects.all()
+    serializer_class=PostArtSerializers
 
 class PostsArtViewRefresh(generics.ListAPIView):
     queryset=posts=PostArt.objects.all()
@@ -27,35 +31,35 @@ class UsedProgramsView(generics.ListAPIView):
         if search:
             queryset=UsedPrograms.objects.filter(program_name__icontains=search) 
         return queryset
-
-
-class RemoveUsedPrograms(generics.GenericAPIView):
-    def get(self,request,*args,**kwargs):
-        post_id=self.kwargs.get('post_pk')
-        program_id=self.kwargs.get('program_pk')
-        post,_=get_object_or_none(PostArt,id=post_id)
-        program,_=get_object_or_none(UsedPrograms,id=program_id)
-
-        if post is None or program is None:
-            return Response(data={'error'},status=status.HTTP_404_NOT_FOUND)
-        
-        post.used_programs.remove(program)
-
-        return Response(data={'sucesso':True,'program':program.program_name,},status=status.HTTP_200_OK)
     
-class RemoveUsedProgramsAbout(generics.GenericAPIView):
-    def get(self,request,*args,**kwargs):
-        post_id=self.kwargs.get('post_pk')
-        program_id=self.kwargs.get('program_pk')
-        about,_=get_object_or_none(About,id=post_id)
-        program,_=get_object_or_none(UsedPrograms,id=program_id)
+class RemoveUsedPrograms(RemoveUsedProgramBase):
+    post_model = PostArt
+    related_field = 'used_programs'
 
-        if about is None or program is None:
-            return Response(data={'error'},status=status.HTTP_404_NOT_FOUND)
+    def has_permission(self, user, remove_obj):
+        return remove_obj.post_owner == user.profile
+
+class RemoveUsedProgramsAbout(RemoveUsedProgramBase):
+    post_model = About
+    related_field = 'programs_known'
+    
+    def has_permission(self, user, remove_obj):
+        return remove_obj.prof == user.profile
+
+
+# class RemoveUsedProgramsAbout(generics.GenericAPIView):
+#     def get(self,request,*args,**kwargs):
+#         post_id=self.kwargs.get('post_pk')
+#         program_id=self.kwargs.get('program_pk')
+#         about,_=get_object_or_none(About,id=post_id)
+#         program,_=get_object_or_none(UsedPrograms,id=program_id)
+
+#         if about is None or program is None:
+#             return Response(data={'error'},status=status.HTTP_404_NOT_FOUND)
         
-        about.programs_known.remove(program)
+#         about.programs_known.remove(program)
 
-        return Response(data={'sucesso':True,'program':program.program_name,},status=status.HTTP_200_OK)
+#         return Response(data={'sucesso':True,'program':program.program_name,},status=status.HTTP_200_OK)
 
      
 class add_comment(generics.CreateAPIView):
