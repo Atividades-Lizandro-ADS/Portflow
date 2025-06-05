@@ -170,23 +170,7 @@ def about_update(request,about_pk):
 
         if form.is_valid():
             form.save(used_programs=programs)
-            return JsonResponse({'success':True})
-            
-@method_decorator(login_required,name='dispatch')
-class add_favorite(UpdateView):
-    def get(self, request, *args, **kwargs):
-
-        post_id=request.GET.get('post')
-        post=PostArt.objects.get(id=post_id)
-        profile=request.user.profile
-
-        if profile.saved_posts.contains(post):
-            profile.saved_posts.remove(post)
-        else:
-            profile.saved_posts.add(post)
-        response={}
-        response['success']=True
-        return JsonResponse(response)
+            return JsonResponse({'success':True})         
 
 @method_decorator(login_required,name='dispatch')
 class Logout(LogoutView):
