@@ -33,9 +33,7 @@ like_button.on('click',function(event){
 
 function like(){
     formdata={
-        like_owner:owner_id_like,
         like_post:post_id_like,
-        like:true
     }
 
     $.ajax({

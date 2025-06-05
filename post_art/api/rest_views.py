@@ -1,17 +1,16 @@
-from rest_framework import generics,permissions,authentication,exceptions
+from rest_framework import generics,exceptions,viewsets
 from .custom_paginators import PaginationCustom
-from ..serializers import PostArtSerializers,PostArtSerializerRefresh,CommentSerializer,LikeSerializer,PostImageSerializer,UsedProgramsSerializer
-from ..models import PostArt,UsedPrograms,Profile,Comments,Like,PostImages,About
-from ..utility import get_object_or_none
-from rest_framework import status
+from ..serializers import (PostArtSerializers,PostArtSerializerRefresh,CommentSerializer,
+                           LikeSerializer,PostImageSerializer,UsedProgramsSerializer)
+from ..models import PostArt,UsedPrograms,Comments,Like,PostImages,About
 from rest_framework.response import Response
+from .customApiViews import RemoveUsedProgramBase
 
-
-class PostsArtView(generics.ListCreateAPIView):
+class PostsArtView(generics.ListAPIView):
     queryset=posts=PostArt.objects.all()
     serializer_class=PostArtSerializers
 
-class PostsArtViewRefresh(generics.ListCreateAPIView):
+class PostsArtViewRefresh(generics.ListAPIView):
     queryset=posts=PostArt.objects.all()
     serializer_class=PostArtSerializerRefresh
     pagination_class=PaginationCustom
@@ -31,47 +30,30 @@ class UsedProgramsView(generics.ListAPIView):
         if search:
             queryset=UsedPrograms.objects.filter(program_name__icontains=search) 
         return queryset
-
-
-class RemoveUsedPrograms(generics.GenericAPIView):
-    def get(self,request,*args,**kwargs):
-        post_id=self.kwargs.get('post_pk')
-        program_id=self.kwargs.get('program_pk')
-        post,_=get_object_or_none(PostArt,id=post_id)
-        program,_=get_object_or_none(UsedPrograms,id=program_id)
-
-        if post is None or program is None:
-            return Response(data={'error'},status=status.HTTP_404_NOT_FOUND)
-        
-        post.used_programs.remove(program)
-
-        return Response(data={'sucesso':True,'program':program.program_name,},status=status.HTTP_200_OK)
     
-class RemoveUsedProgramsAbout(generics.GenericAPIView):
-    def get(self,request,*args,**kwargs):
-        post_id=self.kwargs.get('post_pk')
-        program_id=self.kwargs.get('program_pk')
-        about,_=get_object_or_none(About,id=post_id)
-        program,_=get_object_or_none(UsedPrograms,id=program_id)
+class RemoveUsedPrograms(RemoveUsedProgramBase):
+    post_model = PostArt
+    related_field = 'used_programs'
 
-        if about is None or program is None:
-            return Response(data={'error'},status=status.HTTP_404_NOT_FOUND)
-        
-        about.programs_known.remove(program)
+    def has_permission(self, user, remove_obj):
+        return remove_obj.post_owner == user.profile
 
-        return Response(data={'sucesso':True,'program':program.program_name,},status=status.HTTP_200_OK)
+class RemoveUsedProgramsAbout(RemoveUsedProgramBase):
+    post_model = About
+    related_field = 'programs_known'
     
+    def has_permission(self, user, remove_obj):
+        return remove_obj.prof == user.profile
+
+
 class add_comment(generics.CreateAPIView):
     serializer_class=CommentSerializer
-    authentication_classes=[authentication.SessionAuthentication]
-    permission_classes=[permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(comment_owner=self.request.user.profile)
     
     def create(self, request, *args, **kwargs):
         response= super().create(request, *args, **kwargs)
-
         response.data['owner']={
             'user_picture':request.user.profile.user_picture.url,
             'username':request.user.profile.first_name,
@@ -81,68 +63,49 @@ class add_comment(generics.CreateAPIView):
     
 class delete_comment(generics.DestroyAPIView):
     serializer_class=CommentSerializer
-    authentication_classes=[authentication.SessionAuthentication]
-    permission_classes=[permissions.IsAuthenticated]
     lookup_field='id'
     lookup_url_kwarg='comment_pk'
-
-
 
     def get_queryset(self):
         comment=Comments.objects.filter(comment_owner=self.request.user.profile)
         return comment
     
-class update_postArt_Image(generics.UpdateAPIView):
-    serializer_class=PostImageSerializer
-    authentication_classes=[authentication.SessionAuthentication]
-    permission_classes=[permissions.IsAuthenticated]
+class ImagePostArtAPIView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class=serializer_class=PostImageSerializer
     lookup_field='id'
     lookup_url_kwarg='post_img_pk'
     queryset=PostImages.objects.all()
 
     def get_object(self):
-        obj= super().get_object()
-        if obj.image_post_owner.post_owner != self.request.user.profile:
-            raise exceptions.PermissionDenied("você não pode editar essa imagem")
-        return obj
-
-    
-class delete_post_image(generics.DestroyAPIView):
-    serializer_class=PostImageSerializer
-    authentication_classes=[authentication.SessionAuthentication]
-    permission_classes=[permissions.IsAuthenticated]
-    lookup_field='id'
-    lookup_url_kwarg='post_image_pk'
-
-
-
-    def get_queryset(self):
-        image=PostImages.objects.filter(image_post_owner__post_owner=self.request.user.profile)
+        image= super().get_object()
+        if image.image_post_owner.post_owner!=self.request.user.profile:
+            raise exceptions.PermissionDenied("você não pode manipular essa imagem")
         return image
 
-class add_like(generics.CreateAPIView):
+class AddLike(viewsets.ModelViewSet):
     serializer_class=LikeSerializer
-    authentication_classes=[authentication.SessionAuthentication]
-    permission_classes=[permissions.IsAuthenticated]
+    queryset=Like.objects.all()
 
+    def get_object(self):
+        profile=self.request.user.profile
+        self.liked_post_id=int(self.request.data.get('like_post'))
+        liked_post=PostArt.objects.get(id=self.liked_post_id)
+        like_instance=Like.objects.get(like_owner=profile,like_post=liked_post)
+        return like_instance
+    
     def perform_create(self, serializer):
-        self.instance=serializer.save(like_owner=self.request.user.profile,like=True)
+        try:
+            like=self.get_object()
+            like.like_invert()
+            self._response_data=like.like_post.like_num
+        except:
+            profile=self.request.user.profile
+            
+            liked_post=PostArt.objects.get(id=self.liked_post_id)
+            like=serializer.save(like_owner=profile,like_post=liked_post,like=True)
+            self._response_data=liked_post.like_num
     
     def create(self, request, *args, **kwargs):
-        like_owner=int(request.data.get('like_owner'))
-        like_post=int(request.data.get('like_post'))
-        like,_=get_object_or_none(Like,like_owner__id=like_owner,like_post__id=like_post)
+        super().create(request, *args, **kwargs)
+        return Response({'likes':self._response_data})
 
-        if like is None:
-            response= super().create(request, *args, **kwargs)
-            response.data['likes']=self.instance.like_post.like_num
-            return response
-            
-        
-        like.like= not like.like
-        like.save()
-
-        return Response(data={
-            'success':True,
-            'likes':like.like_post.like_num
-        },status=status.HTTP_200_OK)

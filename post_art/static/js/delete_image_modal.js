@@ -28,7 +28,7 @@ cancel_delete_btn.addEventListener('click',function(){
 confirm_delete_btn.addEventListener('click',function(){
     if(currentObjectId==null) return;
     $.ajax({
-        url: `/api/v1/postagem/update/post_image/delete/${currentObjectId}`,
+        url: `/api/v1/postagem/update/post_image/${currentObjectId}`,
         type: 'DELETE',
         headers: {
             'X-CSRFToken': csrf_token

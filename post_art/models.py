@@ -149,6 +149,9 @@ class Like(models.Model):
     like=models.BooleanField(default=True)
 
 
+    def like_invert(self):
+        self.like=not self.like
+        self.save()
     def __str__(self):
         return f'{self.like_owner} {self.like_post}'
     

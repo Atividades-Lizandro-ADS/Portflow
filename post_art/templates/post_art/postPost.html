@@ -4,6 +4,8 @@
 {%block head%}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <meta name="used_programs_api" content="{%url 'used_programs' %}">
+<meta name="csrf-token" content="{{ csrf_token }}">
+
 {%endblock%}
 
 {%block content%}
