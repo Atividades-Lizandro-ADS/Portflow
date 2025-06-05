@@ -47,21 +47,6 @@ class RemoveUsedProgramsAbout(RemoveUsedProgramBase):
         return remove_obj.prof == user.profile
 
 
-# class RemoveUsedProgramsAbout(generics.GenericAPIView):
-#     def get(self,request,*args,**kwargs):
-#         post_id=self.kwargs.get('post_pk')
-#         program_id=self.kwargs.get('program_pk')
-#         about,_=get_object_or_none(About,id=post_id)
-#         program,_=get_object_or_none(UsedPrograms,id=program_id)
-
-#         if about is None or program is None:
-#             return Response(data={'error'},status=status.HTTP_404_NOT_FOUND)
-        
-#         about.programs_known.remove(program)
-
-#         return Response(data={'sucesso':True,'program':program.program_name,},status=status.HTTP_200_OK)
-
-     
 class add_comment(generics.CreateAPIView):
     serializer_class=CommentSerializer
 
@@ -70,7 +55,6 @@ class add_comment(generics.CreateAPIView):
     
     def create(self, request, *args, **kwargs):
         response= super().create(request, *args, **kwargs)
-
         response.data['owner']={
             'user_picture':request.user.profile.user_picture.url,
             'username':request.user.profile.first_name,
@@ -82,8 +66,6 @@ class delete_comment(generics.DestroyAPIView):
     serializer_class=CommentSerializer
     lookup_field='id'
     lookup_url_kwarg='comment_pk'
-
-
 
     def get_queryset(self):
         comment=Comments.objects.filter(comment_owner=self.request.user.profile)
@@ -124,8 +106,6 @@ class AddLike(viewsets.ModelViewSet):
             like=serializer.save(like_owner=profile,like_post=liked_post,like=True)
             self._response_data=liked_post.like_num
     
-        
-
     def create(self, request, *args, **kwargs):
         super().create(request, *args, **kwargs)
         return Response({'likes':self._response_data})
