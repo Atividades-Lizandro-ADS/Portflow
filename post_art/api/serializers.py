@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import PostArt,Comments,Like,PostImages, UsedPrograms
+from ..models import PostArt,Comments,Like,PostImages, UsedPrograms
 
 class PostArtSerializers(serializers.ModelSerializer):
     class Meta:

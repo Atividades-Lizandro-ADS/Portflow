@@ -5,17 +5,12 @@ from .forms import PostForm,CommentForm,PostImageForm,LoginForm,UserForm,Profile
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-
 from django.db.models import Q
 
 from django.views.generic import ListView,UpdateView,DetailView,FormView
 from django.contrib.auth.views import LogoutView,LoginView
-
-
 from .utility import get_object_or_none,owned_by_request
-
 from django.contrib.auth import login,authenticate,logout
-from django.contrib.auth.models import User
 
 class Index(ListView):
     model=PostArt
@@ -60,9 +55,6 @@ class update_postArt(UpdateView):
     pk_url_kwarg='post_pk'
 
     def dispatch(self, request, *args, **kwargs):
-        
-
-
         context=self.get_object()
         owned=owned_by_request(request=self.request,obj_profile=context.post_owner)
         if owned != True:
@@ -194,11 +186,7 @@ class add_favorite(UpdateView):
             profile.saved_posts.add(post)
         response={}
         response['success']=True
-
-        
-        
         return JsonResponse(response)
-
 
 @method_decorator(login_required,name='dispatch')
 class Logout(LogoutView):
