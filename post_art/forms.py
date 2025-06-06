@@ -134,10 +134,9 @@ class AboutForm(ModelForm):
         exclude=['prof','programs_known']
 
     def save(self,used_programs, commit = True):
-            about= self.instance
 
             if commit:
-                about.save()
+                about=super().save()
 
                 programas=[programa.title() for programa in used_programs]
                 usep=UsedPrograms.objects.filter(program_name__in=programas)

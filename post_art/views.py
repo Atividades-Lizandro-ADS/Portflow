@@ -5,6 +5,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.db.models import Q
+from django.core.exceptions import PermissionDenied
 
 from django.views.generic import ListView,UpdateView,DetailView,FormView
 from django.contrib.auth.views import LogoutView,LoginView
@@ -144,7 +145,7 @@ class ProfileUpdate(UpdateView):
 
         owned=owned_by_request(request,obj_profile=obj)
         if owned != True:
-            return owned
+            raise PermissionDenied("")
         return super().dispatch(request, *args, **kwargs)
     
     def get_success_url(self):
