@@ -1,6 +1,5 @@
-from django.http import JsonResponse
 from django.shortcuts import HttpResponseRedirect
-from .models import PostArt,UsedPrograms,Profile,Like,About
+from .models import PostArt,Profile,Like,About
 from .forms import PostForm,CommentForm,PostImageForm,LoginForm,UserForm,ProfileForm,AboutForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -28,7 +27,7 @@ class Index(ListView):
         
 
 @method_decorator(login_required,name='dispatch')
-class postPost(FormView):
+class PostPost(FormView):
     form_class=PostForm
     template_name='post_art/postPost.html'
 
@@ -48,7 +47,7 @@ class postPost(FormView):
         return HttpResponseRedirect(reverse('index'))
     
 @method_decorator(login_required,name='dispatch')
-class update_postArt(UpdateView):
+class UpdatePostArt(UpdateView):
     template_name='post_art/postPost_update.html'
     model=PostArt
     form_class=PostForm
@@ -91,7 +90,7 @@ class update_postArt(UpdateView):
         return url
     
 
-class post_details(DetailView):
+class PostDetails(DetailView):
     template_name='post_art/post_details.html'
     model=PostArt
     pk_url_kwarg='post_pk'
@@ -116,7 +115,7 @@ class post_details(DetailView):
         return context
 
 
-class profile_index(DetailView):
+class ProfileIndex(DetailView):
     template_name='post_art/profile_page.html'
     model=Profile
     pk_url_kwarg='profile_pk'
@@ -165,7 +164,7 @@ def about_update(request,about_pk):
 
         if form.is_valid():
             form.save(used_programs=programs)
-            return JsonResponse({'success':True})         
+            return HttpResponseRedirect(reverse('index'))         
 
 @method_decorator(login_required,name='dispatch')
 class Logout(LogoutView):
