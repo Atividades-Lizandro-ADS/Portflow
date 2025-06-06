@@ -114,7 +114,7 @@
                     <h4>palavras chave</h4>
                     <!--palavras chave-->
                     <div class="graybox round-5 px-4 py-5 mt-3 inner-grid">
-                                {%for k in keywords%}
+                                {%for k in post.get_keywords%}
                                     <span class="lt-graybox p-2 pe-3 rounded fs-4 d-flex gap-3 align-items-start">#{{k}}</span>
                                 {%endfor%}
                         

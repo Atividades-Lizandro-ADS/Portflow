@@ -42,10 +42,6 @@ class About(models.Model):
     def __str__(self):
         return self.prof.first_name
 
-
-
-
-
 class UsedPrograms(models.Model):
     program_name=models.CharField(max_length=100)
     program_logo=models.ImageField(blank=True, upload_to='programs/images')
@@ -128,6 +124,12 @@ class PostArt(BasePost):
         if self.views_number>=1000:
            return f'{(self.views_number/1000):.1f}k'
         return self.views_number
+    
+    @property
+    def get_keywords(self):
+        keywords=self.keywords.split("#")
+        keywords=filter(None,keywords)
+        return keywords
         
 
 

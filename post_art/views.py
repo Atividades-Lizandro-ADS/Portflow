@@ -100,14 +100,8 @@ class post_details(DetailView):
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
         post=context.get('post')
-
         post.increase_view()
-
-        keywords=post.keywords.split("#")
-        keywords=filter(None,keywords)
-
         form=CommentForm()
-
         favorited=False
         liked=None
         if self.request.user.is_authenticated:
@@ -159,7 +153,8 @@ class ProfileUpdate(UpdateView):
     
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
-        context['form_about']=AboutForm(instance=context.get('profile').about)
+        about=context.get('profile').about
+        context['form_about']=AboutForm(instance=about)
         return context
 
 def about_update(request,about_pk):
