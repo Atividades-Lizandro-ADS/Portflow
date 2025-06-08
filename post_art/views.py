@@ -140,13 +140,12 @@ class ProfileUpdate(UpdateView):
     queryset=Profile.objects.all()
     success_url='index'
 
-    def dispatch(self, request, *args, **kwargs):
-        obj=self.get_object()
-
-        owned=owned_by_request(request,obj_profile=obj)
-        if owned != True:
+    def get_object(self):
+        obj= super().get_object()
+        
+        if owned_by_request(self.request,obj_profile=obj) != True:
             raise PermissionDenied("")
-        return super().dispatch(request, *args, **kwargs)
+        return obj
     
     def get_success_url(self):
         return reverse(self.success_url)
@@ -157,15 +156,18 @@ class ProfileUpdate(UpdateView):
         context['form_about']=AboutForm(instance=about)
         return context
 
-def about_update(request,about_pk):
-    if request.method=='POST':
-        instance,_=get_object_or_none(About,id=about_pk)
-        form=AboutForm(request.POST,instance=instance) 
-        programs=request.POST.getlist('used_programs[]')
 
-        if form.is_valid():
-            form.save(used_programs=programs)
-            return HttpResponseRedirect(reverse('index'))         
+class AboutUpdate(UpdateView):
+    form_class=AboutForm
+    success_url='index'
+
+    def get_object(self):
+        obj,_=get_object_or_none(About,prof=self.request.user.profile)
+        return obj
+    def form_valid(self, form):
+        programs=self.request.POST.getlist('used_programs[]')
+        form.save(used_programs=programs)
+        return HttpResponseRedirect(reverse('index'))    
 
 @method_decorator(login_required,name='dispatch')
 class Logout(LogoutView):
