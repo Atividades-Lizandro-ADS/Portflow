@@ -15,31 +15,32 @@ class PostForm(ModelForm):
         model=PostArt
         exclude=["likes","views_number",'used_programs','post_owner']
 
-    def save(self,files, captions,acessibility_captions,used_programs,owner=None, commit = True):
+    def save(self,image_data,used_programs,owner, commit = True):
         post= self.instance
-        if owner:
-            post.post_owner=owner
+        post.post_owner=owner
         if commit:
             post.save()
-
-                
-            
-            programas=[programa.title() for programa in used_programs]
-            usep=UsedPrograms.objects.filter(program_name__in=programas)
-
-            post.used_programs.add(*usep)
-
-            for file,caption,a_caption in zip(files,captions,acessibility_captions):
-                PostImages.objects.create(post_img=file,acessibility_caption=a_caption,caption=caption,image_post_owner=post)
-
-
-            
+            self._save_post_images(post,image_data)
+            self._save_used_programs(post,used_programs)
         return post
     
     def clean_post_thumb(self):
         return self.cleaned_data.get('post_thumb')
     
-        
+    def _save_post_images(self,post,image_data):
+        for fil,caption,a_caption in zip(
+            image_data.get("files"),
+            image_data.get("captions"),
+            image_data.get("accessibility_captions")):
+            image=PostImages.objects.create(post_img=fil,acessibility_caption=a_caption,
+                                      caption=caption,image_post_owner=post)
+            print(image)
+            
+    def _save_used_programs(self,post,used_programs):
+        if used_programs:
+            programas=[programa.title() for programa in used_programs]
+            usep=UsedPrograms.objects.filter(program_name__in=programas)
+            post.used_programs.add(*usep)
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

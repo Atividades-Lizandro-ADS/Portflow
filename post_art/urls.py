@@ -1,10 +1,10 @@
 from django.urls import path
-from .views import Index,AboutUpdate,PostPost,UpdatePostArt,PostDetails,ProfileIndex,Logout,Login,RegisterUser,ProfileUpdate
+from .views import Index,AboutUpdate,CreatePostArt,UpdatePostArt,PostDetails,ProfileIndex,Logout,Login,RegisterUser,ProfileUpdate
 
 
 urlpatterns = [
     path('',Index.as_view(),name='index'),
-    path('postagem/',PostPost.as_view(),name='postPost'),
+    path('postagem/',CreatePostArt.as_view(),name='postPost'),
     path('postagem/update/<int:post_pk>',UpdatePostArt.as_view(),name='post_update'),
     path('post/<int:post_pk>',PostDetails.as_view(),name='post_details'),
     path('profile/<int:profile_pk>',ProfileIndex.as_view(),name='profile_index'),

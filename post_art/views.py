@@ -3,7 +3,7 @@ from .models import PostArt,Profile,Like,About
 from .forms import PostForm,CommentForm,PostImageForm,LoginForm,UserForm,ProfileForm,AboutForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse
+from django.urls import reverse,reverse_lazy
 from django.db.models import Q
 from django.core.exceptions import PermissionDenied
 
@@ -28,9 +28,10 @@ class Index(ListView):
         
 
 @method_decorator(login_required,name='dispatch')
-class PostPost(FormView):
+class CreatePostArt(FormView):
     form_class=PostForm
     template_name='post_art/postPost.html'
+    success_url=reverse_lazy('index')
 
     def get_form_kwargs(self):
         kwargs= super().get_form_kwargs()
@@ -38,14 +39,14 @@ class PostPost(FormView):
         return kwargs
     
     def form_valid(self, form):  
-        files=self.request.FILES.getlist('post_img[]')
-        captions=self.request.POST.getlist('caption[]')
-        acessibility_captions=self.request.POST.getlist('acessibility_caption[]')
-
+        image_data = {
+            'files': self.request.FILES.getlist('post_img[]'),
+            'captions': self.request.POST.getlist('caption[]'),
+            'accessibility_captions': self.request.POST.getlist('acessibility_caption[]')
+        }
         programs=self.request.POST.getlist('used_programs[]')
-
-        post=form.save(files,captions,acessibility_captions,used_programs=programs,owner=self.request.user.profile)   
-        return HttpResponseRedirect(reverse('index'))
+        form.save(image_data=image_data,used_programs=programs,owner=self.request.user.profile)   
+        return super().form_valid(form)
     
 @method_decorator(login_required,name='dispatch')
 class UpdatePostArt(UpdateView):
