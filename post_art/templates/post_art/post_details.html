@@ -54,7 +54,7 @@
                                     Like
                                 </button>
 
-                                <button class="post-button save-button" data-favorited="{{favorited}}" data-post="{{post.id}}" data-save-favorite-url="{% url 'save_favorite' %}" id="save-button">
+                                <button class="post-button save-button" data-favorited="{{favorited}}" data-save-favorite-url="{% url 'save_favorite' post.id%}" id="save-button">
                                     <i style="font-size: 2rem;" class="bi bi-bookmark-fill" id="bookmark-ico"></i>
                                     <i style="font-size: 2rem;" class="bi bi-bookmark-check-fill d-none" id="bookmark-check-ico"></i>
                                     Save
@@ -114,7 +114,7 @@
                     <h4>palavras chave</h4>
                     <!--palavras chave-->
                     <div class="graybox round-5 px-4 py-5 mt-3 inner-grid">
-                                {%for k in keywords%}
+                                {%for k in post.get_keywords%}
                                     <span class="lt-graybox p-2 pe-3 rounded fs-4 d-flex gap-3 align-items-start">#{{k}}</span>
                                 {%endfor%}
                         

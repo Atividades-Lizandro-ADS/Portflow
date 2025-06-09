@@ -1,6 +1,6 @@
-from rest_framework import generics,exceptions,viewsets
+from rest_framework import generics,exceptions,viewsets,status
 from .custom_paginators import PaginationCustom
-from ..serializers import (PostArtSerializers,PostArtSerializerRefresh,CommentSerializer,
+from .serializers import (PostArtSerializers,PostArtSerializerRefresh,CommentSerializer,
                            LikeSerializer,PostImageSerializer,UsedProgramsSerializer)
 from ..models import PostArt,UsedPrograms,Comments,Like,PostImages,About
 from rest_framework.response import Response
@@ -109,3 +109,17 @@ class AddLike(viewsets.ModelViewSet):
         super().create(request, *args, **kwargs)
         return Response({'likes':self._response_data})
 
+class AddFavorite(generics.UpdateAPIView):
+    serializer_class=PostArtSerializers
+    queryset=PostArt.objects.all()
+    lookup_url_kwarg='post_pk'
+
+    def update(self, request, *args, **kwargs):
+        post=self.get_object()
+        profile=request.user.profile
+        if profile.saved_posts.contains(post):
+            profile.saved_posts.remove(post)
+        else:
+            profile.saved_posts.add(post)
+        return Response({'success':True},status=status.HTTP_200_OK)
+        

@@ -1,21 +1,16 @@
-from django.http import JsonResponse
 from django.shortcuts import HttpResponseRedirect
-from .models import PostArt,UsedPrograms,Profile,Like,About
+from .models import PostArt,Profile,Like,About
 from .forms import PostForm,CommentForm,PostImageForm,LoginForm,UserForm,ProfileForm,AboutForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse
-
+from django.urls import reverse,reverse_lazy
 from django.db.models import Q
+from django.core.exceptions import PermissionDenied
 
 from django.views.generic import ListView,UpdateView,DetailView,FormView
 from django.contrib.auth.views import LogoutView,LoginView
-
-
 from .utility import get_object_or_none,owned_by_request
-
 from django.contrib.auth import login,authenticate,logout
-from django.contrib.auth.models import User
 
 class Index(ListView):
     model=PostArt
@@ -33,9 +28,10 @@ class Index(ListView):
         
 
 @method_decorator(login_required,name='dispatch')
-class postPost(FormView):
+class CreatePostArt(FormView):
     form_class=PostForm
     template_name='post_art/postPost.html'
+    success_url=reverse_lazy('index')
 
     def get_form_kwargs(self):
         kwargs= super().get_form_kwargs()
@@ -43,26 +39,23 @@ class postPost(FormView):
         return kwargs
     
     def form_valid(self, form):  
-        files=self.request.FILES.getlist('post_img[]')
-        captions=self.request.POST.getlist('caption[]')
-        acessibility_captions=self.request.POST.getlist('acessibility_caption[]')
-
+        image_data = {
+            'files': self.request.FILES.getlist('post_img[]'),
+            'captions': self.request.POST.getlist('caption[]'),
+            'accessibility_captions': self.request.POST.getlist('acessibility_caption[]')
+        }
         programs=self.request.POST.getlist('used_programs[]')
-
-        post=form.save(files,captions,acessibility_captions,used_programs=programs,owner=self.request.user.profile)   
-        return HttpResponseRedirect(reverse('index'))
+        form.save(image_data=image_data,used_programs=programs,owner=self.request.user.profile)   
+        return super().form_valid(form)
     
 @method_decorator(login_required,name='dispatch')
-class update_postArt(UpdateView):
+class UpdatePostArt(UpdateView):
     template_name='post_art/postPost_update.html'
     model=PostArt
     form_class=PostForm
     pk_url_kwarg='post_pk'
 
     def dispatch(self, request, *args, **kwargs):
-        
-
-
         context=self.get_object()
         owned=owned_by_request(request=self.request,obj_profile=context.post_owner)
         if owned != True:
@@ -99,7 +92,7 @@ class update_postArt(UpdateView):
         return url
     
 
-class post_details(DetailView):
+class PostDetails(DetailView):
     template_name='post_art/post_details.html'
     model=PostArt
     pk_url_kwarg='post_pk'
@@ -108,14 +101,8 @@ class post_details(DetailView):
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
         post=context.get('post')
-
         post.increase_view()
-
-        keywords=post.keywords.split("#")
-        keywords=filter(None,keywords)
-
         form=CommentForm()
-
         favorited=False
         liked=None
         if self.request.user.is_authenticated:
@@ -130,7 +117,7 @@ class post_details(DetailView):
         return context
 
 
-class profile_index(DetailView):
+class ProfileIndex(DetailView):
     template_name='post_art/profile_page.html'
     model=Profile
     pk_url_kwarg='profile_pk'
@@ -152,53 +139,33 @@ class ProfileUpdate(UpdateView):
     template_name='post_art/profile_update.html'  
     pk_url_kwarg='profile_pk'  
     queryset=Profile.objects.all()
-    success_url='index'
+    success_url=reverse_lazy('index')
 
-    def dispatch(self, request, *args, **kwargs):
-        obj=self.get_object()
-
-        owned=owned_by_request(request,obj_profile=obj)
-        if owned != True:
-            return owned
-        return super().dispatch(request, *args, **kwargs)
-    
-    def get_success_url(self):
-        return reverse(self.success_url)
+    def get_object(self):
+        obj= super().get_object()
+        
+        if owned_by_request(self.request,obj_profile=obj) != True:
+            raise PermissionDenied("")
+        return obj
     
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
-        context['form_about']=AboutForm(instance=context.get('profile').about)
+        about=context.get('profile').about
+        context['form_about']=AboutForm(instance=about)
         return context
 
-def about_update(request,about_pk):
-    if request.method=='POST':
-        instance,_=get_object_or_none(About,id=about_pk)
-        form=AboutForm(request.POST,instance=instance) 
-        programs=request.POST.getlist('used_programs[]')
 
-        if form.is_valid():
-            form.save(used_programs=programs)
-            return JsonResponse({'success':True})
-            
-@method_decorator(login_required,name='dispatch')
-class add_favorite(UpdateView):
-    def get(self, request, *args, **kwargs):
+class AboutUpdate(UpdateView):
+    form_class=AboutForm
+    success_url=reverse_lazy('index')
 
-        post_id=request.GET.get('post')
-        post=PostArt.objects.get(id=post_id)
-        profile=request.user.profile
-
-        if profile.saved_posts.contains(post):
-            profile.saved_posts.remove(post)
-        else:
-            profile.saved_posts.add(post)
-        response={}
-        response['success']=True
-
-        
-        
-        return JsonResponse(response)
-
+    def get_object(self):
+        obj,_=get_object_or_none(About,prof=self.request.user.profile)
+        return obj
+    def form_valid(self, form):
+        programs=self.request.POST.getlist('used_programs[]')
+        form.save(used_programs=programs)
+        return HttpResponseRedirect(self.success_url)    
 
 @method_decorator(login_required,name='dispatch')
 class Logout(LogoutView):

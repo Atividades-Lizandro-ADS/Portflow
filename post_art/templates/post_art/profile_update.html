@@ -17,7 +17,7 @@
 </form>
     
 
-    <form id="formulario" action="{%url 'about_update' form_about.instance.id%}" method="post">
+    <form id="formulario" action="{%url 'about_update'%}" method="post">
         {%csrf_token%}
         {{form_about}}
         <div class="programs-dropdown d-none" id="programs-dropdown"></div>
@@ -26,21 +26,16 @@
             <div class="gray-title"><p>preview adição de programas</p></div>
             <div id="programs_preview" class="gray-input round-5 px-4 py-5 mt-3 inner-grid"></div>
         </div>
-        
-
         <button type="submit">salvar</button>
     </form>
 
     <div class="gray-input round-5 px-4 py-5 mt-3 inner-grid">
         {%for program in form_about.instance.programs_known.all%}
-
             <div class="lt-graybox p-2 pe-3 rounded fs-4 d-flex gap-3 align-items-center">
                 <img class="software-logo" src="{{program.program_logo.url}}" alt="">
                 <p>{{program.program_name}}</p>
                 <p class="fs-3" name="button-remove-program-already" data-post="{{form_about.instance.id}}" data-program="{{program.id}}"><i class="bi bi-trash-fill"></i></p>
-            </div>
-            
-            
+            </div>     
             <input type="hidden" name="used_programs[]" value="{{program.program_name}}">
         {%endfor%}
     </div>

@@ -1,7 +1,7 @@
 from django.urls import path
 from .rest_views import (PostArtView,PostsArtView,PostsArtViewRefresh,
                          add_comment,delete_comment,UsedProgramsView,RemoveUsedPrograms,
-                         RemoveUsedProgramsAbout,AddLike,ImagePostArtAPIView)
+                         RemoveUsedProgramsAbout,AddLike,ImagePostArtAPIView,AddFavorite)
 
 
 urlpatterns = [
@@ -15,5 +15,6 @@ urlpatterns = [
     path('posts/comment/delete/<int:comment_pk>',delete_comment.as_view(),name='delete_comment'),
     path('postagem/update/post_image/<int:post_img_pk>/',ImagePostArtAPIView.as_view(),name='post_image_update'),
     path('posts/like',AddLike.as_view({"post":"create"}),name='add_like'),
+    path('profile/save_favorite/<int:post_pk>/',AddFavorite.as_view(),name='save_favorite'),
 ]
 
