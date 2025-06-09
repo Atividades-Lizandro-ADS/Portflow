@@ -139,7 +139,7 @@ class ProfileUpdate(UpdateView):
     template_name='post_art/profile_update.html'  
     pk_url_kwarg='profile_pk'  
     queryset=Profile.objects.all()
-    success_url='index'
+    success_url=reverse_lazy('index')
 
     def get_object(self):
         obj= super().get_object()
@@ -147,9 +147,6 @@ class ProfileUpdate(UpdateView):
         if owned_by_request(self.request,obj_profile=obj) != True:
             raise PermissionDenied("")
         return obj
-    
-    def get_success_url(self):
-        return reverse(self.success_url)
     
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
@@ -160,7 +157,7 @@ class ProfileUpdate(UpdateView):
 
 class AboutUpdate(UpdateView):
     form_class=AboutForm
-    success_url='index'
+    success_url=reverse_lazy('index')
 
     def get_object(self):
         obj,_=get_object_or_none(About,prof=self.request.user.profile)
@@ -168,7 +165,7 @@ class AboutUpdate(UpdateView):
     def form_valid(self, form):
         programs=self.request.POST.getlist('used_programs[]')
         form.save(used_programs=programs)
-        return HttpResponseRedirect(reverse('index'))    
+        return HttpResponseRedirect(self.success_url)    
 
 @method_decorator(login_required,name='dispatch')
 class Logout(LogoutView):
