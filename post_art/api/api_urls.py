@@ -1,20 +1,24 @@
 from django.urls import path
-from .rest_views import (PostArtView,PostsArtView,PostsArtViewRefresh,
-                         add_comment,delete_comment,UsedProgramsView,RemoveUsedPrograms,
-                         RemoveUsedProgramsAbout,AddLike,ImagePostArtAPIView,AddFavorite)
+from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenRefreshView
 
+from .views import (
+    RegisterView, LoginView, LogoutView,
+    PostArtViewSet, ProfileViewSet, AboutViewSet,
+    CommentViewSet, PostImageViewSet, UsedProgramsViewSet,
+)
 
-urlpatterns = [
-    path('used_programs/',UsedProgramsView.as_view(),name='used_programs'),
-    path('remove_used_programs/<int:post_pk>/<int:program_pk>/',RemoveUsedPrograms.as_view(),name='remove_used_programs'),
-    path('remove_used_programs_about/<int:post_pk>/<int:program_pk>/',RemoveUsedProgramsAbout.as_view(),name='remove_used_programs_about'),
-    path('posts/',PostsArtView.as_view(),name='posts'),
-    path('posts/refresh',PostsArtViewRefresh.as_view(),name='post_refresh'),
-    path('posts/<int:pk>',PostArtView.as_view(),name='post'),
-    path('posts/comment',add_comment.as_view(),name='add_comment'),
-    path('posts/comment/delete/<int:comment_pk>',delete_comment.as_view(),name='delete_comment'),
-    path('postagem/update/post_image/<int:post_img_pk>/',ImagePostArtAPIView.as_view(),name='post_image_update'),
-    path('posts/like',AddLike.as_view({"post":"create"}),name='add_like'),
-    path('profile/save_favorite/<int:post_pk>/',AddFavorite.as_view(),name='save_favorite'),
+router = DefaultRouter()
+router.register('posts', PostArtViewSet, basename='post')
+router.register('profiles', ProfileViewSet, basename='profile')
+router.register('about', AboutViewSet, basename='about')
+router.register('comments', CommentViewSet, basename='comment')
+router.register('post-images', PostImageViewSet, basename='post-image')
+router.register('programs', UsedProgramsViewSet, basename='program')
+
+urlpatterns = router.urls + [
+    path('auth/register/', RegisterView.as_view(), name='auth_register'),
+    path('auth/login/', LoginView.as_view(), name='auth_login'),
+    path('auth/logout/', LogoutView.as_view(), name='auth_logout'),
+    path('auth/token/refresh/', TokenRefreshView.as_view(), name='auth_token_refresh'),
 ]
-
