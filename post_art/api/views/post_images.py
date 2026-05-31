@@ -1,13 +1,11 @@
-from rest_framework import generics, exceptions
+from rest_framework import viewsets, exceptions
 
 from ..serializers import PostImageSerializer
 from ...models import PostImages
 
 
-class PostImageView(generics.RetrieveUpdateDestroyAPIView):
+class PostImageViewSet(viewsets.ModelViewSet):
     serializer_class = PostImageSerializer
-    lookup_field = 'id'
-    lookup_url_kwarg = 'post_img_pk'
     queryset = PostImages.objects.all()
 
     def get_object(self):

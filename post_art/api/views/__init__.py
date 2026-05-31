@@ -1,15 +1,17 @@
 from .auth import RegisterView, LoginView, LogoutView
-from .post import PostListCreateView, PostRetrieveUpdateDestroyView, PostsArtViewRefresh
-from .profile import ProfileView, AboutUpdateView
-from .social import CommentCreateView, CommentDestroyView, LikeView, FavoriteView
-from .media import PostImageView
-from .programs import UsedProgramsView, RemoveUsedPrograms, RemoveUsedProgramsAbout
+from .post_art import PostArtViewSet
+from .profile import ProfileViewSet
+from .about import AboutViewSet
+from .comments import CommentViewSet
+from .post_images import PostImageViewSet
+from .used_programs import UsedProgramsViewSet
 
 __all__ = [
     'RegisterView', 'LoginView', 'LogoutView',
-    'PostListCreateView', 'PostRetrieveUpdateDestroyView', 'PostsArtViewRefresh',
-    'ProfileView', 'AboutUpdateView',
-    'CommentCreateView', 'CommentDestroyView', 'LikeView', 'FavoriteView',
-    'PostImageView',
-    'UsedProgramsView', 'RemoveUsedPrograms', 'RemoveUsedProgramsAbout',
+    'PostArtViewSet',
+    'ProfileViewSet',
+    'AboutViewSet',
+    'CommentViewSet',
+    'PostImageViewSet',
+    'UsedProgramsViewSet',
 ]

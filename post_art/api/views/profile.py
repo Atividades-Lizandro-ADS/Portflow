@@ -1,31 +1,27 @@
-from rest_framework import generics, exceptions
+from rest_framework import viewsets, exceptions
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from ..serializers import (
-    ProfileSerializer, ProfileUpdateSerializer,
-    AboutWriteSerializer, PostFeedSerializer,
-)
-from ...models import Profile, About
+from ..serializers import ProfileSerializer, ProfileUpdateSerializer, PostFeedSerializer
+from ...models import Profile
 
 
-class ProfileView(generics.RetrieveUpdateAPIView):
+class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
-    lookup_url_kwarg = 'profile_pk'
 
     def get_serializer_class(self):
-        if self.request.method in ('PUT', 'PATCH'):
+        if self.action in ('update', 'partial_update'):
             return ProfileUpdateSerializer
         return ProfileSerializer
 
     def get_permissions(self):
-        if self.request.method in ('PUT', 'PATCH'):
+        if self.action in ('update', 'partial_update'):
             return [IsAuthenticated()]
         return [AllowAny()]
 
     def check_object_permissions(self, request, obj):
         super().check_object_permissions(request, obj)
-        if request.method in ('PUT', 'PATCH'):
+        if request.method not in ('GET', 'HEAD', 'OPTIONS'):
             if obj != request.user.profile:
                 raise exceptions.PermissionDenied('Você não pode editar este perfil.')
 
@@ -46,12 +42,3 @@ class ProfileView(generics.RetrieveUpdateAPIView):
             ).data
 
         return Response(data)
-
-
-class AboutUpdateView(generics.UpdateAPIView):
-    serializer_class = AboutWriteSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_object(self):
-        about, _ = About.objects.get_or_create(prof=self.request.user.profile)
-        return about
