@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import * as SecureStore from 'expo-secure-store';
-import { login as apiLogin, logout as apiLogout } from '../api/auth';
+import { login as apiLogin, logout as apiLogout, getMe } from '../api/auth';
 
 const AuthContext = createContext(null);
 
@@ -9,16 +9,31 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([
-      SecureStore.getItemAsync('access_token'),
-      SecureStore.getItemAsync('user_data'),
-    ]).then(([token, userData]) => {
-      if (token && userData) {
-        try { setUser(JSON.parse(userData)); } catch { setUser({ _tokenOnly: true }); }
-      } else if (token) {
-        setUser({ _tokenOnly: true });
+    (async () => {
+      try {
+        const [token, userData] = await Promise.all([
+          SecureStore.getItemAsync('access_token'),
+          SecureStore.getItemAsync('user_data'),
+        ]);
+
+        if (!token) return;
+
+        let parsed = null;
+        try { parsed = userData ? JSON.parse(userData) : null; } catch {}
+
+        if (parsed?.profile_id) {
+          setUser(parsed);
+        } else {
+          const { data } = await getMe();
+          await SecureStore.setItemAsync('user_data', JSON.stringify(data));
+          setUser(data);
+        }
+      } catch {
+        // token inválido ou expirado — usuário precisa fazer login novamente
+      } finally {
+        setLoading(false);
       }
-    }).finally(() => setLoading(false));
+    })();
   }, []);
 
   const login = useCallback(async (username, password) => {

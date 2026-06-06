@@ -1,4 +1,4 @@
-from .auth import RegisterView, LoginView, LogoutView, CheckUsernameView
+from .auth import RegisterView, LoginView, LogoutView, CheckUsernameView, MeView
 from .post_art import PostArtViewSet
 from .profile import ProfileViewSet
 from .about import AboutViewSet
@@ -9,7 +9,7 @@ from .hiring import HiringViewSet
 from .skill import SkillViewSet
 
 __all__ = [
-    'RegisterView', 'LoginView', 'LogoutView', 'CheckUsernameView',
+    'RegisterView', 'LoginView', 'LogoutView', 'CheckUsernameView', 'MeView',
     'PostArtViewSet',
     'ProfileViewSet',
     'AboutViewSet',

@@ -37,3 +37,5 @@ export const getStoredToken = () => SecureStore.getItemAsync('access_token');
 
 export const checkUsername = (username) =>
   api.get('/api/auth/check-username/', { params: { username } });
+
+export const getMe = () => api.get('/api/auth/me/');

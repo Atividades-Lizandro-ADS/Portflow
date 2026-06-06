@@ -64,9 +64,9 @@ class PostArtViewSet(viewsets.ModelViewSet):
 
     def check_object_permissions(self, request, obj):
         super().check_object_permissions(request, obj)
-        if request.method not in ('GET', 'HEAD', 'OPTIONS'):
-            if obj.post_owner != request.user.profile:
-                raise exceptions.PermissionDenied('Você não tem permissão para modificar este post.')
+        owner_only = ('update', 'partial_update', 'destroy', 'remove_used_program')
+        if self.action in owner_only and obj.post_owner != request.user.profile:
+            raise exceptions.PermissionDenied('Você não tem permissão para modificar este post.')
 
     def _save_images(self, post):
         files = self.request.FILES.getlist('post_img[]')

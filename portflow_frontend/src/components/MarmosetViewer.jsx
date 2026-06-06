@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { View } from 'react-native';
+import { View, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { radius } from '../theme';
+import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { radius, colors, spacing } from '../theme';
 import EmbedLoader from './EmbedLoader';
 
 function viewerJsUrl(mviewUrl) {
@@ -14,13 +16,8 @@ function viewerJsUrl(mviewUrl) {
   }
 }
 
-export default function MarmosetViewer({ url }) {
-  const [loading, setLoading] = useState(true);
-  const jsUrl = viewerJsUrl(url);
-  const safeUrl = JSON.stringify(url);
-  const safeJsUrl = jsUrl ? JSON.stringify(jsUrl) : 'null';
-
-  const html = `<!DOCTYPE html>
+function buildHtml(safeUrl, safeJsUrl) {
+  return `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -79,18 +76,81 @@ export default function MarmosetViewer({ url }) {
   </script>
 </body>
 </html>`;
+}
 
+function ViewerWebView({ html, onLoad }) {
   return (
-    <View style={{ height: 400, borderRadius: radius.card, overflow: 'hidden' }}>
-      {loading && <EmbedLoader />}
-      <WebView
-        source={{ html }}
-        style={{ flex: 1, backgroundColor: '#1a1a1a' }}
-        onLoadEnd={() => setLoading(false)}
-        javaScriptEnabled
-        originWhitelist={['*']}
-        mixedContentMode="always"
-      />
-    </View>
+    <WebView
+      source={{ html }}
+      style={{ flex: 1, backgroundColor: '#1a1a1a' }}
+      onLoadEnd={onLoad}
+      javaScriptEnabled
+      originWhitelist={['*']}
+      mixedContentMode="always"
+    />
   );
 }
+
+export default function MarmosetViewer({ url }) {
+  const insets = useSafeAreaInsets();
+  const [loading, setLoading] = useState(true);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [fsLoading, setFsLoading] = useState(true);
+
+  const jsUrl = viewerJsUrl(url);
+  const safeUrl = JSON.stringify(url);
+  const safeJsUrl = jsUrl ? JSON.stringify(jsUrl) : 'null';
+  const html = buildHtml(safeUrl, safeJsUrl);
+
+  return (
+    <>
+      <View style={styles.container}>
+        {loading && <EmbedLoader />}
+        <ViewerWebView html={html} onLoad={() => setLoading(false)} />
+        {!loading && (
+          <TouchableOpacity style={styles.expandBtn} onPress={() => { setFsLoading(true); setFullscreen(true); }}>
+            <Ionicons name="expand" size={18} color={colors.white} />
+          </TouchableOpacity>
+        )}
+      </View>
+
+      <Modal visible={fullscreen} animationType="fade" onRequestClose={() => setFullscreen(false)}>
+        <View style={[styles.fullscreen, { paddingTop: insets.top }]}>
+          {fsLoading && <EmbedLoader />}
+          <ViewerWebView html={html} onLoad={() => setFsLoading(false)} />
+          <TouchableOpacity style={[styles.closeBtn, { top: insets.top + spacing.sm }]} onPress={() => setFullscreen(false)}>
+            <Ionicons name="contract" size={18} color={colors.white} />
+          </TouchableOpacity>
+        </View>
+      </Modal>
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    height: 400,
+    borderRadius: radius.card,
+    overflow: 'hidden',
+  },
+  expandBtn: {
+    position: 'absolute',
+    bottom: spacing.sm,
+    right: spacing.sm,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    borderRadius: 20,
+    padding: spacing.sm,
+  },
+  fullscreen: {
+    flex: 1,
+    backgroundColor: '#1a1a1a',
+  },
+  closeBtn: {
+    position: 'absolute',
+    right: spacing.md,
+    zIndex: 10,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    borderRadius: 20,
+    padding: spacing.sm,
+  },
+});

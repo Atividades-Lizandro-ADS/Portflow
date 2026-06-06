@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CommentItem from './CommentItem';
 import { createComment } from '../api/comments';
 import { useAuth } from '../context/AuthContext';
-import { colors, fontSize, spacing } from '../theme';
+import { colors, fontSize, spacing, radius } from '../theme';
 
 export default function CommentsSection({ postId, initialComments }) {
   const { user } = useAuth();
+  const insets = useSafeAreaInsets();
   const [comments, setComments] = useState(initialComments ?? []);
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
@@ -33,6 +35,7 @@ export default function CommentsSection({ postId, initialComments }) {
             key={c.id}
             comment={c}
             onDeleted={(cid) => setComments((prev) => prev.filter((x) => x.id !== cid))}
+            onEdited={(updated) => setComments((prev) => prev.map((x) => (x.id === updated.id ? updated : x)))}
           />
         ))}
         {comments.length === 0 && (
@@ -40,7 +43,7 @@ export default function CommentsSection({ postId, initialComments }) {
         )}
       </View>
       {user && (
-        <View style={styles.inputRow}>
+        <View style={[styles.inputRow, { marginBottom: spacing.xl + insets.bottom }]}>
           <TextInput
             style={styles.input}
             value={text}
@@ -66,7 +69,9 @@ const styles = StyleSheet.create({
   empty: { color: colors.textSecondary, fontSize: fontSize.sm },
   inputRow: {
     flexDirection: 'row', alignItems: 'flex-end', gap: spacing.sm,
-    padding: spacing.md, borderTopWidth: 1, borderTopColor: colors.headerBg,
+    marginHorizontal: spacing.lg, marginBottom: spacing.xl,
+    paddingHorizontal: spacing.md, paddingVertical: spacing.sm,
+    borderRadius: radius.section,
     backgroundColor: colors.formBg,
   },
   input: { flex: 1, color: colors.white, fontSize: fontSize.md, maxHeight: 100, padding: spacing.sm },

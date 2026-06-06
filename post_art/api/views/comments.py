@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, exceptions
 
 from ..serializers import CommentSerializer
 from ...models import Comments
@@ -8,7 +8,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
 
     def get_queryset(self):
-        qs = Comments.objects.all()
+        qs = Comments.objects.select_related('comment_owner__user_profile').all()
 
         post_id = self.request.query_params.get('post')
         if post_id:
@@ -25,12 +25,12 @@ class CommentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(comment_owner=self.request.user.profile)
 
-    def create(self, request, *args, **kwargs):
-        response = super().create(request, *args, **kwargs)
-        profile = request.user.profile
-        response.data['owner'] = {
-            'user_picture': profile.user_picture.url if profile.user_picture else None,
-            'username': profile.first_name,
-            'user_id': profile.id,
-        }
-        return response
+    def perform_update(self, serializer):
+        if serializer.instance.comment_owner != self.request.user.profile:
+            raise exceptions.PermissionDenied()
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        if instance.comment_owner != self.request.user.profile:
+            raise exceptions.PermissionDenied()
+        instance.delete()

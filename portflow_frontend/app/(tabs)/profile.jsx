@@ -181,11 +181,17 @@ export default function MyProfileScreen() {
         </>
       )}
 
-      {/* Liked posts */}
       {profile?.liked_posts?.length > 0 && (
         <>
           <SectionTitle>Meus Likes</SectionTitle>
           <PostsGrid posts={profile.liked_posts} />
+        </>
+      )}
+
+      {profile?.saved_posts !== undefined && (
+        <>
+          <SectionTitle>Favoritos</SectionTitle>
+          <PostsGrid posts={profile.saved_posts} />
         </>
       )}
 

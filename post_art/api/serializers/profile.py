@@ -17,12 +17,13 @@ class ProfileSerializer(serializers.ModelSerializer):
     posts = serializers.SerializerMethodField()
     drafts = serializers.SerializerMethodField()
     liked_posts = serializers.SerializerMethodField()
+    saved_posts = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
         fields = (
             'id', 'first_name', 'username', 'user_picture', 'profile_banner',
-            'about', 'posts', 'drafts', 'liked_posts',
+            'about', 'posts', 'drafts', 'liked_posts', 'saved_posts',
         )
 
     def _is_owner(self, obj):
@@ -54,6 +55,12 @@ class ProfileSerializer(serializers.ModelSerializer):
         ids = obj.like_set.filter(like=True).values_list('like_post_id', flat=True)
         qs = PostArt.objects.filter(id__in=ids)
         return PostFeedSerializer(qs, many=True, context=self.context).data
+
+    def get_saved_posts(self, obj):
+        from .post_art import PostFeedSerializer
+        if not self._is_owner(obj):
+            return []
+        return PostFeedSerializer(obj.saved_posts.all(), many=True, context=self.context).data
 
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):

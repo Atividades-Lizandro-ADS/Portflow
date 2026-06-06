@@ -78,17 +78,20 @@ export default function PostDetailScreen() {
 
         <View style={styles.authorRow}>
           <AuthorCard profile={post.post_owner} />
-          {user?.profile_id === post.post_owner?.id && (
-            <View style={styles.ownerActions}>
-              <TouchableOpacity style={styles.ownerBtn} onPress={() => router.push(`/edit-post/${post.id}`)}>
-                <Ionicons name="pencil-outline" size={18} color={colors.accent} />
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.ownerBtn, styles.ownerBtnDanger]} onPress={handleDelete}>
-                <Ionicons name="trash-outline" size={18} color={colors.danger} />
-              </TouchableOpacity>
-            </View>
-          )}
         </View>
+
+        {user?.profile_id === post.post_owner?.id && (
+          <View style={styles.ownerRow}>
+            <TouchableOpacity style={styles.ownerBtnEdit} onPress={() => router.push(`/edit-post/${post.id}`)}>
+              <Ionicons name="pencil-outline" size={16} color={colors.accent} />
+              <Text style={styles.ownerBtnEditText}>Editar post</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.ownerBtnDelete} onPress={handleDelete}>
+              <Ionicons name="trash-outline" size={16} color={colors.danger} />
+              <Text style={styles.ownerBtnDeleteText}>Excluir</Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         {post.description ? (
           <View style={styles.section}>
@@ -172,12 +175,25 @@ const styles = StyleSheet.create({
   title: { color: colors.white, fontSize: fontSize.xl, fontWeight: 'bold' },
 
   authorRow: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    marginHorizontal: spacing.lg, marginBottom: spacing.md, padding: spacing.md,
+    marginHorizontal: spacing.lg, marginBottom: spacing.xs, padding: spacing.md,
   },
-  ownerActions: { flexDirection: 'row', gap: spacing.sm },
-  ownerBtn: { padding: spacing.sm, borderRadius: radius.button, backgroundColor: colors.lightBg },
-  ownerBtnDanger: { backgroundColor: 'rgba(255,68,68,0.12)' },
+  ownerRow: {
+    flexDirection: 'row', gap: spacing.sm,
+    marginHorizontal: spacing.lg, marginBottom: spacing.md,
+    paddingHorizontal: spacing.md,
+  },
+  ownerBtnEdit: {
+    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    gap: spacing.xs, paddingVertical: spacing.sm,
+    borderRadius: radius.button, borderWidth: 1, borderColor: colors.accent,
+  },
+  ownerBtnEditText: { color: colors.accent, fontSize: fontSize.sm, fontWeight: 'bold' },
+  ownerBtnDelete: {
+    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    gap: spacing.xs, paddingVertical: spacing.sm,
+    borderRadius: radius.button, backgroundColor: 'rgba(255,68,68,0.12)',
+  },
+  ownerBtnDeleteText: { color: colors.danger, fontSize: fontSize.sm, fontWeight: 'bold' },
 
   section: { paddingHorizontal: spacing.lg, paddingBottom: spacing.md },
   sectionLabel: { color: colors.textSecondary, fontSize: fontSize.sm, fontWeight: 'bold', marginBottom: spacing.sm },

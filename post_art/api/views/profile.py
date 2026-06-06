@@ -4,11 +4,11 @@ from rest_framework.response import Response
 
 from ..serializers import ProfileSerializer, ProfileMinimalSerializer, ProfileUpdateSerializer, PostFeedSerializer
 from ..custom_paginators import ProfilePaginationCustom
-from ...models import Profile
+from ...models import Profile, PostArt
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
-    queryset = Profile.objects.select_related('user').all()
+    queryset = Profile.objects.select_related('user_profile').all()
     filter_backends = [filters.SearchFilter]
     search_fields = ['first_name', 'user__username']
 
@@ -49,6 +49,13 @@ class ProfileViewSet(viewsets.ModelViewSet):
         if is_owner:
             data['drafts'] = PostFeedSerializer(
                 instance.postart_set.filter(published=False), many=True, context=ctx
+            ).data
+            liked_ids = instance.like_set.filter(like=True).values_list('like_post_id', flat=True)
+            data['liked_posts'] = PostFeedSerializer(
+                PostArt.objects.filter(id__in=liked_ids), many=True, context=ctx
+            ).data
+            data['saved_posts'] = PostFeedSerializer(
+                instance.saved_posts.all(), many=True, context=ctx
             ).data
 
         return Response(data)
