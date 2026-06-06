@@ -5,7 +5,7 @@ from ..serializers import UsedProgramsSerializer
 from ...models import UsedPrograms
 
 
-class UsedProgramsViewSet(viewsets.ModelViewSet):
+class UsedProgramsViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UsedProgramsSerializer
     permission_classes = [AllowAny]
 

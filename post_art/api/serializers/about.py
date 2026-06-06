@@ -12,7 +12,7 @@ class AboutReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = About
-        fields = ('summary', 'hiring', 'skills', 'programs_known')
+        fields = ('id', 'summary', 'hiring', 'skills', 'programs_known')
 
 
 class AboutWriteSerializer(serializers.ModelSerializer):

@@ -1,18 +1,28 @@
-from rest_framework import viewsets, exceptions
+from rest_framework import viewsets, exceptions, filters
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from ..serializers import ProfileSerializer, ProfileUpdateSerializer, PostFeedSerializer
+from ..serializers import ProfileSerializer, ProfileMinimalSerializer, ProfileUpdateSerializer, PostFeedSerializer
+from ..custom_paginators import ProfilePaginationCustom
 from ...models import Profile
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
-    queryset = Profile.objects.all()
+    queryset = Profile.objects.select_related('user').all()
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['first_name', 'user__username']
 
     def get_serializer_class(self):
         if self.action in ('update', 'partial_update'):
             return ProfileUpdateSerializer
+        if self.action == 'list':
+            return ProfileMinimalSerializer
         return ProfileSerializer
+
+    def get_paginator(self):
+        if self.action == 'list':
+            return ProfilePaginationCustom()
+        return super().get_paginator()
 
     def get_permissions(self):
         if self.action in ('update', 'partial_update'):

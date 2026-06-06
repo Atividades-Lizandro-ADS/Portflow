@@ -22,7 +22,8 @@ class PostWriteSerializer(serializers.ModelSerializer):
         model = PostArt
         fields = (
             'tittle', 'caption', 'description', 'art_type', 'category',
-            'post_thumb', 'youtube_link', 'marmoview', 'keywords', 'published',
+            'post_thumb', 'youtube_link', 'sketchfab_link', 'marmoview',
+            'keywords', 'published', 'display_type',
         )
 
 
@@ -60,9 +61,9 @@ class PostDetailSerializer(serializers.ModelSerializer):
         model = PostArt
         fields = (
             'id', 'tittle', 'caption', 'description', 'art_type', 'category',
-            'post_thumb', 'post_owner', 'images', 'used_programs',
+            'post_thumb', 'post_owner', 'images', 'used_programs', 'display_type',
             'like_num', 'view_number', 'liked', 'favorited',
-            'youtube_link', 'marmoview', 'keywords', 'keywords_list',
+            'youtube_link', 'sketchfab_link', 'marmoview', 'keywords', 'keywords_list',
             'published', 'creation_date', 'comments_count',
         )
 

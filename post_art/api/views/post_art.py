@@ -72,12 +72,16 @@ class PostArtViewSet(viewsets.ModelViewSet):
         files = self.request.FILES.getlist('post_img[]')
         captions = self.request.data.getlist('caption[]')
         accessibility = self.request.data.getlist('acessibility_caption[]')
+        cell_x = self.request.data.getlist('cell_size_x[]')
+        cell_y = self.request.data.getlist('cell_size_y[]')
         for i, f in enumerate(files):
             PostImages.objects.create(
                 image_post_owner=post,
                 post_img=f,
                 caption=captions[i] if i < len(captions) else '',
                 acessibility_caption=accessibility[i] if i < len(accessibility) else '',
+                cell_size_x=cell_x[i] if i < len(cell_x) else '1/3',
+                cell_size_y=cell_y[i] if i < len(cell_y) else '1/3',
             )
 
     def _save_programs(self, post):

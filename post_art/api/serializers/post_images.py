@@ -5,7 +5,7 @@ from ...models import PostImages
 class PostImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostImages
-        fields = ('id', 'post_img', 'acessibility_caption', 'caption', 'image_post_owner')
+        fields = ('id', 'post_img', 'acessibility_caption', 'caption', 'image_post_owner', 'cell_size_x', 'cell_size_y')
         extra_kwargs = {
             'post_img': {'required': False},
             'image_post_owner': {'read_only': True},

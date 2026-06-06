@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -45,6 +46,12 @@ class LoginView(APIView):
 
         user = authenticate(request, username=username, password=password)
         if user is None:
+            try:
+                user_obj = User.objects.get(email=username)
+                user = authenticate(request, username=user_obj.username, password=password)
+            except User.DoesNotExist:
+                pass
+        if user is None:
             return Response(
                 {'error': 'Credenciais inválidas.'},
                 status=status.HTTP_401_UNAUTHORIZED,
@@ -75,3 +82,14 @@ class LogoutView(APIView):
         except TokenError:
             pass
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CheckUsernameView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        username = request.query_params.get('username', '').strip()
+        if not username:
+            return Response({'available': False})
+        taken = User.objects.filter(username=username).exists()
+        return Response({'available': not taken})

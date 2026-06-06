@@ -10,6 +10,8 @@ class RegisterSerializer(serializers.Serializer):
     password2 = serializers.CharField(write_only=True)
 
     def validate_username(self, value):
+        if ' ' in value:
+            raise serializers.ValidationError('Username não pode conter espaços. Use _ para separar palavras.')
         if User.objects.filter(username=value).exists():
             raise serializers.ValidationError('Este username já está em uso.')
         return value
