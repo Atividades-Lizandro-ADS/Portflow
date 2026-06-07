@@ -1,4 +1,4 @@
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, Switch, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, fontSize, spacing, radius } from '../../theme';
 
@@ -28,6 +28,15 @@ export default function GalleryImageItem({ item, index, onUpdate, onRemove, show
           onChangeText={(t) => onUpdate(index, 'acessibilityCaption', t)}
           maxLength={120}
         />
+        <View style={styles.matureRow}>
+          <Text style={styles.matureLabel}>Conteúdo maduro</Text>
+          <Switch
+            value={item.is_mature ?? false}
+            onValueChange={(v) => onUpdate(index, 'is_mature', v)}
+            trackColor={{ false: colors.inputBorder, true: colors.accent }}
+            thumbColor={colors.white}
+          />
+        </View>
         {showCellSizes && (
           <View style={styles.cellRow}>
             {[['cell_size_x', 'Largura'], ['cell_size_y', 'Altura']].map(([field, label]) => (
@@ -67,4 +76,6 @@ const styles = StyleSheet.create({
   cellBtnActive: { borderColor: colors.accent, backgroundColor: 'rgba(36,186,255,0.12)' },
   cellBtnText: { color: colors.textSecondary, fontSize: fontSize.xs },
   cellBtnTextActive: { color: colors.accent },
+  matureRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: spacing.xs },
+  matureLabel: { color: colors.textSecondary, fontSize: fontSize.sm },
 });

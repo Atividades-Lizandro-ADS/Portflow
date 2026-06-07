@@ -34,6 +34,7 @@ class PostArt(BasePost):
     keywords = models.TextField(null=True, blank=True)
     published = models.BooleanField(default=True)
     display_type = models.CharField(max_length=5, choices=display_type_choices, default='list')
+    is_mature = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'post portfolio'

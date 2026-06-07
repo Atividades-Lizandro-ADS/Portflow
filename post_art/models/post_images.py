@@ -18,6 +18,7 @@ class PostImages(models.Model):
     image_post_owner = models.ForeignKey('PostArt', on_delete=models.CASCADE)
     cell_size_x = models.CharField(max_length=3, choices=CELL_SIZE_CHOICES, default='1/3')
     cell_size_y = models.CharField(max_length=3, choices=CELL_SIZE_CHOICES, default='1/3')
+    is_mature = models.BooleanField(default=False)
 
     def __str__(self):
         return self.caption

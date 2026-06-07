@@ -27,17 +27,23 @@ class PostArtViewSet(viewsets.ModelViewSet):
         return [IsAuthenticated()]
 
     def get_queryset(self):
-        if self.action == 'retrieve':
-            return PostArt.objects.all()
-        qs = PostArt.objects.filter(published=True)
-        search = self.request.query_params.get('search')
-        if search:
-            qs = qs.filter(
-                Q(tittle__icontains=search) |
-                Q(caption__icontains=search) |
-                Q(description__icontains=search)
-            )
-        return qs
+        user = self.request.user
+        profile = getattr(user, 'profile', None) if user.is_authenticated else None
+
+        if self.action == 'list':
+            qs = PostArt.objects.filter(published=True)
+            search = self.request.query_params.get('search')
+            if search:
+                qs = qs.filter(
+                    Q(tittle__icontains=search) |
+                    Q(caption__icontains=search) |
+                    Q(description__icontains=search)
+                )
+            return qs
+
+        if profile:
+            return PostArt.objects.filter(Q(published=True) | Q(post_owner=profile))
+        return PostArt.objects.filter(published=True)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -74,6 +80,7 @@ class PostArtViewSet(viewsets.ModelViewSet):
         accessibility = self.request.data.getlist('acessibility_caption[]')
         cell_x = self.request.data.getlist('cell_size_x[]')
         cell_y = self.request.data.getlist('cell_size_y[]')
+        mature_flags = self.request.data.getlist('is_mature[]')
         for i, f in enumerate(files):
             PostImages.objects.create(
                 image_post_owner=post,
@@ -82,6 +89,7 @@ class PostArtViewSet(viewsets.ModelViewSet):
                 acessibility_caption=accessibility[i] if i < len(accessibility) else '',
                 cell_size_x=cell_x[i] if i < len(cell_x) else '1/3',
                 cell_size_y=cell_y[i] if i < len(cell_y) else '1/3',
+                is_mature=mature_flags[i].lower() in ('true', '1') if i < len(mature_flags) else False,
             )
 
     def _save_programs(self, post):

@@ -23,7 +23,7 @@ class PostWriteSerializer(serializers.ModelSerializer):
         fields = (
             'tittle', 'caption', 'description', 'art_type', 'category',
             'post_thumb', 'youtube_link', 'sketchfab_link', 'marmoview',
-            'keywords', 'published', 'display_type',
+            'keywords', 'published', 'display_type', 'is_mature',
         )
 
 
@@ -36,7 +36,7 @@ class PostFeedSerializer(serializers.ModelSerializer):
         model = PostArt
         fields = (
             'id', 'tittle', 'caption', 'post_thumb',
-            'art_type', 'post_owner', 'like_num', 'view_number', 'creation_date',
+            'art_type', 'post_owner', 'like_num', 'view_number', 'creation_date', 'is_mature',
         )
 
     def get_like_num(self, obj):
@@ -64,7 +64,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
             'post_thumb', 'post_owner', 'images', 'used_programs', 'display_type',
             'like_num', 'view_number', 'liked', 'favorited',
             'youtube_link', 'sketchfab_link', 'marmoview', 'keywords', 'keywords_list',
-            'published', 'creation_date', 'comments_count',
+            'published', 'creation_date', 'comments_count', 'is_mature',
         )
 
     def get_images(self, obj):

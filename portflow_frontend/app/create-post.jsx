@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView,
-  ActivityIndicator, KeyboardAvoidingView, Platform,
+  ActivityIndicator, KeyboardAvoidingView, Platform, Switch,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -35,6 +35,7 @@ export default function CreatePostScreen() {
   const [sketchfabLink, setSketchfabLink] = useState('');
   const [selectedPrograms, setSelectedPrograms] = useState([]);
   const [published, setPublished] = useState(true);
+  const [isMature, setIsMature] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -59,6 +60,7 @@ export default function CreatePostScreen() {
       form.append('art_type', artType);
       form.append('display_type', displayType);
       form.append('published', published ? 'true' : 'false');
+      form.append('is_mature', isMature ? 'true' : 'false');
       if (youtubeLink.trim()) form.append('youtube_link', youtubeLink.trim());
       if (sketchfabLink.trim()) form.append('sketchfab_link', sketchfabLink.trim());
       form.append('post_thumb', { uri: thumb.uri, name: thumb.fileName ?? 'thumb.jpg', type: thumb.mimeType ?? 'image/jpeg' });
@@ -69,6 +71,7 @@ export default function CreatePostScreen() {
         form.append('acessibility_caption[]', img.acessibilityCaption);
         form.append('cell_size_x[]', img.cell_size_x);
         form.append('cell_size_y[]', img.cell_size_y);
+        form.append('is_mature[]', img.is_mature ? 'true' : 'false');
       });
       selectedPrograms.forEach((p) => form.append('used_programs[]', String(p.id)));
       await createPost(form);
@@ -228,6 +231,21 @@ export default function CreatePostScreen() {
 
           <PublishToggle value={published} onChange={setPublished} />
 
+          <View style={styles.matureRow}>
+            <View style={styles.matureLabelGroup}>
+              <Text style={styles.matureLabel}>Conteúdo maduro</Text>
+              <Text style={styles.matureHint}>
+                Se apenas parte do post tiver conteúdo sensível, marque as imagens individualmente. A thumbnail não deve conter conteúdo sensível.
+              </Text>
+            </View>
+            <Switch
+              value={isMature}
+              onValueChange={setIsMature}
+              trackColor={{ false: colors.inputBorder, true: colors.accent }}
+              thumbColor={colors.white}
+            />
+          </View>
+
           {error ? <Text style={styles.error}>{error}</Text> : null}
 
           <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit} disabled={loading}>
@@ -264,4 +282,8 @@ const styles = StyleSheet.create({
   error: { color: colors.danger, fontSize: fontSize.sm, textAlign: 'center' },
   submitBtn: { backgroundColor: colors.accent, borderRadius: radius.button, paddingVertical: spacing.md, alignItems: 'center', marginTop: spacing.sm },
   submitText: { color: colors.darkBg, fontWeight: 'bold', fontSize: fontSize.md },
+  matureRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: spacing.md },
+  matureLabelGroup: { flex: 1, gap: spacing.xs },
+  matureLabel: { color: colors.white, fontSize: fontSize.md, fontWeight: 'bold' },
+  matureHint: { color: colors.textSecondary, fontSize: fontSize.xs, lineHeight: 18 },
 });

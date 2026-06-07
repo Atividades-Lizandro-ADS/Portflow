@@ -13,6 +13,7 @@ import CommentsSection from '../../src/components/CommentsSection';
 import PostMeta from '../../src/components/molecules/PostMeta';
 import PostKeywords from '../../src/components/molecules/PostKeywords';
 import PostEmbeds from '../../src/components/molecules/PostEmbeds';
+import MatureContentGate from '../../src/components/organisms/MatureContentGate';
 import { getPost, deletePost } from '../../src/api/posts';
 import { getComments } from '../../src/api/comments';
 import { useAuth } from '../../src/context/AuthContext';
@@ -28,6 +29,7 @@ export default function PostDetailScreen() {
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [matureConfirmed, setMatureConfirmed] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -46,6 +48,17 @@ export default function PostDetailScreen() {
   }
   if (!post) {
     return <View style={styles.center}><Text style={styles.errorText}>Post não encontrado.</Text></View>;
+  }
+
+  if (post.is_mature && !matureConfirmed) {
+    return (
+      <MatureContentGate
+        isLoggedIn={!!user}
+        onContinue={() => setMatureConfirmed(true)}
+        onCancel={() => router.back()}
+        onLogin={() => router.push('/(auth)/login')}
+      />
+    );
   }
 
   const youtubeId = extractYoutubeId(post.youtube_link);
@@ -102,7 +115,7 @@ export default function PostDetailScreen() {
           <PostMeta artType={post.art_type} programs={post.used_programs} />
         </View>
 
-        <PostGallery images={post.images} displayType={post.display_type} />
+        <PostGallery images={post.images} displayType={post.display_type} postIsMature={post.is_mature} />
 
         <PostEmbeds
           youtubeId={youtubeId}

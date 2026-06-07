@@ -15,9 +15,18 @@ export default function PostCard({ post }) {
       activeOpacity={0.85}
     >
       {post.post_thumb ? (
-        <Image source={{ uri: post.post_thumb }} style={styles.image} />
+        <Image
+          source={{ uri: post.post_thumb }}
+          style={styles.image}
+          blurRadius={post.is_mature ? 20 : 0}
+        />
       ) : (
         <View style={[styles.image, styles.placeholder]} />
+      )}
+      {post.is_mature && (
+        <View style={styles.matureBadge}>
+          <Text style={styles.matureBadgeText}>18+</Text>
+        </View>
       )}
       <View style={styles.overlay}>
         <Text style={styles.title} numberOfLines={2}>
@@ -43,6 +52,20 @@ const styles = StyleSheet.create({
   },
   placeholder: {
     backgroundColor: colors.headerBg,
+  },
+  matureBadge: {
+    position: 'absolute',
+    top: 8,
+    left: 8,
+    backgroundColor: 'rgba(0,0,0,0.75)',
+    borderRadius: 4,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+  },
+  matureBadgeText: {
+    color: colors.white,
+    fontSize: fontSize.xs,
+    fontWeight: 'bold',
   },
   overlay: {
     position: 'absolute',
