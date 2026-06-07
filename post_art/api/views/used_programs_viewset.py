@@ -5,7 +5,8 @@ from ..serializers import UsedProgramsSerializer
 from ...models import UsedPrograms
 
 
-class UsedProgramsViewSet(viewsets.ReadOnlyModelViewSet):
+class UsedProgramsViewSet(viewsets.ModelViewSet):
+    http_method_names = ['get', 'head', 'options']
     serializer_class = UsedProgramsSerializer
     permission_classes = [AllowAny]
 

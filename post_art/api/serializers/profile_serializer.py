@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from ...models import Profile
-from .about import AboutReadSerializer
+from .about_serializer import AboutReadSerializer
 
 
 class ProfileMinimalSerializer(serializers.ModelSerializer):
@@ -34,21 +34,21 @@ class ProfileSerializer(serializers.ModelSerializer):
         )
 
     def get_posts(self, obj):
-        from .post_art import PostFeedSerializer
+        from .post_art_serializer import PostFeedSerializer
         qs = obj.postart_set.all()
         if not self._is_owner(obj):
             qs = qs.filter(published=True)
         return PostFeedSerializer(qs, many=True, context=self.context).data
 
     def get_drafts(self, obj):
-        from .post_art import PostFeedSerializer
+        from .post_art_serializer import PostFeedSerializer
         if not self._is_owner(obj):
             return []
         qs = obj.postart_set.filter(published=False)
         return PostFeedSerializer(qs, many=True, context=self.context).data
 
     def get_liked_posts(self, obj):
-        from .post_art import PostFeedSerializer
+        from .post_art_serializer import PostFeedSerializer
         from ...models import PostArt
         if not self._is_owner(obj):
             return []
@@ -57,7 +57,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         return PostFeedSerializer(qs, many=True, context=self.context).data
 
     def get_saved_posts(self, obj):
-        from .post_art import PostFeedSerializer
+        from .post_art_serializer import PostFeedSerializer
         if not self._is_owner(obj):
             return []
         return PostFeedSerializer(obj.saved_posts.all(), many=True, context=self.context).data

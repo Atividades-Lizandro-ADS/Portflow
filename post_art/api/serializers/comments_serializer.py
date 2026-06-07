@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from ...models import Comments
-from .profile import ProfileMinimalSerializer
+from .profile_serializer import ProfileMinimalSerializer
 
 
 class CommentSerializer(serializers.ModelSerializer):

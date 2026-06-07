@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from ...models import PostArt, Like
-from .profile import ProfileMinimalSerializer
-from .used_programs import UsedProgramsSerializer
-from .post_images import PostImageSerializer
+from .profile_serializer import ProfileMinimalSerializer
+from .used_programs_serializer import UsedProgramsSerializer
+from .post_images_serializer import PostImageSerializer
 
 
 class PostArtSerializer(serializers.ModelSerializer):

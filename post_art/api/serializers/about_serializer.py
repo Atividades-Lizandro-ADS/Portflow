@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from ...models import About, Hiring, Skill, UsedPrograms
-from .hiring import HiringSerializer
-from .skill import SkillSerializer
-from .used_programs import UsedProgramsSerializer
+from .hiring_serializer import HiringSerializer
+from .skill_serializer import SkillSerializer
+from .used_programs_serializer import UsedProgramsSerializer
 
 
 class AboutReadSerializer(serializers.ModelSerializer):
