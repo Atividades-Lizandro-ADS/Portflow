@@ -7,7 +7,10 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Avatar from './Avatar';
 import SearchInput from './SearchInput';
+import NotificationBell from './molecules/NotificationBell';
+import NotificationPanel from './organisms/NotificationPanel';
 import { useAuth } from '../context/AuthContext';
+import { useNotifications } from '../hooks/useNotifications';
 import { colors, fontSize, spacing, radius } from '../theme';
 
 const NAVBAR_INNER_HEIGHT = 52;
@@ -28,6 +31,20 @@ export default function Navbar() {
   const [searchText, setSearchText] = useState('');
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showCreateMenu, setShowCreateMenu] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  const isLoggedIn = !!user;
+  const profileId = user?.profile_id;
+
+  const {
+    notifications,
+    unreadCount,
+    loading,
+    hasMore,
+    fetchNotifications,
+    handleMarkAsRead,
+    handleMarkAllRead,
+  } = useNotifications({ enabled: isLoggedIn });
 
   const menuTop = insets.top + 16 + NAVBAR_INNER_HEIGHT + spacing.sm;
 
@@ -45,8 +62,15 @@ export default function Navbar() {
     ]);
   };
 
-  const isLoggedIn = !!user;
-  const profileId = user?.profile_id;
+  const handleOpenNotifications = () => {
+    setShowNotifications(true);
+    fetchNotifications(true);
+  };
+
+  const handleNavigateToPost = (postId) => {
+    setShowNotifications(false);
+    router.push(`/post/${postId}`);
+  };
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + 16 }]}>
@@ -66,6 +90,13 @@ export default function Navbar() {
           </TouchableOpacity>
         )}
 
+        {isLoggedIn && (
+          <NotificationBell
+            unreadCount={unreadCount}
+            onPress={handleOpenNotifications}
+          />
+        )}
+
         {isLoggedIn ? (
           <TouchableOpacity style={styles.iconBtn} onPress={() => setShowUserMenu(true)}>
             <Avatar uri={user.user_picture} size={32} />
@@ -77,7 +108,6 @@ export default function Navbar() {
         )}
       </View>
 
-      {/* User menu */}
       <Modal visible={showUserMenu} transparent animationType="fade" onRequestClose={() => setShowUserMenu(false)}>
         <TouchableOpacity style={StyleSheet.absoluteFill} onPress={() => setShowUserMenu(false)} activeOpacity={1} />
         <View style={[styles.menu, { top: menuTop, right: spacing.md }]}>
@@ -101,7 +131,6 @@ export default function Navbar() {
         </View>
       </Modal>
 
-      {/* Create menu */}
       <Modal visible={showCreateMenu} transparent animationType="fade" onRequestClose={() => setShowCreateMenu(false)}>
         <TouchableOpacity style={StyleSheet.absoluteFill} onPress={() => setShowCreateMenu(false)} activeOpacity={1} />
         <View style={[styles.menu, { top: menuTop, right: spacing.md + 44 }]}>
@@ -112,6 +141,19 @@ export default function Navbar() {
           />
         </View>
       </Modal>
+
+      <NotificationPanel
+        visible={showNotifications}
+        onClose={() => setShowNotifications(false)}
+        notifications={notifications}
+        unreadCount={unreadCount}
+        loading={loading}
+        hasMore={hasMore}
+        onLoadMore={() => fetchNotifications(false)}
+        onMarkAsRead={handleMarkAsRead}
+        onMarkAllRead={handleMarkAllRead}
+        onNavigateToPost={handleNavigateToPost}
+      />
     </View>
   );
 }
