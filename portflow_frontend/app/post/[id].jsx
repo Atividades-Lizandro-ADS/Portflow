@@ -1,19 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import {
   View, Text, ScrollView, StyleSheet, ActivityIndicator,
-  TouchableOpacity, Alert, KeyboardAvoidingView, Platform, useWindowDimensions,
+  TouchableOpacity, Alert, KeyboardAvoidingView, Platform,
 } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AuthorCard from '../../src/components/AuthorCard';
 import PostActions from '../../src/components/PostActions';
-import ProgramChip from '../../src/components/ProgramChip';
 import PostGallery from '../../src/components/PostGallery';
-import YoutubeEmbed from '../../src/components/YoutubeEmbed';
-import SketchfabEmbed from '../../src/components/SketchfabEmbed';
-import MarmosetViewer from '../../src/components/MarmosetViewer';
 import CommentsSection from '../../src/components/CommentsSection';
+import PostMeta from '../../src/components/molecules/PostMeta';
+import PostKeywords from '../../src/components/molecules/PostKeywords';
+import PostEmbeds from '../../src/components/molecules/PostEmbeds';
 import { getPost, deletePost } from '../../src/api/posts';
 import { getComments } from '../../src/api/comments';
 import { useAuth } from '../../src/context/AuthContext';
@@ -24,21 +23,23 @@ export default function PostDetailScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const { user } = useAuth();
-  const { width: screenWidth } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    Promise.all([getPost(id), getComments(id)])
-      .then(([postRes, commentsRes]) => {
-        setPost(postRes.data);
-        setComments(commentsRes.data.results ?? commentsRes.data);
-      })
-      .finally(() => setLoading(false));
-  }, [id]);
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      Promise.all([getPost(id), getComments(id)])
+        .then(([postRes, commentsRes]) => {
+          setPost(postRes.data);
+          setComments(commentsRes.data.results ?? commentsRes.data);
+        })
+        .finally(() => setLoading(false));
+    }, [id])
+  );
 
   if (loading) {
     return <View style={styles.center}><ActivityIndicator color={colors.accent} size="large" /></View>;
@@ -47,10 +48,8 @@ export default function PostDetailScreen() {
     return <View style={styles.center}><Text style={styles.errorText}>Post não encontrado.</Text></View>;
   }
 
-  const embedWidth = screenWidth - spacing.lg * 2;
   const youtubeId = extractYoutubeId(post.youtube_link);
   const sketchfabId = extractSketchfabId(post.sketchfab_link);
-  const artLabel = post.art_type === '3' || post.art_type === '3D' ? '3D' : '2D';
 
   const handleDelete = () => {
     Alert.alert('Excluir post', 'Tem certeza? Esta ação não pode ser desfeita.', [
@@ -100,48 +99,20 @@ export default function PostDetailScreen() {
         ) : null}
 
         <View style={styles.section}>
-          <View style={styles.chipsRow}>
-            <View style={styles.artChip}>
-              <Text style={styles.artChipText}>{artLabel}</Text>
-            </View>
-            {post.used_programs?.map((p) => <ProgramChip key={p.id} program={p} />)}
-          </View>
+          <PostMeta artType={post.art_type} programs={post.used_programs} />
         </View>
 
         <PostGallery images={post.images} displayType={post.display_type} />
 
-        {youtubeId && (
-          <View style={styles.embedSection}>
-            <YoutubeEmbed videoId={youtubeId} width={embedWidth} />
-          </View>
-        )}
+        <PostEmbeds
+          youtubeId={youtubeId}
+          sketchfabId={sketchfabId}
+          marmoviewUrl={post.marmoview}
+        />
 
-        {post.marmoview && (
-          <View style={styles.embedSection}>
-            <Text style={styles.sectionLabel}>Marmoset Viewer</Text>
-            <MarmosetViewer url={post.marmoview} />
-          </View>
-        )}
-
-        {sketchfabId && (
-          <View style={styles.embedSection}>
-            <Text style={styles.sectionLabel}>Sketchfab</Text>
-            <SketchfabEmbed modelId={sketchfabId} />
-          </View>
-        )}
-
-        {post.keywords_list?.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionLabel}>Palavras-chave</Text>
-            <View style={styles.chipsRow}>
-              {post.keywords_list.map((kw, i) => (
-                <View key={i} style={styles.keywordChip}>
-                  <Text style={styles.keywordText}>#{kw}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-        )}
+        <View style={styles.section}>
+          <PostKeywords keywords={post.keywords_list} />
+        </View>
 
         <View style={styles.section}>
           <PostActions
@@ -196,20 +167,5 @@ const styles = StyleSheet.create({
   ownerBtnDeleteText: { color: colors.danger, fontSize: fontSize.sm, fontWeight: 'bold' },
 
   section: { paddingHorizontal: spacing.lg, paddingBottom: spacing.md },
-  sectionLabel: { color: colors.textSecondary, fontSize: fontSize.sm, fontWeight: 'bold', marginBottom: spacing.sm },
   description: { color: colors.textSecondary, fontSize: fontSize.md, lineHeight: 22 },
-
-  chipsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  artChip: {
-    backgroundColor: colors.headerBg, borderRadius: radius.pill,
-    paddingHorizontal: spacing.md, paddingVertical: spacing.xs,
-  },
-  artChipText: { color: colors.white, fontSize: fontSize.sm },
-  keywordChip: {
-    backgroundColor: colors.headerBg, borderRadius: radius.pill,
-    paddingHorizontal: spacing.md, paddingVertical: spacing.xs,
-  },
-  keywordText: { color: colors.accent, fontSize: fontSize.sm },
-
-  embedSection: { paddingHorizontal: spacing.lg, paddingBottom: spacing.lg },
 });

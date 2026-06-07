@@ -3,6 +3,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, fontSize, spacing } from '../theme';
 
+const imageUri = (img) => img.post_img ?? img.uri;
+
 export default function FullscreenImageModal({ images, index, onClose, onNavigate }) {
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -13,7 +15,7 @@ export default function FullscreenImageModal({ images, index, onClose, onNavigat
     <Modal visible animationType="fade" transparent onRequestClose={onClose}>
       <View style={[styles.bg, { width, height }]}>
         <Image
-          source={{ uri: images[index].post_img }}
+          source={{ uri: imageUri(images[index]) }}
           style={{ width, flex: 1 }}
           resizeMode="contain"
         />
