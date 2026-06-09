@@ -80,9 +80,11 @@ export default function PostDetailScreen() {
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView>
-        <TouchableOpacity style={[styles.backBtn, { top: insets.top + spacing.sm }]} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color={colors.white} />
-        </TouchableOpacity>
+        <View style={[styles.header, { paddingTop: insets.top }]}>
+          <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+            <Ionicons name="arrow-back" size={24} color={colors.white} />
+          </TouchableOpacity>
+        </View>
 
         <View style={styles.titleSection}>
           <Text style={styles.title}>{post.tittle}</Text>
@@ -146,13 +148,17 @@ const styles = StyleSheet.create({
   center: { flex: 1, backgroundColor: colors.darkBg, alignItems: 'center', justifyContent: 'center' },
   errorText: { color: colors.textSecondary, fontSize: fontSize.md },
 
+  header: {
+    paddingHorizontal: spacing.md,
+    paddingBottom: spacing.sm,
+  },
   backBtn: {
-    position: 'absolute', left: spacing.md, zIndex: 10,
+    alignSelf: 'flex-start',
     backgroundColor: 'rgba(0,0,0,0.55)', borderRadius: 20, padding: spacing.sm,
   },
 
   titleSection: {
-    paddingTop: spacing.xxl + spacing.xl,
+    paddingTop: spacing.sm,
     paddingHorizontal: spacing.lg,
     paddingBottom: spacing.md,
   },
