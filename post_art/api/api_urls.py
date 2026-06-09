@@ -7,6 +7,7 @@ from .views import (
     PostArtViewSet, ProfileViewSet, AboutViewSet,
     CommentViewSet, PostImageViewSet, UsedProgramsViewSet,
     HiringViewSet, SkillViewSet, NotificationViewSet,
+    CommissionTierViewSet, FollowViewSet,
 )
 
 router = DefaultRouter()
@@ -19,6 +20,8 @@ router.register('programs', UsedProgramsViewSet, basename='program')
 router.register('hiring', HiringViewSet, basename='hiring')
 router.register('skills', SkillViewSet, basename='skill')
 router.register('notifications', NotificationViewSet, basename='notification')
+router.register('commission-tiers', CommissionTierViewSet, basename='commission-tier')
+router.register('follows', FollowViewSet, basename='follow')
 
 urlpatterns = router.urls + [
     path('auth/register/', RegisterView.as_view(), name='auth_register'),

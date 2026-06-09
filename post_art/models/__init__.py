@@ -11,6 +11,8 @@ from .category import Category
 from .post_images import PostImages, post_images_upload_to
 from .notification_template import NotificationTemplate, MILESTONE_THRESHOLDS
 from .notification import Notification
+from .commission_tier import CommissionTier
+from .follow import Follow
 
 __all__ = [
     'BasePost',
@@ -21,4 +23,6 @@ __all__ = [
     'Comments', 'Like',
     'NotificationTemplate', 'MILESTONE_THRESHOLDS',
     'Notification',
+    'CommissionTier',
+    'Follow',
 ]

@@ -10,3 +10,5 @@ from . import hiring_admin
 from . import skill_admin
 from . import notification_template_admin
 from . import notification_admin
+from . import commission_tier_admin
+from . import follow_admin

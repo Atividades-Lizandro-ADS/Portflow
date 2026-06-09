@@ -13,6 +13,8 @@ from .post_art_serializer import (
 )
 from .notification_template_serializer import NotificationTemplateSerializer
 from .notification_serializer import NotificationSerializer
+from .commission_tier_serializer import CommissionTierSerializer
+from .follow_serializer import FollowSerializer
 
 __all__ = [
     'RegisterSerializer',
@@ -27,4 +29,6 @@ __all__ = [
     'PostArtSerializer', 'PostArtRefreshSerializer',
     'PostWriteSerializer', 'PostFeedSerializer', 'PostDetailSerializer',
     'NotificationTemplateSerializer', 'NotificationSerializer',
+    'CommissionTierSerializer',
+    'FollowSerializer',
 ]

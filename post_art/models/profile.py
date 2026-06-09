@@ -18,6 +18,7 @@ class Profile(models.Model):
     user_picture = models.ImageField(blank=True, upload_to=profile_picture_upload_to)
     profile_banner = models.ImageField(blank=True, upload_to=profile_banner_upload_to)
     saved_posts = models.ManyToManyField('PostArt', blank=True)
+    commissions_open = models.BooleanField(default=False)
 
     def __str__(self):
         return self.first_name
