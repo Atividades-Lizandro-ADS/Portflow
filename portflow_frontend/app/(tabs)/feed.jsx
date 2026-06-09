@@ -26,7 +26,7 @@ export default function FeedScreen() {
       setPosts((prev) => (pageNum === 1 ? results : [...prev, ...results]));
       setHasMore(!!data.next);
     } catch {
-      // network errors handled silently
+      setHasMore(false);
     } finally {
       setLoading(false);
       if (isRefresh) setRefreshing(false);
