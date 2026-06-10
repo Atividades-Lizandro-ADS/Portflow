@@ -10,7 +10,7 @@ from ...models import Profile, PostArt
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.select_related('user_profile').all()
     filter_backends = [filters.SearchFilter]
-    search_fields = ['first_name', 'user__username']
+    search_fields = ['first_name', 'user_profile__username']
 
     def get_serializer_class(self):
         if self.action in ('update', 'partial_update'):

@@ -4,8 +4,7 @@ import {
   ActivityIndicator, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import ScreenHeader from '../src/components/ScreenHeader';
 import { updateAbout } from '../src/api/about';
 import { getHiringOptions, getSkillOptions } from '../src/api/hiring';
 import { getPrograms } from '../src/api/programs';
@@ -28,7 +27,6 @@ function OptionChip({ label, selected, onPress }) {
 export default function EditAboutScreen() {
   const { aboutId } = useLocalSearchParams();
   const router = useRouter();
-  const insets = useSafeAreaInsets();
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -120,13 +118,7 @@ export default function EditAboutScreen() {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <View style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Ionicons name="arrow-back" size={24} color={colors.white} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Editar Sobre</Text>
-        <View style={{ width: 40 }} />
-      </View>
+      <ScreenHeader onBack={() => router.back()} title="Editar Sobre" />
 
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
 

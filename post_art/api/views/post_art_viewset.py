@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Q, Case, When, Value, BooleanField
 from rest_framework import viewsets, exceptions
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -34,11 +34,24 @@ class PostArtViewSet(viewsets.ModelViewSet):
             qs = PostArt.objects.filter(published=True)
             search = self.request.query_params.get('search')
             if search:
-                qs = qs.filter(
-                    Q(tittle__icontains=search) |
-                    Q(caption__icontains=search) |
-                    Q(description__icontains=search)
-                )
+                words = [w for w in search.split() if w]
+                any_q = Q()
+                title_q = Q()
+                for word in words:
+                    title_q |= Q(tittle__icontains=word)
+                    any_q |= (
+                        Q(tittle__icontains=word) |
+                        Q(caption__icontains=word) |
+                        Q(description__icontains=word) |
+                        Q(keywords__icontains=word)
+                    )
+                qs = qs.filter(any_q).annotate(
+                    title_match=Case(
+                        When(title_q, then=Value(True)),
+                        default=Value(False),
+                        output_field=BooleanField(),
+                    )
+                ).order_by('-title_match', '-id')
             return qs
 
         if profile:

@@ -4,8 +4,7 @@ import {
   ActivityIndicator, KeyboardAvoidingView, Platform, Switch,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import ScreenHeader from '../../src/components/ScreenHeader';
 import { getPost, updatePost } from '../../src/api/posts';
 import { updatePostImage, deletePostImage } from '../../src/api/post-images';
 import SectionLabel from '../../src/components/atoms/SectionLabel';
@@ -33,7 +32,6 @@ function normalizeExistingImage(img) {
 export default function EditPostScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  const insets = useSafeAreaInsets();
 
   const [mode, setMode] = useState('form');
   const [pageLoading, setPageLoading] = useState(true);
@@ -157,13 +155,7 @@ export default function EditPostScreen() {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <View style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Ionicons name="arrow-back" size={24} color={colors.white} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Editar Post</Text>
-        <View style={{ width: 40 }} />
-      </View>
+      <ScreenHeader onBack={() => router.back()} title="Editar Post" />
 
       <View style={styles.modeBar}>
         {['form', 'preview'].map((m) => (

@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   View, Text, StyleSheet, FlatList, TouchableOpacity,
-  ActivityIndicator, Image,
+  ActivityIndicator,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import SearchInput from '../src/components/SearchInput';
+import ScreenHeader from '../src/components/ScreenHeader';
 import PostCard from '../src/components/PostCard';
 import Avatar from '../src/components/Avatar';
 import { searchProfiles } from '../src/api/profiles';
@@ -37,6 +38,9 @@ export default function SearchScreen() {
   const router = useRouter();
 
   const [searchText, setSearchText] = useState(q ?? '');
+  const [hasSearched, setHasSearched] = useState(!!q);
+  const [currentQuery, setCurrentQuery] = useState(q ?? '');
+
   const [profiles, setProfiles] = useState([]);
   const [profilePage, setProfilePage] = useState(1);
   const [hasMoreProfiles, setHasMoreProfiles] = useState(false);
@@ -50,7 +54,9 @@ export default function SearchScreen() {
 
   const runSearch = useCallback(async (query) => {
     if (!query.trim()) return;
-
+    const trimmed = query.trim();
+    setCurrentQuery(trimmed);
+    setHasSearched(true);
     setLoadingProfiles(true);
     setLoadingPosts(true);
     setProfiles([]);
@@ -59,8 +65,8 @@ export default function SearchScreen() {
     setPostPage(1);
 
     const [profileRes, postRes] = await Promise.allSettled([
-      searchProfiles(query, 1),
-      getPosts(1, query),
+      searchProfiles(trimmed, 1),
+      getPosts(1, trimmed),
     ]);
 
     if (profileRes.status === 'fulfilled') {
@@ -85,16 +91,15 @@ export default function SearchScreen() {
   const handleSubmit = () => {
     const query = searchText.trim();
     if (!query) return;
-    router.setParams({ q: query });
     runSearch(query);
   };
 
   const loadMoreProfiles = async () => {
-    if (!hasMoreProfiles || loadingMoreProfiles) return;
+    if (!hasMoreProfiles || loadingMoreProfiles || !currentQuery) return;
     setLoadingMoreProfiles(true);
     const next = profilePage + 1;
     try {
-      const { data } = await searchProfiles(q, next);
+      const { data } = await searchProfiles(currentQuery, next);
       setProfiles((prev) => [...prev, ...(data.results ?? data)]);
       setHasMoreProfiles(!!data.next);
       setProfilePage(next);
@@ -104,11 +109,11 @@ export default function SearchScreen() {
   };
 
   const loadMorePosts = () => {
-    if (!hasMorePosts || loadingPosts) return;
+    if (!hasMorePosts || loadingPosts || !currentQuery) return;
     const next = postPage + 1;
     setPostPage(next);
     setLoadingPosts(true);
-    getPosts(next, q)
+    getPosts(next, currentQuery)
       .then(({ data }) => {
         setPosts((prev) => [...prev, ...(data.results ?? data)]);
         setHasMorePosts(!!data.next);
@@ -116,9 +121,8 @@ export default function SearchScreen() {
       .finally(() => setLoadingPosts(false));
   };
 
-  const ListHeader = (
+  const ListHeader = !hasSearched ? null : (
     <View>
-      {/* Artistas */}
       <Text style={styles.sectionTitle}>Artistas</Text>
       {loadingProfiles ? (
         <ActivityIndicator color={colors.accent} style={styles.sectionLoader} />
@@ -141,7 +145,6 @@ export default function SearchScreen() {
         </>
       )}
 
-      {/* Posts */}
       <Text style={[styles.sectionTitle, styles.sectionTitlePosts]}>Posts</Text>
       {loadingPosts && posts.length === 0 && (
         <ActivityIndicator color={colors.accent} style={styles.sectionLoader} />
@@ -151,20 +154,14 @@ export default function SearchScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Ionicons name="arrow-back" size={24} color={colors.white} />
-        </TouchableOpacity>
-        <View style={styles.searchWrapper}>
-          <SearchInput
-            value={searchText}
-            onChangeText={setSearchText}
-            onSubmit={handleSubmit}
-            placeholder="Buscar posts e artistas..."
-          />
-        </View>
-      </View>
+      <ScreenHeader onBack={() => router.back()}>
+        <SearchInput
+          value={searchText}
+          onChangeText={setSearchText}
+          onSubmit={handleSubmit}
+          placeholder="Buscar posts e artistas..."
+        />
+      </ScreenHeader>
 
       <FlatList
         data={posts}
@@ -181,7 +178,9 @@ export default function SearchScreen() {
             : null
         }
         ListEmptyComponent={
-          !loadingPosts && !loadingProfiles && posts.length === 0
+          !hasSearched
+            ? <Text style={styles.searchHint}>Digite algo e pressione buscar para encontrar posts e artistas</Text>
+            : !loadingPosts && posts.length === 0
             ? <Text style={styles.empty}>Nenhum post encontrado.</Text>
             : null
         }
@@ -193,18 +192,6 @@ export default function SearchScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.darkBg },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    padding: spacing.md,
-    paddingTop: spacing.xl,
-    backgroundColor: colors.darkBg,
-  },
-  backBtn: {
-    padding: spacing.xs,
-  },
-  searchWrapper: { flex: 1 },
   list: { padding: CARD_GAP },
   row: { justifyContent: 'space-between', marginBottom: CARD_GAP },
   sectionTitle: {
@@ -243,6 +230,13 @@ const styles = StyleSheet.create({
     fontSize: fontSize.sm,
     paddingHorizontal: spacing.xs,
     marginBottom: spacing.md,
+  },
+  searchHint: {
+    color: colors.textSecondary,
+    fontSize: fontSize.sm,
+    textAlign: 'center',
+    paddingVertical: spacing.xl,
+    paddingHorizontal: spacing.lg,
   },
   footer: { paddingVertical: spacing.lg },
 });

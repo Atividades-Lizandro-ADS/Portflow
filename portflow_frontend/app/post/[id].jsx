@@ -4,8 +4,8 @@ import {
   TouchableOpacity, Alert, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
+import ScreenHeader from '../../src/components/ScreenHeader';
 import { Ionicons } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AuthorCard from '../../src/components/AuthorCard';
 import PostActions from '../../src/components/PostActions';
 import PostGallery from '../../src/components/PostGallery';
@@ -24,7 +24,6 @@ export default function PostDetailScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const { user } = useAuth();
-  const insets = useSafeAreaInsets();
 
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
@@ -80,11 +79,7 @@ export default function PostDetailScreen() {
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView>
-        <View style={[styles.header, { paddingTop: insets.top }]}>
-          <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-            <Ionicons name="arrow-back" size={24} color={colors.white} />
-          </TouchableOpacity>
-        </View>
+        <ScreenHeader onBack={() => router.back()} noBorder />
 
         <View style={styles.titleSection}>
           <Text style={styles.title}>{post.tittle}</Text>
@@ -147,15 +142,6 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.darkBg },
   center: { flex: 1, backgroundColor: colors.darkBg, alignItems: 'center', justifyContent: 'center' },
   errorText: { color: colors.textSecondary, fontSize: fontSize.md },
-
-  header: {
-    paddingHorizontal: spacing.md,
-    paddingBottom: spacing.sm,
-  },
-  backBtn: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(0,0,0,0.55)', borderRadius: 20, padding: spacing.sm,
-  },
 
   titleSection: {
     paddingTop: spacing.sm,

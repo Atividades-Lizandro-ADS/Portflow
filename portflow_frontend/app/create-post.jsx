@@ -4,8 +4,7 @@ import {
   ActivityIndicator, KeyboardAvoidingView, Platform, Switch,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import ScreenHeader from '../src/components/ScreenHeader';
 import { createPost } from '../src/api/posts';
 import SectionLabel from '../src/components/atoms/SectionLabel';
 import TypeSelector from '../src/components/molecules/TypeSelector';
@@ -19,7 +18,6 @@ import { colors, fontSize, spacing, radius } from '../src/theme';
 
 export default function CreatePostScreen() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
 
   const [mode, setMode] = useState('form');
   const [tittle, setTittle] = useState('');
@@ -89,13 +87,7 @@ export default function CreatePostScreen() {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <View style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Ionicons name="arrow-back" size={24} color={colors.white} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Novo Post</Text>
-        <View style={{ width: 40 }} />
-      </View>
+      <ScreenHeader onBack={() => router.back()} title="Novo Post" />
 
       <View style={styles.modeBar}>
         {['form', 'preview'].map((m) => (
