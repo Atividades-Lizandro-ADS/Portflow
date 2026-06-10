@@ -116,16 +116,11 @@ export default function Navbar() {
             label="Meu perfil"
             onPress={() => { setShowUserMenu(false); router.push(`/profile/${profileId}`); }}
           />
-          <MenuItem
-            icon="grid-outline"
-            label="Meus posts"
-            onPress={() => { setShowUserMenu(false); router.push(`/profile/${profileId}`); }}
-          />
-          <MenuItem
+          {/* <MenuItem
             icon="bookmark-outline"
             label="Meus favoritos"
             onPress={() => { setShowUserMenu(false); router.push('/my-favorites'); }}
-          />
+          /> */}
           <View style={styles.divider} />
           <MenuItem icon="log-out-outline" label="Sair" onPress={handleLogout} danger />
         </View>

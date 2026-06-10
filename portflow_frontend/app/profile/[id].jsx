@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, ActivityIndicator,
   TouchableOpacity, Image,
 } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Avatar from '../../src/components/Avatar';
@@ -35,12 +35,15 @@ export default function ProfileScreen() {
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState('portfolio');
 
-  useEffect(() => {
-    getProfile(id)
-      .then(({ data }) => setProfile(data))
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, [id]);
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      getProfile(id)
+        .then(({ data }) => setProfile(data))
+        .catch(() => {})
+        .finally(() => setLoading(false));
+    }, [id])
+  );
 
   if (loading) {
     return <View style={styles.center}><ActivityIndicator color={colors.accent} size="large" /></View>;
@@ -90,60 +93,6 @@ export default function ProfileScreen() {
         </View>
       </View>
 
-      {/* About section */}
-      {about && (
-        <View style={styles.aboutCard}>
-          <View style={styles.aboutHeader}>
-            <Text style={styles.aboutTitle}>Sobre</Text>
-            {isOwner && (
-              <TouchableOpacity onPress={handleEditAbout} style={styles.editBtn}>
-                <Ionicons name="pencil-outline" size={16} color={colors.accent} />
-                <Text style={styles.editBtnText}>Editar</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {about.summary ? <Text style={styles.summary}>{about.summary}</Text> : null}
-
-          {about.hiring?.length > 0 && (
-            <View style={styles.aboutGroup}>
-              <Text style={styles.aboutGroupLabel}>Disponível para</Text>
-              <View style={styles.chipsRow}>
-                {about.hiring.map((h) => (
-                  <View key={h.id} style={styles.tagChip}>
-                    <Text style={styles.tagChipText}>{h.hire_type}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-          )}
-
-          {about.skills?.length > 0 && (
-            <View style={styles.aboutGroup}>
-              <Text style={styles.aboutGroupLabel}>Habilidades</Text>
-              <View style={styles.chipsRow}>
-                {about.skills.map((s) => (
-                  <View key={s.id} style={styles.tagChip}>
-                    <Text style={styles.tagChipText}>{s.skill_type}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-          )}
-
-          {about.programs_known?.length > 0 && (
-            <View style={styles.aboutGroup}>
-              <Text style={styles.aboutGroupLabel}>Programas</Text>
-              <View style={styles.chipsRow}>
-                {about.programs_known.map((p) => (
-                  <ProgramChip key={p.id} program={p} />
-                ))}
-              </View>
-            </View>
-          )}
-        </View>
-      )}
-
       {/* Tab bar */}
       <View style={styles.tabBar}>
         {['portfolio', 'sobre'].map((t) => (
@@ -180,10 +129,59 @@ export default function ProfileScreen() {
       )}
 
       {tab === 'sobre' && (
-        <View style={{ padding: spacing.lg }}>
-          {!about ? (
-            <Text style={styles.empty}>Nenhuma informação de sobre disponível.</Text>
-          ) : null}
+        <View style={styles.aboutCard}>
+          <View style={styles.aboutHeader}>
+            <Text style={styles.aboutTitle}>Sobre</Text>
+            {isOwner && about && (
+              <TouchableOpacity onPress={handleEditAbout} style={styles.editBtn}>
+                <Ionicons name="pencil-outline" size={16} color={colors.accent} />
+                <Text style={styles.editBtnText}>Editar</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+
+          {!about && (
+            <Text style={styles.empty}>Nenhuma informação disponível.</Text>
+          )}
+
+          {about?.summary ? <Text style={styles.summary}>{about.summary}</Text> : null}
+
+          {about?.hiring?.length > 0 && (
+            <View style={styles.aboutGroup}>
+              <Text style={styles.aboutGroupLabel}>Disponível para</Text>
+              <View style={styles.chipsRow}>
+                {about.hiring.map((h) => (
+                  <View key={h.id} style={styles.tagChip}>
+                    <Text style={styles.tagChipText}>{h.hire_type}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
+
+          {about?.skills?.length > 0 && (
+            <View style={styles.aboutGroup}>
+              <Text style={styles.aboutGroupLabel}>Habilidades</Text>
+              <View style={styles.chipsRow}>
+                {about.skills.map((s) => (
+                  <View key={s.id} style={styles.tagChip}>
+                    <Text style={styles.tagChipText}>{s.skill_type}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
+
+          {about?.programs_known?.length > 0 && (
+            <View style={styles.aboutGroup}>
+              <Text style={styles.aboutGroupLabel}>Programas</Text>
+              <View style={styles.chipsRow}>
+                {about.programs_known.map((p) => (
+                  <ProgramChip key={p.id} program={p} />
+                ))}
+              </View>
+            </View>
+          )}
         </View>
       )}
 

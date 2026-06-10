@@ -45,12 +45,11 @@ function SectionTitle({ children }) {
 }
 
 function AboutSection({ about, isOwner, onEdit }) {
-  if (!about) return null;
   return (
     <View style={styles.aboutCard}>
       <View style={styles.aboutHeader}>
         <Text style={styles.aboutTitle}>Sobre</Text>
-        {isOwner && (
+        {isOwner && about && (
           <TouchableOpacity onPress={onEdit} style={styles.editBtn}>
             <Ionicons name="pencil-outline" size={16} color={colors.accent} />
             <Text style={styles.editBtnText}>Editar</Text>
@@ -58,9 +57,13 @@ function AboutSection({ about, isOwner, onEdit }) {
         )}
       </View>
 
-      {about.summary ? <Text style={styles.summary}>{about.summary}</Text> : null}
+      {!about && (
+        <Text style={styles.summary}>Nenhuma informação disponível.</Text>
+      )}
 
-      {about.hiring?.length > 0 && (
+      {about?.summary ? <Text style={styles.summary}>{about.summary}</Text> : null}
+
+      {about?.hiring?.length > 0 && (
         <View style={styles.aboutGroup}>
           <Text style={styles.aboutGroupLabel}>Disponível para</Text>
           <View style={styles.chipsRow}>
@@ -73,7 +76,7 @@ function AboutSection({ about, isOwner, onEdit }) {
         </View>
       )}
 
-      {about.skills?.length > 0 && (
+      {about?.skills?.length > 0 && (
         <View style={styles.aboutGroup}>
           <Text style={styles.aboutGroupLabel}>Habilidades</Text>
           <View style={styles.chipsRow}>
@@ -86,7 +89,7 @@ function AboutSection({ about, isOwner, onEdit }) {
         </View>
       )}
 
-      {about.programs_known?.length > 0 && (
+      {about?.programs_known?.length > 0 && (
         <View style={styles.aboutGroup}>
           <Text style={styles.aboutGroupLabel}>Programas</Text>
           <View style={styles.chipsRow}>
