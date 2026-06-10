@@ -77,6 +77,24 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user_profile.username', required=False)
+
     class Meta:
         model = Profile
-        fields = ('first_name', 'user_picture', 'profile_banner', 'commissions_open')
+        fields = ('first_name', 'username', 'user_picture', 'profile_banner', 'commissions_open')
+
+    def validate_username(self, value):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        if self.instance and self.instance.user_profile.username == value:
+            return value
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError('Este username já está em uso.')
+        return value
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user_profile', {})
+        if 'username' in user_data:
+            instance.user_profile.username = user_data['username']
+            instance.user_profile.save(update_fields=['username'])
+        return super().update(instance, validated_data)

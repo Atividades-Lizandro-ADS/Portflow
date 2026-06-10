@@ -65,6 +65,11 @@ export default function ProfileScreen() {
         hiring: JSON.stringify(about.hiring ?? []),
         skills: JSON.stringify(about.skills ?? []),
         programs: JSON.stringify(about.programs_known ?? []),
+        profileId: profile.id,
+        firstName: profile.first_name ?? '',
+        currentUsername: profile.username ?? '',
+        avatarUri: profile.user_picture ?? '',
+        bannerUri: profile.profile_banner ?? '',
       },
     });
   };

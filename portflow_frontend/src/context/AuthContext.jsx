@@ -49,8 +49,16 @@ export function AuthProvider({ children }) {
 
   const setUserData = useCallback((data) => setUser(data), []);
 
+  const refreshUser = useCallback(async () => {
+    try {
+      const { data } = await getMe();
+      await SecureStore.setItemAsync('user_data', JSON.stringify(data));
+      setUser(data);
+    } catch {}
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading, setUserData }}>
+    <AuthContext.Provider value={{ user, login, logout, loading, setUserData, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );
