@@ -1,3 +1,9 @@
+
+<!--
+  //Augusto, por enquanto estou mockando os botões na tela inicial antes de testar diretamente o codigo do login
+  //reaproveitei parte do codigo do projeto do todo pra login com os tokens, mas sem página de login funcional ainda não é possivel resgatar o token
+-->
+
 <div style="padding: 24px; display: flex; gap: 8px;">
   <app-toggle-btn
     [active]="true"
@@ -11,6 +17,13 @@
     iconOn="bi-bookmark-fill"
     iconOff="bi-bookmark"
   />
+</div>
+
+<div style="padding: 24px; display: flex; flex-direction: column; gap: 12px; max-width: 320px;">
+  <app-basic-btn label="Entrar" type="submit" />
+  <app-basic-btn label="Cadastrar" type="submit" />
+  <app-basic-btn label="Carregando..." [loading]="true" />
+  <app-basic-btn label="Desabilitado" [disabled]="true" />
 </div>
 
 <router-outlet />
