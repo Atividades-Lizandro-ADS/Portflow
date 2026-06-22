@@ -1,0 +1,27 @@
+:root {
+  --dark-bg:        #101014;
+  --light-bg:       #202024;
+  --form-bg:        #18181c;
+  --header-bg:      #303034;
+  --modal-bg:       #404044;
+  --input-bg:       #101014;
+  --input-border:   #505054;
+  --light-gray:     rgba(65, 65, 69, 1);
+  --accent:         #24BAFF;
+  --white:          #fff;
+  --text-secondary: rgba(255, 255, 255, 0.65);
+  --danger:         #ff4444;
+  --drag-active:    #4CAF50;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--dark-bg);
+  color: var(--white);
+  font-family: sans-serif;
+}

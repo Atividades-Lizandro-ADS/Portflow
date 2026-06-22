@@ -47,11 +47,32 @@ services:
       timeout: 5s
       retries: 5
 
+  minio-setup:
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_BUCKET=${AWS_STORAGE_BUCKET_NAME:-portfolio}
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD &&
+      mc mb --ignore-existing local/$$MINIO_BUCKET &&
+      mc anonymous set download local/$$MINIO_BUCKET &&
+      printf '%s' '<?xml version=\"1.0\" encoding=\"UTF-8\"?><CORSConfiguration><CORSRule><AllowedOrigin>*</AllowedOrigin><AllowedMethod>GET</AllowedMethod><AllowedMethod>HEAD</AllowedMethod><AllowedHeader>*</AllowedHeader><MaxAgeSeconds>3600</MaxAgeSeconds></CORSRule></CORSConfiguration>' > /tmp/cors.xml &&
+      (mc cors set local/$$MINIO_BUCKET /tmp/cors.xml && echo 'CORS configurado') || echo 'CORS nao suportado nesta versao do MinIO — atualize a imagem' &&
+      echo 'MinIO setup concluido'
+      "
+    restart: "no"
+
   backend:
     container_name: portfolio-django
     build: .
     command: >
       sh -c "python manage.py migrate &&
+             python manage.py configure_minio &&
              gunicorn portfolio.wsgi:application --bind 0.0.0.0:8000 --reload"
     restart: unless-stopped
     ports:
@@ -65,8 +86,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      minio:
-        condition: service_healthy
+      minio-setup:
+        condition: service_completed_successfully
 
 volumes:
   postgres_data:

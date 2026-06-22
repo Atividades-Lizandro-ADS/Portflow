@@ -1,14 +1,23 @@
+import uuid
 from django.db import models
 from .base import BasePost
-from ..custom_model_fields import YoutubeUrlField, MarmosetFileField
+from ..custom_model_fields import YoutubeUrlField, MarmosetFileField, SketchfabUrlField
 
 
 def thumb_upload_to(instance, filename):
-    return f'user/{instance.post_owner}/post/thumb_{filename}'
+    ext = filename.rsplit('.', 1)[-1] if '.' in filename else 'jpg'
+    username = instance.post_owner.user_profile.username
+    return f'users/{username}/thumbs/{uuid.uuid4().hex[:12]}.{ext}'
+
+
+def marmoview_upload_to(instance, filename):
+    username = instance.post_owner.user_profile.username
+    return f'users/{username}/marmoviews/{uuid.uuid4().hex[:12]}.mview'
 
 
 class PostArt(BasePost):
     art_type_choices = (('2', '2D'), ('3', '3D'))
+    display_type_choices = (('list', 'Lista'), ('album', 'Album'))
 
     post_owner = models.ForeignKey('Profile', on_delete=models.CASCADE)
     post_thumb = models.ImageField(upload_to=thumb_upload_to)
@@ -20,9 +29,12 @@ class PostArt(BasePost):
     views_number = models.IntegerField(default=0)
     category = models.ForeignKey('Category', on_delete=models.SET_NULL, blank=True, null=True)
     youtube_link = YoutubeUrlField(null=True, blank=True)
-    marmoview = MarmosetFileField(null=True, blank=True)
+    sketchfab_link = SketchfabUrlField(null=True, blank=True)
+    marmoview = MarmosetFileField(null=True, blank=True, upload_to=marmoview_upload_to)
     keywords = models.TextField(null=True, blank=True)
     published = models.BooleanField(default=True)
+    display_type = models.CharField(max_length=5, choices=display_type_choices, default='list')
+    is_mature = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'post portfolio'

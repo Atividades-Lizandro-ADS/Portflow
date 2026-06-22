@@ -2,12 +2,18 @@ import re
 from django.db import models
 from django.core.exceptions import ValidationError
 
+# Primeiros 24 bytes de um .mview real: "thumbnail.jpg\x00image/jpeg\x00"
+# O formato do Marmoset embeds um thumbnail JPEG no início do arquivo,
+# precedido por esse header que identifica o conteúdo e o mime type.
+MVIEW_MAGIC = b'thumbnail.jpg\x00image/jpeg'
+MVIEW_MAX_SIZE = 30 * 1024 * 1024  # 30MB
+
 
 class YoutubeUrlField(models.CharField):
     default_validators = []
 
     def __init__(self, *args, **kwargs):
-        kwargs['max_length'] = 200  # Defina um comprimento máximo adequado
+        kwargs['max_length'] = 200
         super().__init__(*args, **kwargs)
 
     def validate(self, value, model_instance):
@@ -25,38 +31,46 @@ class YoutubeUrlField(models.CharField):
         return name, path, args, kwargs
 
 
-    
-class MarmosetFileField(models.FileField):
+def validate_mview_file(value):
+    if not value.name.lower().endswith('.mview'):
+        raise ValidationError('Apenas arquivos .mview são permitidos.')
+
+    if value.size > MVIEW_MAX_SIZE:
+        raise ValidationError('O arquivo Marmoset não pode exceder 30MB.')
+
+    value.seek(0)
+    header = value.read(len(MVIEW_MAGIC))  # lê exatamente 24 bytes
+    value.seek(0)
+
+    if header != MVIEW_MAGIC:
+        raise ValidationError(
+            'O arquivo não é um .mview válido do Marmoset Toolbag. '
+            'Exporte o arquivo diretamente pelo Marmoset Toolbag.'
+        )
+
+
+class SketchfabUrlField(models.CharField):
     def __init__(self, *args, **kwargs):
-        # kwargs['validators'] = [self.validate_mview_file]
+        kwargs['max_length'] = 200
         super().__init__(*args, **kwargs)
 
-    # def validate_mview_file(self,value):
-    #     if not value.name.endswith('.mview'):
-    #         raise ValidationError('Apenas arquivos .mview são permitidos.')
-
-    #     try:
-    #         with value.open('rb') as f:
-    #             header = f.read(24)
-    #             print(f"Cabeçalho lido (hex): {header.hex()}")  # Debug: Exibe os bytes em hexadecimal
-    #             print(f"Cabeçalho lido (ASCII): {header}")  # Debug: Exibe os bytes em ASCII
-
-    #             # Define o cabeçalho esperado
-    #             expected_header = b'thumbnail.jpegimage/jpeg'
-    #             if header != expected_header:
-    #                 raise ValidationError('O arquivo .mview não possui um cabeçalho válido.')
-
-    #     except Exception as e:
-    #         raise ValidationError(f'Erro ao validar o arquivo: {str(e)}')
+    def validate(self, value, model_instance):
+        super().validate(value, model_instance)
+        if value and 'sketchfab.com' not in value:
+            raise ValidationError('Por favor, insira um link válido do Sketchfab.')
 
     def deconstruct(self):
-        """
-        Necessário para serializar o campo durante as migrações.
-        """
         name, path, args, kwargs = super().deconstruct()
-        # Remove o validador personalizado dos kwargs para evitar problemas
-        # if 'validators' in kwargs:
-        #     del kwargs['validators']
+        del kwargs['max_length']
         return name, path, args, kwargs
-    
 
+
+class MarmosetFileField(models.FileField):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('validators', [validate_mview_file])
+        super().__init__(*args, **kwargs)
+
+    def deconstruct(self):
+        name, path, args, kwargs = super().deconstruct()
+        kwargs.pop('validators', None)
+        return name, path, args, kwargs
