@@ -1,0 +1,16 @@
+<div style="padding: 24px; display: flex; gap: 8px;">
+  <app-toggle-btn
+    [active]="true"
+    endpoint="/api/posts/1/like/"
+    iconOn="bi-heart-fill"
+    iconOff="bi-heart"
+  />
+  <app-toggle-btn
+    [active]="false"
+    endpoint="/api/posts/1/favorite/"
+    iconOn="bi-bookmark-fill"
+    iconOff="bi-bookmark"
+  />
+</div>
+
+<router-outlet />
