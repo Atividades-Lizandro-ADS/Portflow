@@ -26,4 +26,11 @@
   <app-basic-btn label="Desabilitado" [disabled]="true" />
 </div>
 
+<div style="padding: 24px; display: flex; flex-direction: column; gap: 12px; max-width: 320px;">
+  <app-text-input placeholder="Usuário ou e-mail" type="email" autocomplete="email" />
+  <app-text-input placeholder="Senha" type="password" autocomplete="current-password" />
+  <app-text-input placeholder="Título da obra" [maxLength]="150" />
+  <app-text-input placeholder="Descreva sua obra em detalhes..." [multiline]="true" />
+</div>
+
 <router-outlet />
