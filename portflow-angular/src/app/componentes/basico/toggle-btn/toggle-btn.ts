@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, input, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 
@@ -9,28 +9,28 @@ import { environment } from '../../../../environments/environment';
   styleUrl: './toggle-btn.scss',
 })
 export class ToggleBtn implements OnInit {
-  @Input() active = false;
-  @Input() endpoint = '';
-  @Input() iconOn = '';
-  @Input() iconOff = '';
+  active = input(false);
+  endpoint = input('');
+  iconOn = input('');
+  iconOff = input('');
 
   private http = inject(HttpClient);
 
   state = signal(false);
   loading = signal(false);
 
-  ngOnInit() {
-    this.state.set(this.active);
+  ngOnInit(): void {
+    this.state.set(this.active());
   }
 
-  toggle() {
+  toggle(): void {
     if (this.loading()) return;
 
     const prev = this.state();
     this.state.set(!prev);
     this.loading.set(true);
 
-    this.http.post(`${environment.apiUrl}${this.endpoint}`, {}).subscribe({
+    this.http.post(`${environment.apiUrl}${this.endpoint()}`, {}).subscribe({
       next: () => this.loading.set(false),
       error: () => {
         this.state.set(prev);

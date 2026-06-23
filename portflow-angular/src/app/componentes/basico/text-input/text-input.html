@@ -1,22 +1,22 @@
-@if (multiline) {
+@if (multiline()) {
   <textarea
     class="text-input"
-    [placeholder]="placeholder"
-    [attr.maxlength]="maxLength"
-    [disabled]="isDisabled"
-    [value]="value"
+    [placeholder]="placeholder()"
+    [attr.maxlength]="maxLength()"
+    [disabled]="isDisabled()"
+    [value]="value()"
     (input)="onInput($event)"
     (blur)="onBlur()"
   ></textarea>
 } @else {
   <input
     class="text-input"
-    [type]="type"
-    [placeholder]="placeholder"
-    [attr.maxlength]="maxLength"
-    [disabled]="isDisabled"
-    [attr.autocomplete]="autocomplete"
-    [value]="value"
+    [type]="type()"
+    [placeholder]="placeholder()"
+    [attr.maxlength]="maxLength()"
+    [disabled]="isDisabled()"
+    [attr.autocomplete]="autocomplete()"
+    [value]="value()"
     (input)="onInput($event)"
     (blur)="onBlur()"
   />

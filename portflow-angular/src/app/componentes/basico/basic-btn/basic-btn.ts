@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'app-basic-btn',
@@ -7,14 +7,14 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   styleUrl: './basic-btn.scss',
 })
 export class BasicBtn {
-  @Input() label = '';
-  @Input() loading = false;
-  @Input() disabled = false;
-  @Input() type: 'button' | 'submit' | 'reset' = 'button';
-  @Output() clicked = new EventEmitter<void>();
+  label = input('');
+  loading = input(false);
+  disabled = input(false);
+  type = input<'button' | 'submit' | 'reset'>('button');
+  clicked = output<void>();
 
   onClick(): void {
-    if (!this.loading && !this.disabled) {
+    if (!this.loading() && !this.disabled()) {
       this.clicked.emit();
     }
   }

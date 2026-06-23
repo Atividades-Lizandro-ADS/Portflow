@@ -1,12 +1,12 @@
 <button
-  [type]="type"
-  [disabled]="loading || disabled"
+  [type]="type()"
+  [disabled]="loading() || disabled()"
   (click)="onClick()"
   class="basic-btn"
 >
-  @if (loading) {
+  @if (loading()) {
     <span class="spinner"></span>
   } @else {
-    {{ label }}
+    {{ label() }}
   }
 </button>

@@ -20,11 +20,11 @@
           placeholder="Usuário (sem espaços)"
           autocomplete="username"
         />
-        @if (usernameStatus === 'checking') {
+        @if (usernameStatus() === 'checking') {
           <span class="username-hint username-hint--checking">Verificando...</span>
-        } @else if (usernameStatus === 'available') {
+        } @else if (usernameStatus() === 'available') {
           <span class="username-hint username-hint--ok">Username disponível</span>
-        } @else if (usernameStatus === 'taken') {
+        } @else if (usernameStatus() === 'taken') {
           <span class="username-hint username-hint--err">Username já em uso</span>
         }
       </div>
@@ -48,11 +48,11 @@
         autocomplete="new-password"
       />
 
-      @if (error) {
-        <span class="auth-page__error">{{ error }}</span>
+      @if (error()) {
+        <span class="auth-page__error">{{ error() }}</span>
       }
 
-      <app-basic-btn label="Cadastrar" type="submit" [loading]="loading" />
+      <app-basic-btn label="Cadastrar" type="submit" [loading]="loading()" />
 
       <p class="auth-page__footer">
         Já tem conta? <a routerLink="/login">Entrar</a>

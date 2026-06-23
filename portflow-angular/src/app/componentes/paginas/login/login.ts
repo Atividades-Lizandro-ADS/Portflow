@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth';
@@ -21,21 +21,21 @@ export class Login {
     password: new FormControl('', Validators.required),
   });
 
-  loading = false;
-  error = '';
+  loading = signal(false);
+  error = signal('');
 
   submit(): void {
-    if (this.form.invalid || this.loading) return;
-    this.loading = true;
-    this.error = '';
+    if (this.form.invalid || this.loading()) return;
+    this.loading.set(true);
+    this.error.set('');
     this.auth.login(this.form.getRawValue() as LoginRequest).subscribe({
       next: () => {
-        this.loading = false;
+        this.loading.set(false);
         this.router.navigate(['/feed']);
       },
       error: () => {
-        this.error = 'Usuário ou senha inválidos.';
-        this.loading = false;
+        this.error.set('Usuário ou senha inválidos.');
+        this.loading.set(false);
       },
     });
   }

@@ -7,6 +7,6 @@
   @if (loading()) {
     <span class="toggle-btn__spinner"></span>
   } @else {
-    <i class="bi" [class]="state() ? iconOn : iconOff"></i>
+    <i class="bi" [class]="state() ? iconOn() : iconOff()"></i>
   }
 </button>

@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef } from '@angular/core';
+import { Component, forwardRef, input, signal } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -15,21 +15,21 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   ],
 })
 export class TextInput implements ControlValueAccessor {
-  @Input() placeholder = '';
-  @Input() type: 'text' | 'password' | 'email' | 'url' | 'number' = 'text';
-  @Input() multiline = false;
-  @Input() maxLength: number | null = null;
-  @Input() autocomplete = 'off';
+  placeholder = input('');
+  type = input<'text' | 'password' | 'email' | 'url' | 'number'>('text');
+  multiline = input(false);
+  maxLength = input<number | null>(null);
+  autocomplete = input('off');
 
-  value = '';
-  isDisabled = false;
+  value = signal('');
+  isDisabled = signal(false);
 
   private onChange: (v: string) => void = () => {};
   private onTouched: () => void = () => {};
 
   onInput(event: Event): void {
     const val = (event.target as HTMLInputElement | HTMLTextAreaElement).value;
-    this.value = val;
+    this.value.set(val);
     this.onChange(val);
   }
 
@@ -38,7 +38,7 @@ export class TextInput implements ControlValueAccessor {
   }
 
   writeValue(val: string): void {
-    this.value = val ?? '';
+    this.value.set(val ?? '');
   }
 
   registerOnChange(fn: (v: string) => void): void {
@@ -50,6 +50,6 @@ export class TextInput implements ControlValueAccessor {
   }
 
   setDisabledState(disabled: boolean): void {
-    this.isDisabled = disabled;
+    this.isDisabled.set(disabled);
   }
 }

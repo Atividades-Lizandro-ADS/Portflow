@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -10,14 +10,14 @@ import { Router } from '@angular/router';
 export class SearchInput {
   private router = inject(Router);
 
-  query = '';
+  query = signal('');
 
   onInput(event: Event): void {
-    this.query = (event.target as HTMLInputElement).value;
+    this.query.set((event.target as HTMLInputElement).value);
   }
 
   onSubmit(): void {
-    const q = this.query.trim();
+    const q = this.query().trim();
     if (q) {
       this.router.navigate(['/search'], { queryParams: { q } });
     }

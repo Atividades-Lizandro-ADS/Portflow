@@ -20,11 +20,11 @@
         autocomplete="current-password"
       />
 
-      @if (error) {
-        <span class="auth-page__error">{{ error }}</span>
+      @if (error()) {
+        <span class="auth-page__error">{{ error() }}</span>
       }
 
-      <app-basic-btn label="Entrar" type="submit" [loading]="loading" />
+      <app-basic-btn label="Entrar" type="submit" [loading]="loading()" />
 
       <p class="auth-page__footer">
         Não tem conta? <a routerLink="/sign">Cadastre-se</a>

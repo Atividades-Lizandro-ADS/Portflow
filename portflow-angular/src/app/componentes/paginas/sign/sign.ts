@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -30,13 +30,13 @@ export class Sign {
     password2: new FormControl('', Validators.required),
   });
 
-  usernameStatus: 'idle' | 'checking' | 'available' | 'taken' = 'idle';
-  loading = false;
-  error = '';
+  usernameStatus = signal<'idle' | 'checking' | 'available' | 'taken'>('idle');
+  loading = signal(false);
+  error = signal('');
 
   constructor() {
     this.form.get('username')!.valueChanges.pipe(
-      tap(v => { this.usernameStatus = v && v.length >= 3 ? 'checking' : 'idle'; }),
+      tap(v => this.usernameStatus.set(v && v.length >= 3 ? 'checking' : 'idle')),
       debounceTime(500),
       filter(v => !!v && v.length >= 3),
       switchMap(v =>
@@ -46,38 +46,36 @@ export class Sign {
         ).pipe(catchError(() => of<{ available: boolean }>({ available: false })))
       ),
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe(res => {
-      this.usernameStatus = res.available ? 'available' : 'taken';
-    });
+    ).subscribe(res => this.usernameStatus.set(res.available ? 'available' : 'taken'));
   }
 
   submit(): void {
-    if (this.form.invalid || this.loading) return;
-    if (this.usernameStatus === 'taken') {
-      this.error = 'Este username já está em uso.';
+    if (this.form.invalid || this.loading()) return;
+    if (this.usernameStatus() === 'taken') {
+      this.error.set('Este username já está em uso.');
       return;
     }
     const v = this.form.getRawValue();
     if (v.password !== v.password2) {
-      this.error = 'As senhas não coincidem.';
+      this.error.set('As senhas não coincidem.');
       return;
     }
-    this.loading = true;
-    this.error = '';
+    this.loading.set(true);
+    this.error.set('');
     this.auth.register(v as RegisterRequest).subscribe({
       next: () => {
-        this.loading = false;
+        this.loading.set(false);
         this.router.navigate(['/feed']);
       },
       error: (e) => {
         const detail = e.error;
         if (detail && typeof detail === 'object') {
           const first = Object.values(detail)[0];
-          this.error = Array.isArray(first) ? first[0] as string : String(first);
+          this.error.set(Array.isArray(first) ? first[0] as string : String(first));
         } else {
-          this.error = 'Erro ao criar conta.';
+          this.error.set('Erro ao criar conta.');
         }
-        this.loading = false;
+        this.loading.set(false);
       },
     });
   }

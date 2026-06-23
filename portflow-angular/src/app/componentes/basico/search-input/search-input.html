@@ -4,7 +4,7 @@
     class="input"
     type="text"
     placeholder="Buscar..."
-    [value]="query"
+    [value]="query()"
     (input)="onInput($event)"
     (keydown.enter)="$event.preventDefault(); onSubmit()"
     autocomplete="off"
