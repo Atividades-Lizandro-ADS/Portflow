@@ -30,3 +30,9 @@
 <div style="padding: 24px; max-width: 480px;">
   <app-search-input />
 </div>
+
+@if (firstPost(); as post) {
+  <div style="padding: 24px; width: 280px;">
+    <app-post-card [post]="post" />
+  </div>
+}
