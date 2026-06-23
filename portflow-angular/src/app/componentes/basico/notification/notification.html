@@ -1,0 +1,26 @@
+<button
+  class="notification-item"
+  [class.notification-item--unread]="!notification().is_read"
+  (click)="onPress()"
+>
+  <span
+    class="notification-item__icon"
+    [class.notification-item__icon--active]="!notification().is_read"
+  >
+    <i class="bi" [class]="icon()"></i>
+  </span>
+
+  <span class="notification-item__content">
+    <span
+      class="notification-item__title"
+      [class.notification-item__title--unread]="!notification().is_read"
+    >
+      {{ notification().title }}
+    </span>
+    <span class="notification-item__time">{{ timeAgo() }}</span>
+  </span>
+
+  @if (!notification().is_read) {
+    <span class="notification-item__dot"></span>
+  }
+</button>

@@ -6,12 +6,13 @@ import { TextInput } from '../../basico/text-input/text-input';
 import { SearchInput } from '../../basico/search-input/search-input';
 import { PostCard } from '../../basico/post-card/post-card';
 import { Marmoviewer } from '../../basico/marmoviewer/marmoviewer';
+import { NotificationPanel } from '../../basico/notification-panel/notification-panel';
 import { PostFeed, PostDetail } from '../../../core/models/post';
 import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-test',
-  imports: [ToggleBtn, BasicBtn, TextInput, SearchInput, PostCard, Marmoviewer],
+  imports: [ToggleBtn, BasicBtn, TextInput, SearchInput, PostCard, Marmoviewer, NotificationPanel],
   templateUrl: './test.html',
   styleUrl: './test.scss',
 })

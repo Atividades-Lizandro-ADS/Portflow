@@ -1,0 +1,20 @@
+.popover {
+  position: relative;
+  display: inline-flex;
+}
+
+.popover__trigger {
+  display: contents;
+}
+
+.popover__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  display: none;
+  z-index: 200;
+
+  &--open {
+    display: block;
+  }
+}

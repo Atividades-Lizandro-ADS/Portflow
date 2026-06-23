@@ -1,0 +1,46 @@
+<app-popover (opened)="onPopoverOpened()">
+  <button trigger class="notification-panel__bell">
+    <i class="bi bi-bell"></i>
+    @if (unreadCount() > 0) {
+      <span class="notification-panel__badge">
+        {{ unreadCount() > 99 ? '99+' : unreadCount() }}
+      </span>
+    }
+  </button>
+
+  <div panel class="notification-panel__container">
+    <div class="notification-panel__header">
+      <span class="notification-panel__title">Notificações</span>
+      @if (unreadCount() > 0) {
+        <button class="notification-panel__mark-all" (click)="markAllRead()">
+          Marcar todas como lidas
+        </button>
+      }
+    </div>
+
+    <div class="notification-panel__list">
+      @for (n of notifications(); track n.id) {
+        <app-notification [notification]="n" (read)="markRead($event)" />
+      } @empty {
+        @if (!loading()) {
+          <div class="notification-panel__empty">
+            <i class="bi bi-bell-slash"></i>
+            <span>Nenhuma notificação</span>
+          </div>
+        }
+      }
+
+      @if (loading()) {
+        <div class="notification-panel__loader">
+          <span class="notification-panel__spinner"></span>
+        </div>
+      }
+
+      @if (hasMore() && !loading()) {
+        <button class="notification-panel__load-more" (click)="loadMore()">
+          Carregar mais
+        </button>
+      }
+    </div>
+  </div>
+</app-popover>
