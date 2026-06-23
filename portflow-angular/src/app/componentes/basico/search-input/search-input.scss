@@ -1,0 +1,39 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--light-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 100px;
+  padding: 8px 12px;
+}
+
+.icon {
+  font-size: 1.125rem;
+  color: var(--input-border);
+  flex-shrink: 0;
+}
+
+.input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--white);
+  font-size: 1rem;
+  font-family: inherit;
+  padding: 0;
+
+  &::placeholder {
+    color: var(--text-secondary);
+  }
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--white);
+    box-shadow: 0 0 0 1000px var(--light-bg) inset;
+    caret-color: var(--white);
+  }
+
+}

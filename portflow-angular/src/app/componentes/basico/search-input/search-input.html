@@ -1,0 +1,12 @@
+<div class="wrapper">
+  <i class="bi bi-search icon"></i>
+  <input
+    class="input"
+    type="text"
+    placeholder="Buscar..."
+    [value]="query"
+    (input)="onInput($event)"
+    (keydown.enter)="$event.preventDefault(); onSubmit()"
+    autocomplete="off"
+  />
+</div>
