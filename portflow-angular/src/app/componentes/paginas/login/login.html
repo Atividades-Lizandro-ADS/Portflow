@@ -1,0 +1,34 @@
+<div class="auth-page">
+  <div class="auth-page__brand">
+    <h1 class="auth-page__logo">Portflow</h1>
+  </div>
+
+  <div class="auth-page__panel">
+    <form class="auth-page__form" [formGroup]="form" (ngSubmit)="submit()">
+      <h2 class="auth-page__title">Bem-vindo de volta</h2>
+      <p class="auth-page__sub">Entre na sua conta</p>
+
+      <app-text-input
+        formControlName="username"
+        placeholder="Usuário ou e-mail"
+        autocomplete="username"
+      />
+      <app-text-input
+        formControlName="password"
+        placeholder="Senha"
+        type="password"
+        autocomplete="current-password"
+      />
+
+      @if (error) {
+        <span class="auth-page__error">{{ error }}</span>
+      }
+
+      <app-basic-btn label="Entrar" type="submit" [loading]="loading" />
+
+      <p class="auth-page__footer">
+        Não tem conta? <a routerLink="/sign">Cadastre-se</a>
+      </p>
+    </form>
+  </div>
+</div>

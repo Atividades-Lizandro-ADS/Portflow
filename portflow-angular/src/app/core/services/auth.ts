@@ -29,7 +29,16 @@ export class AuthService {
   }
 
   register(dto: RegisterRequest): Observable<any> {
-    return this.http.post<any>(`${this.api}/register/`, dto);
+    return this.http.post<any>(`${this.api}/register/`, dto).pipe(
+      tap(res => {
+        this.setTokens(res.access, res.refresh);
+        const user: AuthUser = res.user ?? null;
+        if (user) {
+          localStorage.setItem(USER_KEY, JSON.stringify(user));
+          this.currentUser$.next(user);
+        }
+      })
+    );
   }
 
   logout(): Observable<any> {

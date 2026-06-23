@@ -1,0 +1,62 @@
+<div class="auth-page">
+  <div class="auth-page__brand">
+    <h1 class="auth-page__logo">Portflow</h1>
+  </div>
+
+  <div class="auth-page__panel">
+    <form class="auth-page__form" [formGroup]="form" (ngSubmit)="submit()">
+      <h2 class="auth-page__title">Crie sua conta</h2>
+      <p class="auth-page__sub">Comece a publicar suas obras</p>
+
+      <app-text-input
+        formControlName="first_name"
+        placeholder="Nome"
+        autocomplete="given-name"
+      />
+
+      <div class="username-field">
+        <app-text-input
+          formControlName="username"
+          placeholder="Usuário (sem espaços)"
+          autocomplete="username"
+        />
+        @if (usernameStatus === 'checking') {
+          <span class="username-hint username-hint--checking">Verificando...</span>
+        } @else if (usernameStatus === 'available') {
+          <span class="username-hint username-hint--ok">Username disponível</span>
+        } @else if (usernameStatus === 'taken') {
+          <span class="username-hint username-hint--err">Username já em uso</span>
+        }
+      </div>
+
+      <app-text-input
+        formControlName="email"
+        placeholder="E-mail"
+        type="email"
+        autocomplete="email"
+      />
+      <app-text-input
+        formControlName="password"
+        placeholder="Senha"
+        type="password"
+        autocomplete="new-password"
+      />
+      <app-text-input
+        formControlName="password2"
+        placeholder="Confirmar senha"
+        type="password"
+        autocomplete="new-password"
+      />
+
+      @if (error) {
+        <span class="auth-page__error">{{ error }}</span>
+      }
+
+      <app-basic-btn label="Cadastrar" type="submit" [loading]="loading" />
+
+      <p class="auth-page__footer">
+        Já tem conta? <a routerLink="/login">Entrar</a>
+      </p>
+    </form>
+  </div>
+</div>
