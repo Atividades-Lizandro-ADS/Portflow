@@ -36,3 +36,11 @@
     <app-post-card [post]="post" />
   </div>
 }
+
+@if (postDetail(); as detail) {
+  @if (detail.marmoview) {
+    <div style="padding: 24px; max-width: 720px;">
+      <app-marmoviewer [url]="detail.marmoview" />
+    </div>
+  }
+}
