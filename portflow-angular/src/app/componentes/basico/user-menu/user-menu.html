@@ -1,0 +1,17 @@
+<app-popover>
+  <button trigger class="user-menu-trigger">
+    <app-avatar [uri]="user()?.user_picture ?? null" [size]="32" />
+  </button>
+
+  <div panel class="user-menu-panel">
+    <a [routerLink]="['/profile', user()?.profile_id]" class="user-menu-item">
+      <i class="bi bi-person"></i>
+      <span>Meu perfil</span>
+    </a>
+    <div class="user-menu-divider"></div>
+    <button class="user-menu-item user-menu-item-danger" (click)="logout()">
+      <i class="bi bi-box-arrow-right"></i>
+      <span>Sair</span>
+    </button>
+  </div>
+</app-popover>

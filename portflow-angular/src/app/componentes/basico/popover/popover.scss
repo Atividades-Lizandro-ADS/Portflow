@@ -1,20 +1,68 @@
 .popover {
-  position: relative;
   display: inline-flex;
+
+  @media (min-width: 768px) {
+    position: relative;
+  }
 }
 
-.popover__trigger {
+.popover-trigger {
   display: contents;
 }
 
-.popover__panel {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
+.popover-backdrop {
   display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 199;
+
+  &.popover-backdrop-open {
+    display: block;
+  }
+
+  @media (min-width: 768px) {
+    display: none !important;
+  }
+}
+
+.popover-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--header-bg);
+  margin: 10px auto 6px;
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+.popover-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transform: translateY(100%);
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 200;
 
-  &--open {
-    display: block;
+  &.popover-panel-open {
+    transform: translateY(0);
+  }
+
+  @media (min-width: 768px) {
+    position: absolute;
+    bottom: auto;
+    left: auto;
+    top: calc(100% + 8px);
+    right: 0;
+    transform: none;
+    transition: none;
+    display: none;
+
+    &.popover-panel-open {
+      display: block;
+    }
   }
 }

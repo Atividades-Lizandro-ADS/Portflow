@@ -36,15 +36,23 @@
   }
 
   &__container {
-    width: 360px;
-    max-height: 480px;
     display: flex;
     flex-direction: column;
     background: var(--form-bg);
-    border-radius: 12px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
     border: 1px solid var(--header-bg);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    max-height: 80dvh;
+    min-height: 50dvh;
     overflow: hidden;
+
+    @media (min-width: 768px) {
+      width: 360px;
+      max-height: 480px;
+      min-height: auto;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
   }
 
   &__header {

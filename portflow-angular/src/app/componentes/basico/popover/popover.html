@@ -1,8 +1,12 @@
 <div class="popover">
-  <div class="popover__trigger" (click)="toggle()">
+  <div class="popover-trigger" (click)="toggle()">
     <ng-content select="[trigger]" />
   </div>
-  <div class="popover__panel" [class.popover__panel--open]="open()">
+
+  <div class="popover-backdrop" [class.popover-backdrop-open]="open()" (click)="close()"></div>
+
+  <div class="popover-panel" [class.popover-panel-open]="open()">
+    <div class="popover-handle"></div>
     <ng-content select="[panel]" />
   </div>
 </div>

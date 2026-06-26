@@ -18,6 +18,10 @@ export class Popover {
     if (next) this.opened.emit();
   }
 
+  close(): void {
+    this.open.set(false);
+  }
+
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     if (!this.el.nativeElement.contains(event.target as Node)) {
