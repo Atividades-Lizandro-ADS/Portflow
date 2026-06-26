@@ -1,12 +1,13 @@
 <div class="auth-page">
-  <div class="auth-page__brand">
-    <h1 class="auth-page__logo">Portflow</h1>
+  <div class="auth-brand">
+    <h1 class="auth-brand-logo">Portflow</h1>
   </div>
 
-  <div class="auth-page__panel">
-    <form class="auth-page__form" [formGroup]="form" (ngSubmit)="submit()">
-      <h2 class="auth-page__title">Bem-vindo de volta</h2>
-      <p class="auth-page__sub">Entre na sua conta</p>
+  <div class="auth-panel">
+    <form class="auth-form" [formGroup]="form" (ngSubmit)="submit()">
+      <h1 class="auth-logo">Portflow</h1>
+      <h2 class="auth-title">Bem-vindo de volta</h2>
+      <p class="auth-sub">Entre na sua conta</p>
 
       <app-text-input
         formControlName="username"
@@ -21,12 +22,12 @@
       />
 
       @if (error()) {
-        <span class="auth-page__error">{{ error() }}</span>
+        <span class="auth-error">{{ error() }}</span>
       }
 
       <app-basic-btn label="Entrar" type="submit" [loading]="loading()" />
 
-      <p class="auth-page__footer">
+      <p class="auth-footer">
         Não tem conta? <a routerLink="/sign">Cadastre-se</a>
       </p>
     </form>

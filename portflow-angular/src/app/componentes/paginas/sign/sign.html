@@ -1,12 +1,13 @@
 <div class="auth-page">
-  <div class="auth-page__brand">
-    <h1 class="auth-page__logo">Portflow</h1>
+  <div class="auth-brand">
+    <h1 class="auth-brand-logo">Portflow</h1>
   </div>
 
-  <div class="auth-page__panel">
-    <form class="auth-page__form" [formGroup]="form" (ngSubmit)="submit()">
-      <h2 class="auth-page__title">Crie sua conta</h2>
-      <p class="auth-page__sub">Comece a publicar suas obras</p>
+  <div class="auth-panel">
+    <form class="auth-form" [formGroup]="form" (ngSubmit)="submit()">
+      <h1 class="auth-logo">Portflow</h1>
+      <h2 class="auth-title">Crie sua conta</h2>
+      <p class="auth-sub">Comece a publicar suas obras</p>
 
       <app-text-input
         formControlName="first_name"
@@ -21,11 +22,11 @@
           autocomplete="username"
         />
         @if (usernameStatus() === 'checking') {
-          <span class="username-hint username-hint--checking">Verificando...</span>
+          <span class="username-hint username-hint-checking">Verificando...</span>
         } @else if (usernameStatus() === 'available') {
-          <span class="username-hint username-hint--ok">Username disponível</span>
+          <span class="username-hint username-hint-ok">Username disponível</span>
         } @else if (usernameStatus() === 'taken') {
-          <span class="username-hint username-hint--err">Username já em uso</span>
+          <span class="username-hint username-hint-err">Username já em uso</span>
         }
       </div>
 
@@ -49,12 +50,12 @@
       />
 
       @if (error()) {
-        <span class="auth-page__error">{{ error() }}</span>
+        <span class="auth-error">{{ error() }}</span>
       }
 
       <app-basic-btn label="Cadastrar" type="submit" [loading]="loading()" />
 
-      <p class="auth-page__footer">
+      <p class="auth-footer">
         Já tem conta? <a routerLink="/login">Entrar</a>
       </p>
     </form>

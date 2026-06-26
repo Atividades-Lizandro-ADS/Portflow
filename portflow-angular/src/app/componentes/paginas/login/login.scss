@@ -1,22 +1,89 @@
 .auth-page {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
   min-height: 100vh;
+  background: var(--dark-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
 
-  &__brand {
-    background: var(--dark-bg);
+.auth-brand {
+  display: none;
+}
+
+.auth-brand-logo {
+  color: var(--accent);
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.auth-panel {
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.auth-logo {
+  color: var(--accent);
+  font-size: 2.25rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 2px;
+}
+
+.auth-title {
+  display: none;
+}
+
+.auth-sub {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.auth-error {
+  color: var(--danger);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.auth-footer {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  text-align: center;
+
+  a {
+    color: var(--accent);
+    font-weight: bold;
+    text-decoration: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .auth-page {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0;
+    align-items: unset;
+    justify-content: unset;
+  }
+
+  .auth-brand {
     display: flex;
     align-items: center;
     justify-content: center;
+    background: var(--dark-bg);
   }
 
-  &__logo {
-    color: var(--accent);
-    font-size: 3rem;
-    font-weight: bold;
-  }
-
-  &__panel {
+  .auth-panel {
+    max-width: none;
     background: var(--form-bg);
     display: flex;
     align-items: center;
@@ -24,42 +91,24 @@
     padding: 32px;
   }
 
-  &__form {
-    width: 100%;
+  .auth-form {
     max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
   }
 
-  &__title {
+  .auth-logo {
+    display: none;
+  }
+
+  .auth-title {
+    display: block;
     font-size: 1.5rem;
     font-weight: bold;
     color: var(--white);
-    margin-bottom: 4px;
+    margin-bottom: 0;
   }
 
-  &__sub {
-    color: var(--text-secondary);
-    font-size: 0.875rem;
+  .auth-sub {
+    text-align: left;
     margin-bottom: 8px;
-  }
-
-  &__error {
-    color: var(--danger);
-    font-size: 0.875rem;
-    text-align: center;
-  }
-
-  &__footer {
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-    text-align: center;
-
-    a {
-      color: var(--accent);
-      font-weight: bold;
-      text-decoration: none;
-    }
   }
 }
