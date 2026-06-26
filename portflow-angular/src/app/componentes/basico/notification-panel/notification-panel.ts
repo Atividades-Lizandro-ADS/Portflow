@@ -1,11 +1,11 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { AppNotification, NotificationPage } from '../../../core/models/notification';
+import { NotificationService } from '../../../core/services/notification.service';
 import { Popover } from '../popover/popover';
 import { Notification } from '../notification/notification';
-
-const POLL_MS = 5 * 60 * 1000;
 
 @Component({
   selector: 'app-notification-panel',
@@ -15,21 +15,27 @@ const POLL_MS = 5 * 60 * 1000;
 })
 export class NotificationPanel implements OnInit, OnDestroy {
   private http = inject(HttpClient);
+  private notifService = inject(NotificationService);
 
   unreadCount = signal(0);
   notifications = signal<AppNotification[]>([]);
   loading = signal(false);
   hasMore = signal(false);
   private page = 1;
-  private pollTimer?: ReturnType<typeof setInterval>;
+
+  constructor() {
+    this.notifService.newNotification$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.unreadCount.update(c => c + 1));
+  }
 
   ngOnInit(): void {
     this.fetchUnreadCount();
-    this.pollTimer = setInterval(() => this.fetchUnreadCount(), POLL_MS);
+    this.notifService.connect();
   }
 
   ngOnDestroy(): void {
-    clearInterval(this.pollTimer);
+    // SSE permanece vivo (serviço é root); apenas paramos de escutar
   }
 
   onPopoverOpened(): void {

@@ -8,6 +8,7 @@ from .used_programs_viewset import UsedProgramsViewSet
 from .hiring_viewset import HiringViewSet
 from .skill_viewset import SkillViewSet
 from .notification_viewset import NotificationViewSet
+from .notification_stream_view import NotificationStreamView
 from .commission_tier_viewset import CommissionTierViewSet
 from .follow_viewset import FollowViewSet
 
@@ -22,6 +23,7 @@ __all__ = [
     'HiringViewSet',
     'SkillViewSet',
     'NotificationViewSet',
+    'NotificationStreamView',
     'CommissionTierViewSet',
     'FollowViewSet',
 ]

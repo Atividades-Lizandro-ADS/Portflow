@@ -1,5 +1,10 @@
+import json
+
+import redis as redis_lib
+from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
 from ..models import Like, Comments, NotificationTemplate, Notification, MILESTONE_THRESHOLDS
 
 
@@ -8,6 +13,23 @@ def _get_template(code):
         return NotificationTemplate.objects.get(code=code)
     except Exception:
         return None
+
+
+def _publish_notification(notification):
+    payload = json.dumps({
+        'id': notification.pk,
+        'title': notification.title,
+        'template_code': notification.template.code if notification.template else None,
+        'target_post_id': notification.target_post_id,
+        'is_read': False,
+        'created_at': notification.created_at.isoformat(),
+    })
+    channel = f'notifications:user:{notification.recipient.user_profile_id}'
+    client = redis_lib.from_url(settings.NOTIFICATIONS_REDIS_URL)
+    try:
+        client.publish(channel, payload)
+    finally:
+        client.close()
 
 
 @receiver(post_save, sender=Like)
@@ -27,7 +49,7 @@ def notify_like(sender, instance, created, **kwargs):
     if total_likes == 1:
         template = _get_template('NEW_LIKE')
         if template:
-            Notification.objects.create(
+            notif = Notification.objects.create(
                 recipient=owner,
                 template=template,
                 title=template.render_title({
@@ -37,6 +59,7 @@ def notify_like(sender, instance, created, **kwargs):
                 actor=actor,
                 target_post=post,
             )
+            _publish_notification(notif)
 
     if total_likes in MILESTONE_THRESHOLDS:
         milestone_tpl = _get_template('POST_MILESTONE')
@@ -47,7 +70,7 @@ def notify_like(sender, instance, created, **kwargs):
                 extra_data__count=total_likes,
             ).exists()
             if not already:
-                Notification.objects.create(
+                notif = Notification.objects.create(
                     recipient=owner,
                     template=milestone_tpl,
                     title=milestone_tpl.render_title({
@@ -57,6 +80,7 @@ def notify_like(sender, instance, created, **kwargs):
                     target_post=post,
                     extra_data={'count': total_likes},
                 )
+                _publish_notification(notif)
 
 
 @receiver(post_save, sender=Comments)
@@ -73,7 +97,7 @@ def notify_comment(sender, instance, created, **kwargs):
 
     template = _get_template('NEW_COMMENT')
     if template:
-        Notification.objects.create(
+        notif = Notification.objects.create(
             recipient=owner,
             template=template,
             title=template.render_title({
@@ -83,3 +107,4 @@ def notify_comment(sender, instance, created, **kwargs):
             actor=actor,
             target_post=post,
         )
+        _publish_notification(notif)
