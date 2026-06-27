@@ -36,8 +36,9 @@ export class NotificationService implements OnDestroy {
     const token = this.auth.getAccessToken();
     if (!token) return;
 
-    const url = `${environment.apiUrl}/api/notifications/stream/?token=${token}`;
-    this.es = new EventSource(url);
+    this.es = new EventSource(
+      `${environment.apiUrl}/api/notif-stream/?token=${token}`,
+    );
 
     this.es.onmessage = (event) => {
       this.newNotification$.next(JSON.parse(event.data) as SseNotification);
@@ -46,7 +47,12 @@ export class NotificationService implements OnDestroy {
     this.es.onerror = () => {
       this.es?.close();
       this.es = null;
-      this.reconnectTimer = setTimeout(() => this.openEventSource(), 5000);
+      this.auth.refresh().subscribe({
+        next: () => {
+          this.reconnectTimer = setTimeout(() => this.openEventSource(), 1000);
+        },
+        error: () => {},
+      });
     };
   }
 

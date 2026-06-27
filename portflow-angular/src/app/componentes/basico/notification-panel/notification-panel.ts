@@ -35,7 +35,7 @@ export class NotificationPanel implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // SSE permanece vivo (serviço é root); apenas paramos de escutar
+    
   }
 
   onPopoverOpened(): void {

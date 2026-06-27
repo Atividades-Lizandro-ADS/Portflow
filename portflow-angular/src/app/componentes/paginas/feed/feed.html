@@ -1,1 +1,22 @@
-<p>feed works!</p>
+<app-navbar />
+
+<div class="feed-grid">
+  @for (post of posts(); track post.id) {
+    <app-post-card [post]="post" />
+  }
+</div>
+
+@if (loading()) {
+  <div class="feed-loader">
+    <span class="feed-spinner"></span>
+  </div>
+}
+
+@if (!loading() && posts().length === 0) {
+  <div class="feed-empty">
+    <i class="bi bi-images"></i>
+    <span>Nenhum post encontrado.</span>
+  </div>
+}
+
+<div #sentinel class="feed-sentinel"></div>

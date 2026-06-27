@@ -24,7 +24,7 @@ router.register('commission-tiers', CommissionTierViewSet, basename='commission-
 router.register('follows', FollowViewSet, basename='follow')
 
 urlpatterns = router.urls + [
-    path('notifications/stream/', NotificationStreamView.as_view(), name='notification_stream'),
+    path('notif-stream/', NotificationStreamView.as_view(), name='notification_stream'),
     path('auth/register/', RegisterView.as_view(), name='auth_register'),
     path('auth/login/', LoginView.as_view(), name='auth_login'),
     path('auth/logout/', LogoutView.as_view(), name='auth_logout'),

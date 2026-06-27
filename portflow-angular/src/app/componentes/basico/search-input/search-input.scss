@@ -1,3 +1,9 @@
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
 .wrapper {
   display: flex;
   align-items: center;
@@ -6,6 +12,7 @@
   border: 1px solid var(--input-border);
   border-radius: 100px;
   padding: 8px 12px;
+  width: 100%;
 }
 
 .icon {
