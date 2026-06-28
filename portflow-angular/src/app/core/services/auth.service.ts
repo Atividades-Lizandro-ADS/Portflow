@@ -80,6 +80,15 @@ export class AuthService {
     return !!this.getAccessToken();
   }
 
+  me(): Observable<AuthUser> {
+    return this.http.get<AuthUser>(`${this.api}/me/`).pipe(
+      tap(user => {
+        localStorage.setItem(USER_KEY, JSON.stringify(user));
+        this.currentUser$.next(user);
+      })
+    );
+  }
+
   checkUsername(username: string): Observable<{ available: boolean }> {
     return this.http.get<{ available: boolean }>(`${this.api}/check-username/`, { params: { username } });
   }
