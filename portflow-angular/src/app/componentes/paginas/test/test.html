@@ -46,6 +46,15 @@
         <app-marmoviewer [url]="detail.marmoview" />
       </div>
     }
+    @if (detail.images.length) {
+      <div style="padding: 24px; max-width: 900px;">
+        <app-post-gallery
+          [images]="detail.images"
+          [displayType]="detail.display_type"
+          [postIsMature]="detail.is_mature"
+        />
+      </div>
+    }
   }
 
 </div>

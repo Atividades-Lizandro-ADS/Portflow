@@ -1,0 +1,12 @@
+<div class="gallery-list">
+  @for (img of images(); track img.id; let i = $index) {
+    <div class="gallery-list-item">
+      <app-gallery-image
+        [image]="img"
+        [postIsMature]="postIsMature()"
+        (imageClick)="imageSelect.emit(i)"
+      />
+    </div>
+  }
+</div>
+

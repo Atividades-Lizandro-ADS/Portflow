@@ -10,10 +10,11 @@ import { NotificationPanel } from '../../basico/notification-panel/notification-
 import { Navbar } from '../../basico/navbar/navbar';
 import { PostFeed, PostDetail } from '../../../core/models/post';
 import { environment } from '../../../../environments/environment';
+import { PostGallery } from '../../basico/post-gallery/post-gallery';
 
 @Component({
   selector: 'app-test',
-  imports: [ToggleBtn, BasicBtn, TextInput, SearchInput, PostCard, Marmoviewer, NotificationPanel, Navbar],
+  imports: [ToggleBtn, BasicBtn, TextInput, SearchInput, PostCard, Marmoviewer, NotificationPanel, Navbar, PostGallery],
   templateUrl: './test.html',
   styleUrl: './test.scss',
 })

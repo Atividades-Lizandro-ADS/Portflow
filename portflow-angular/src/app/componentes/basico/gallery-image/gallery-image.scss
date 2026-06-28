@@ -1,0 +1,51 @@
+.gallery-image {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: filter 0.2s ease;
+  }
+
+  .gallery-image-blurred {
+    filter: blur(24px);
+  }
+}
+
+.gallery-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px;
+}
+
+.gallery-image-overlay-icon {
+  font-size: 1.5rem;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.gallery-image-overlay-text {
+  color: var(--white);
+  font-size: 0.875rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.gallery-image-overlay-hint {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  text-align: center;
+}

@@ -1,0 +1,16 @@
+<div class="gallery-grid">
+  @for (img of images(); track img.id; let i = $index) {
+    <div
+      class="gallery-grid-cell"
+      [style.grid-column]="'span ' + colSpan(img)"
+      [style.grid-row]="'span ' + rowSpan(img)"
+    >
+      <app-gallery-image
+        [image]="img"
+        [postIsMature]="postIsMature()"
+        (imageClick)="imageSelect.emit(i)"
+      />
+    </div>
+  }
+</div>
+

@@ -1,0 +1,20 @@
+<div class="gallery-image" (click)="onClick()">
+  <img
+    [src]="image().post_img"
+    [alt]="image().acessibility_caption"
+    [class.gallery-image-blurred]="isBlurred()"
+  />
+  @if (isBlurred()) {
+    <div class="gallery-image-overlay">
+      @if (isLoggedIn()) {
+        <i class="bi bi-eye-slash-fill gallery-image-overlay-icon"></i>
+        <span class="gallery-image-overlay-text">Conteúdo sensível</span>
+        <span class="gallery-image-overlay-hint">Clique para revelar</span>
+      } @else {
+        <i class="bi bi-lock-fill gallery-image-overlay-icon"></i>
+        <span class="gallery-image-overlay-text">Conteúdo sensível</span>
+        <span class="gallery-image-overlay-hint">Faça login para visualizar</span>
+      }
+    </div>
+  }
+</div>

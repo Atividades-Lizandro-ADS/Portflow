@@ -1,0 +1,30 @@
+@if (isOpen()) {
+  <div class="lightbox-backdrop" (click)="close.emit()">
+    <div class="lightbox-content" (click)="$event.stopPropagation()">
+
+      <button class="lightbox-close" (click)="close.emit()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+      @if (current(); as img) {
+        <img class="lightbox-img" [src]="img.post_img" [alt]="img.acessibility_caption" />
+      }
+
+      @if (hasPrev()) {
+        <button class="lightbox-arrow lightbox-arrow-left" (click)="navigate.emit((index() ?? 0) - 1)">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+      }
+
+      @if (hasNext()) {
+        <button class="lightbox-arrow lightbox-arrow-right" (click)="navigate.emit((index() ?? 0) + 1)">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      }
+
+      <span class="lightbox-counter">{{ counter() }}</span>
+
+    </div>
+  </div>
+}
+

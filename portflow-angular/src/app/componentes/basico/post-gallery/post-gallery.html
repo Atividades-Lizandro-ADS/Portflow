@@ -1,0 +1,21 @@
+@if (displayType() === 'album') {
+  <app-gallery-grid
+    [images]="images()"
+    [postIsMature]="postIsMature()"
+    (imageSelect)="activeIndex.set($event)"
+  />
+} @else {
+  <app-gallery-list
+    [images]="images()"
+    [postIsMature]="postIsMature()"
+    (imageSelect)="activeIndex.set($event)"
+  />
+}
+
+<app-gallery-lightbox
+  [images]="images()"
+  [index]="activeIndex()"
+  (close)="activeIndex.set(null)"
+  (navigate)="activeIndex.set($event)"
+/>
+
