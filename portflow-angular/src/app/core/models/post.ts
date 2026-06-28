@@ -1,3 +1,16 @@
+export interface CommentOwner {
+  id: number;
+  username: string;
+  user_picture: string | null;
+}
+
+export interface Comment {
+  id: number;
+  comment_text: string;
+  comment_owner: CommentOwner;
+  created: string;
+}
+
 export interface PostOwner {
   id: number;
   first_name: string;

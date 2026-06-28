@@ -1,0 +1,21 @@
+<div class="message-input">
+  <textarea
+    class="message-input-field"
+    [placeholder]="placeholder()"
+    [value]="text()"
+    (input)="text.set($any($event.target).value)"
+    (keydown.enter)="$event.preventDefault(); send()"
+  ></textarea>
+  <button
+    class="message-input-send"
+    [class.message-input-send-ready]="canSend()"
+    (click)="send()"
+    [disabled]="!canSend()"
+  >
+    @if (loading()) {
+      <span class="message-input-spinner"></span>
+    } @else {
+      <i class="bi bi-send-fill"></i>
+    }
+  </button>
+</div>

@@ -1,16 +1,10 @@
 import {
   Component, DestroyRef, ElementRef, inject, signal, viewChild, afterNextRender,
 } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Navbar } from '../../basico/navbar/navbar';
 import { PostCard } from '../../basico/post-card/post-card';
 import { PostFeed } from '../../../core/models/post';
-import { environment } from '../../../../environments/environment';
-
-interface PostPage {
-  results: PostFeed[];
-  next: string | null;
-}
+import { PostService } from '../../../core/services/post.service';
 
 @Component({
   selector: 'app-feed',
@@ -19,7 +13,7 @@ interface PostPage {
   styleUrl: './feed.scss',
 })
 export class Feed {
-  private http = inject(HttpClient);
+  private posts$ = inject(PostService);
   private destroyRef = inject(DestroyRef);
   private sentinel = viewChild.required<ElementRef<HTMLDivElement>>('sentinel');
   private observer!: IntersectionObserver;
@@ -49,19 +43,17 @@ export class Feed {
 
   private fetchPosts(): void {
     this.loading.set(true);
-    this.http
-      .get<PostPage>(`${environment.apiUrl}/api/posts/`, { params: { page: this.page } })
-      .subscribe({
-        next: res => {
-          this.posts.update(prev => [...prev, ...res.results]);
-          this.hasMore.set(!!res.next);
-          this.page++;
-          this.loading.set(false);
-        },
-        error: () => {
-          this.hasMore.set(false);
-          this.loading.set(false);
-        },
-      });
+    this.posts$.list({ page: this.page }).subscribe({
+      next: res => {
+        this.posts.update(prev => [...prev, ...res.results]);
+        this.hasMore.set(!!res.next);
+        this.page++;
+        this.loading.set(false);
+      },
+      error: () => {
+        this.hasMore.set(false);
+        this.loading.set(false);
+      },
+    });
   }
 }

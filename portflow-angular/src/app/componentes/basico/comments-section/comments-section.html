@@ -1,0 +1,38 @@
+<div class="comments-section">
+  <span class="comments-section-title">Comentários</span>
+
+  @if (loading()) {
+    <p class="comments-section-empty">Carregando...</p>
+  } @else if (comments().length === 0) {
+    <p class="comments-section-empty">Seja o primeiro a comentar.</p>
+  } @else {
+    <div class="comments-section-list">
+      @for (comment of comments(); track comment.id) {
+        <app-comment-item
+          [comment]="comment"
+          (editRequested)="onEditRequested($event)"
+          (deleted)="onDeleted($event)"
+        />
+      }
+    </div>
+  }
+
+  @if (user()) {
+    <div class="comments-section-input-wrap">
+      @if (editingComment(); as editing) {
+        <div class="comments-section-editing-banner">
+          <span><i class="bi bi-pencil"></i> Editando comentário de {{ editing.created | date:'dd/MM' }}</span>
+          <button class="comments-section-cancel-edit" (click)="cancelEdit()">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+      }
+      <app-message-input
+        placeholder="Adicionar comentário..."
+        [prefill]="editingPrefill()"
+        [loading]="sending()"
+        (sent)="onSent($event)"
+      />
+    </div>
+  }
+</div>

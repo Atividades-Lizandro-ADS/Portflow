@@ -1,0 +1,58 @@
+.message-input {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--form-bg);
+  border-radius: 20px;
+}
+
+.message-input-field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--white);
+  font-size: 0.875rem;
+  font-family: inherit;
+  resize: none;
+  line-height: 1.4;
+  max-height: 100px;
+  overflow-y: auto;
+  padding: 4px 0;
+
+  &::placeholder { color: var(--text-secondary); }
+}
+
+.message-input-send {
+  background: transparent;
+  border: none;
+  cursor: not-allowed;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  padding: 4px;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+
+  &.message-input-send-ready {
+    color: var(--accent);
+    cursor: pointer;
+  }
+}
+
+.message-input-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--text-secondary);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

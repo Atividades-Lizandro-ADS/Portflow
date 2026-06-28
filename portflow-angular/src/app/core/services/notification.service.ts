@@ -1,7 +1,9 @@
 import { Injectable, OnDestroy, inject } from '@angular/core';
-import { Subject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable, Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { AuthService } from './auth';
+import { AuthService } from './auth.service';
+import { AppNotification, NotificationPage } from '../models/notification';
 
 export interface SseNotification {
   id: number;
@@ -15,6 +17,8 @@ export interface SseNotification {
 @Injectable({ providedIn: 'root' })
 export class NotificationService implements OnDestroy {
   private auth = inject(AuthService);
+  private http = inject(HttpClient);
+  private api = `${environment.apiUrl}/api/notifications`;
 
   readonly newNotification$ = new Subject<SseNotification>();
 
@@ -54,6 +58,22 @@ export class NotificationService implements OnDestroy {
         error: () => {},
       });
     };
+  }
+
+  getUnreadCount(): Observable<{ count: number }> {
+    return this.http.get<{ count: number }>(`${this.api}/unread_count/`);
+  }
+
+  list(page: number): Observable<NotificationPage> {
+    return this.http.get<NotificationPage>(`${this.api}/`, { params: { page } });
+  }
+
+  markRead(id: number): Observable<AppNotification> {
+    return this.http.patch<AppNotification>(`${this.api}/${id}/`, { is_read: true });
+  }
+
+  markAllRead(): Observable<unknown> {
+    return this.http.patch(`${this.api}/mark_all_read/`, {});
   }
 
   ngOnDestroy(): void {

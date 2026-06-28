@@ -80,6 +80,10 @@ export class AuthService {
     return !!this.getAccessToken();
   }
 
+  checkUsername(username: string): Observable<{ available: boolean }> {
+    return this.http.get<{ available: boolean }>(`${this.api}/check-username/`, { params: { username } });
+  }
+
   private loadStoredUser(): AuthUser | null {
     try {
       const raw = localStorage.getItem(USER_KEY);

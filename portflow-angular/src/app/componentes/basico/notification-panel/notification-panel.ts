@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../environments/environment';
-import { AppNotification, NotificationPage } from '../../../core/models/notification';
+import { AppNotification } from '../../../core/models/notification';
 import { NotificationService } from '../../../core/services/notification.service';
 import { Popover } from '../popover/popover';
 import { Notification } from '../notification/notification';
@@ -14,7 +12,6 @@ import { Notification } from '../notification/notification';
   styleUrl: './notification-panel.scss',
 })
 export class NotificationPanel implements OnInit, OnDestroy {
-  private http = inject(HttpClient);
   private notifService = inject(NotificationService);
 
   unreadCount = signal(0);
@@ -49,50 +46,40 @@ export class NotificationPanel implements OnInit, OnDestroy {
   }
 
   markRead(id: number): void {
-    this.http
-      .patch(`${environment.apiUrl}/api/notifications/${id}/`, { is_read: true })
-      .subscribe({
-        next: () => {
-          this.notifications.update(list =>
-            list.map(n => (n.id === id ? { ...n, is_read: true } : n))
-          );
-          this.unreadCount.update(c => Math.max(0, c - 1));
-        },
-      });
+    this.notifService.markRead(id).subscribe({
+      next: () => {
+        this.notifications.update(list =>
+          list.map(n => (n.id === id ? { ...n, is_read: true } : n))
+        );
+        this.unreadCount.update(c => Math.max(0, c - 1));
+      },
+    });
   }
 
   markAllRead(): void {
-    this.http
-      .patch(`${environment.apiUrl}/api/notifications/mark_all_read/`, {})
-      .subscribe({
-        next: () => {
-          this.notifications.update(list => list.map(n => ({ ...n, is_read: true })));
-          this.unreadCount.set(0);
-        },
-      });
+    this.notifService.markAllRead().subscribe({
+      next: () => {
+        this.notifications.update(list => list.map(n => ({ ...n, is_read: true })));
+        this.unreadCount.set(0);
+      },
+    });
   }
 
   private fetchUnreadCount(): void {
-    this.http
-      .get<{ count: number }>(`${environment.apiUrl}/api/notifications/unread_count/`)
-      .subscribe({ next: res => this.unreadCount.set(res.count) });
+    this.notifService.getUnreadCount().subscribe({ next: res => this.unreadCount.set(res.count) });
   }
 
   private fetchNotifications(): void {
     if (this.loading()) return;
     this.loading.set(true);
-    this.http
-      .get<NotificationPage>(`${environment.apiUrl}/api/notifications/`, {
-        params: { page: this.page },
-      })
-      .subscribe({
-        next: res => {
-          this.notifications.update(list => [...list, ...res.results]);
-          this.hasMore.set(!!res.next);
-          this.page++;
-          this.loading.set(false);
-        },
-        error: () => this.loading.set(false),
-      });
+    this.notifService.list(this.page).subscribe({
+      next: res => {
+        this.notifications.update(list => [...list, ...res.results]);
+        this.hasMore.set(!!res.next);
+        this.page++;
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false),
+    });
   }
 }

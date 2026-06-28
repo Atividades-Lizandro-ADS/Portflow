@@ -1,6 +1,7 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth';
+import { AuthService } from '../../../core/services/auth.service';
 import { PostImage } from '../../../core/models/post';
 
 @Component({
@@ -17,8 +18,8 @@ export class GalleryImage {
   postIsMature = input(false);
   imageClick = output<void>();
 
+  user = toSignal(this.auth.currentUser$);
   revealed = signal(false);
-  isLoggedIn = computed(() => this.auth.isLoggedIn());
 
   isMature = computed(() => !this.postIsMature() && this.image().is_mature);
   isBlurred = computed(() => this.isMature() && !this.revealed());
@@ -28,7 +29,7 @@ export class GalleryImage {
       this.imageClick.emit();
       return;
     }
-    if (this.auth.isLoggedIn()) {
+    if (this.user()) {
       this.revealed.set(true);
     } else {
       this.router.navigate(['/login']);

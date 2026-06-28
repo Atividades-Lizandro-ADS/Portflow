@@ -1,0 +1,8 @@
+<a class="author-card" [routerLink]="['/profile', profile().id]">
+  <app-avatar [uri]="profile().user_picture" [size]="44" />
+  <div class="author-card-info">
+    <span class="author-card-name">{{ profile().first_name || profile().username }}</span>
+    <span class="author-card-username">@{{ profile().username }}</span>
+  </div>
+</a>
+

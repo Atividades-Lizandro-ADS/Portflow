@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AuthService } from '../../../core/services/auth';
+import { AuthService } from '../../../core/services/auth.service';
 import { SearchInput } from '../search-input/search-input';
 import { CreateMenu } from '../create-menu/create-menu';
 import { NotificationPanel } from '../notification-panel/notification-panel';

@@ -1,1 +1,123 @@
-<p>componente de detalhes do post, post id {{ postId }}</p>
+<div class="post-detail-page">
+  <app-navbar />
+
+  @if (loading()) {
+    <div class="post-detail-feedback">Carregando...</div>
+  }
+
+  @if (error()) {
+    <div class="post-detail-feedback post-detail-feedback-error">{{ error() }}</div>
+  }
+
+  @if (post(); as p) {
+    <div class="post-detail-layout">
+
+      <!-- wrapper dissolve no mobile (display:contents) → filhos entram no flex do layout -->
+      <!-- no desktop vira a coluna direita scrollável -->
+      <div class="post-detail-info">
+
+        <!-- mobile: order 1 — título e autor antes da galeria -->
+        <div class="post-detail-info-header">
+          <app-author-card [profile]="p.post_owner" />
+          <h1 class="post-detail-title">{{ p.tittle }}</h1>
+
+          @if (isOwner()) {
+            <div class="post-detail-owner-actions">
+              <a [routerLink]="['/edit-post', p.id]" class="post-detail-btn-edit">
+                <i class="bi bi-pencil"></i> Editar
+              </a>
+              <button class="post-detail-btn-delete" (click)="deletePost()">
+                <i class="bi bi-trash"></i> Excluir
+              </button>
+            </div>
+          }
+        </div>
+
+        <!-- mobile: order 3 — ações, descrição e comentários depois da galeria -->
+        <div class="post-detail-info-body">
+          <div class="post-detail-actions">
+            <app-toggle-btn
+              [active]="p.liked"
+              [endpoint]="'/api/posts/' + p.id + '/like/'"
+              iconOn="bi-heart-fill"
+              iconOff="bi-heart"
+            />
+            <app-toggle-btn
+              [active]="p.favorited"
+              [endpoint]="'/api/posts/' + p.id + '/favorite/'"
+              iconOn="bi-bookmark-fill"
+              iconOff="bi-bookmark"
+            />
+          </div>
+
+          <div class="post-detail-stats">
+            <span><i class="bi bi-heart-fill"></i> {{ p.like_num }}</span>
+            <span><i class="bi bi-eye-fill"></i> {{ p.view_number }}</span>
+            <span><i class="bi bi-chat-fill"></i> {{ p.comments_count }}</span>
+          </div>
+
+          @if (p.description) {
+            <p class="post-detail-desc">{{ p.description }}</p>
+          }
+
+          @if (p.used_programs.length) {
+            <div class="post-detail-section">
+              <span class="post-detail-section-label">Programas usados</span>
+              <div class="post-detail-programs">
+                @for (prog of p.used_programs; track prog.id) {
+                  <div class="post-detail-program">
+                    @if (prog.program_logo) {
+                      <img [src]="prog.program_logo" [alt]="prog.program_name" class="post-detail-program-logo" />
+                    }
+                    <span>{{ prog.program_name }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          @if (p.keywords_list.length) {
+            <div class="post-detail-section">
+              <span class="post-detail-section-label">Palavras-chave</span>
+              <div class="post-detail-tags">
+                @for (kw of p.keywords_list; track kw) {
+                  <span class="post-detail-tag">#{{ kw }}</span>
+                }
+              </div>
+            </div>
+          }
+
+          <app-comments-section [postId]="p.id" />
+        </div>
+
+      </div>
+
+      <!-- mobile: order 2 — galeria entre título e info -->
+      <div class="post-detail-art">
+        @if (p.images.length) {
+          <app-post-gallery
+            [images]="p.images"
+            [displayType]="p.display_type"
+            [postIsMature]="p.is_mature"
+          />
+        }
+        @if (p.marmoview) {
+          <div class="post-detail-embed">
+            <app-marmoviewer [url]="p.marmoview" />
+          </div>
+        }
+        @if (youtubeUrl(); as ytUrl) {
+          <div class="post-detail-embed">
+            <iframe [src]="ytUrl" allowfullscreen></iframe>
+          </div>
+        }
+        @if (sketchfabUrl(); as sfUrl) {
+          <div class="post-detail-embed">
+            <iframe [src]="sfUrl" allowfullscreen></iframe>
+          </div>
+        }
+      </div>
+
+    </div>
+  }
+</div>

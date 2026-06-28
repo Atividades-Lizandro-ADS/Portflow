@@ -1,0 +1,34 @@
+<div class="comment-item">
+  <app-avatar [uri]="comment().comment_owner.user_picture" [size]="36" />
+
+  <div class="comment-item-body">
+    <div class="comment-item-header">
+      <span class="comment-item-author">{{ comment().comment_owner.username }}</span>
+      <span class="comment-item-date">{{ comment().created | date:'dd/MM/yyyy' }}</span>
+    </div>
+
+    @if (confirmingDelete()) {
+      <div class="comment-item-confirm">
+        <span class="comment-item-confirm-text">Excluir comentário?</span>
+        <button class="comment-item-btn-cancel" (click)="cancelDelete()" [disabled]="deleting()">Não</button>
+        <button class="comment-item-btn-confirm" (click)="confirmDelete()" [disabled]="deleting()">
+          {{ deleting() ? 'Excluindo...' : 'Sim' }}
+        </button>
+      </div>
+    } @else {
+      <p class="comment-item-text">{{ comment().comment_text }}</p>
+    }
+  </div>
+
+  @if (isOwner() && !confirmingDelete()) {
+    <div class="comment-item-actions">
+      <button class="comment-item-action" (click)="editRequested.emit(comment())" title="Editar">
+        <i class="bi bi-pencil"></i>
+      </button>
+      <button class="comment-item-action comment-item-action-danger" (click)="requestDelete()" title="Excluir">
+        <i class="bi bi-trash"></i>
+      </button>
+    </div>
+  }
+</div>
+

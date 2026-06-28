@@ -1,12 +1,10 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, debounceTime, filter, of, switchMap, tap } from 'rxjs';
-import { AuthService } from '../../../core/services/auth';
+import { AuthService } from '../../../core/services/auth.service';
 import { RegisterRequest } from '../../../core/models/auth';
-import { environment } from '../../../../environments/environment';
 import { BasicBtn } from '../../basico/basic-btn/basic-btn';
 import { TextInput } from '../../basico/text-input/text-input';
 
@@ -18,7 +16,6 @@ import { TextInput } from '../../basico/text-input/text-input';
 })
 export class Sign {
   private auth = inject(AuthService);
-  private http = inject(HttpClient);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
@@ -40,10 +37,9 @@ export class Sign {
       debounceTime(500),
       filter(v => !!v && v.length >= 3),
       switchMap(v =>
-        this.http.get<{ available: boolean }>(
-          `${environment.apiUrl}/api/auth/check-username/`,
-          { params: { username: v! } }
-        ).pipe(catchError(() => of<{ available: boolean }>({ available: false })))
+        this.auth.checkUsername(v!).pipe(
+          catchError(() => of<{ available: boolean }>({ available: false }))
+        )
       ),
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(res => this.usernameStatus.set(res.available ? 'available' : 'taken'));

@@ -6,7 +6,7 @@
   />
   @if (isBlurred()) {
     <div class="gallery-image-overlay">
-      @if (isLoggedIn()) {
+      @if (user()) {
         <i class="bi bi-eye-slash-fill gallery-image-overlay-icon"></i>
         <span class="gallery-image-overlay-text">Conteúdo sensível</span>
         <span class="gallery-image-overlay-hint">Clique para revelar</span>
