@@ -21,7 +21,7 @@ class PostWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostArt
         fields = (
-            'tittle', 'caption', 'description', 'art_type', 'category',
+            'id', 'tittle', 'caption', 'description', 'art_type', 'category',
             'post_thumb', 'youtube_link', 'sketchfab_link', 'marmoview',
             'keywords', 'published', 'display_type', 'is_mature',
         )

@@ -27,6 +27,14 @@ export class PostService {
     return this.http.get<PostDetail>(`${this.api}/${id}/`);
   }
 
+  create(data: FormData): Observable<PostDetail> {
+    return this.http.post<PostDetail>(`${this.api}/`, data);
+  }
+
+  update(id: number, data: FormData): Observable<PostDetail> {
+    return this.http.patch<PostDetail>(`${this.api}/${id}/`, data);
+  }
+
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.api}/${id}/`);
   }
