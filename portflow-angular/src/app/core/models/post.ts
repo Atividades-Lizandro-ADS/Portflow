@@ -48,6 +48,19 @@ export interface Program {
   program_logo: string | null;
 }
 
+export const CELL_OPTIONS = ['1/3', '2/3', '3/3'] as const;
+export type CellSize = (typeof CELL_OPTIONS)[number];
+
+export interface GalleryFormImage {
+  file: File;
+  preview: string;
+  caption: string;
+  acessibilityCaption: string;
+  cell_size_x: CellSize;
+  cell_size_y: CellSize;
+  is_mature: boolean;
+}
+
 export interface PostDetail extends PostFeed {
   description: string;
   category: string | null;

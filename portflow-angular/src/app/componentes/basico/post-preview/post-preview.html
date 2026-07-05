@@ -1,0 +1,101 @@
+<div class="post-preview">
+
+  <div class="post-preview-info">
+    <div class="post-preview-info-header">
+      @if (ownerProfile(); as owner) {
+        <app-author-card [profile]="owner" />
+      }
+      <div class="post-preview-title-row">
+        <h1 class="post-preview-title">{{ tittle().trim() || 'Título da obra' }}</h1>
+      </div>
+    </div>
+
+    <div class="post-preview-info-body">
+      <div class="post-preview-actions">
+        <button class="post-preview-toggle-btn" disabled>
+          <i class="bi bi-heart"></i>
+        </button>
+        <button class="post-preview-toggle-btn" disabled>
+          <i class="bi bi-bookmark"></i>
+        </button>
+      </div>
+
+      <div class="post-preview-stats">
+        <span><i class="bi bi-heart-fill"></i> 0</span>
+        <span><i class="bi bi-eye-fill"></i> 0</span>
+        <span><i class="bi bi-chat-fill"></i> 0</span>
+      </div>
+
+      @if (description().trim()) {
+        <p class="post-preview-desc">{{ description().trim() }}</p>
+      }
+
+      @if (selectedPrograms().length) {
+        <div class="post-preview-section">
+          <span class="post-preview-section-label">Programas usados</span>
+          <div class="post-preview-programs">
+            @for (prog of selectedPrograms(); track prog.id) {
+              <div class="post-preview-program">
+                @if (prog.program_logo) {
+                  <img [src]="prog.program_logo" [alt]="prog.program_name" class="post-preview-program-logo" />
+                }
+                <span>{{ prog.program_name }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      @if (keywordsList().length) {
+        <div class="post-preview-section">
+          <span class="post-preview-section-label">Palavras-chave</span>
+          <div class="post-preview-tags">
+            @for (kw of keywordsList(); track kw) {
+              <span class="post-preview-tag">#{{ kw }}</span>
+            }
+          </div>
+        </div>
+      }
+
+      <div class="post-preview-comments">
+        <span class="post-preview-comments-title">Comentários</span>
+        <p class="post-preview-comments-empty">Seja o primeiro a comentar.</p>
+
+        <div class="post-preview-comment-input">
+          <span class="post-preview-comment-input-placeholder">Adicionar comentário...</span>
+          <i class="bi bi-send-fill"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-preview-art">
+    @if (allImages().length) {
+      <app-post-gallery
+        [images]="allImages()"
+        [displayType]="displayType()"
+        [postIsMature]="false"
+      />
+    }
+
+    @if (mviewLabel(); as label) {
+      <div class="post-preview-mview">
+        <i class="bi bi-box"></i>
+        <span>{{ label }}</span>
+      </div>
+    }
+
+    @if (youtubeUrl(); as ytUrl) {
+      <div class="post-preview-embed">
+        <iframe [src]="ytUrl" allowfullscreen></iframe>
+      </div>
+    }
+
+    @if (sketchfabUrl(); as sfUrl) {
+      <div class="post-preview-embed">
+        <iframe [src]="sfUrl" allowfullscreen></iframe>
+      </div>
+    }
+  </div>
+
+</div>

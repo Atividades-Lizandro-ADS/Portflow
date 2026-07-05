@@ -1,0 +1,21 @@
+<div class="thumb-picker" (click)="open(fileInput)">
+  <input
+    #fileInput
+    type="file"
+    accept="image/*"
+    class="thumb-picker-hidden"
+    (change)="onFileChange($event)"
+  />
+  @if (preview()) {
+    <img [src]="preview()!" class="thumb-picker-preview" alt="thumbnail" />
+    @if (showEditOverlay()) {
+      <div class="thumb-picker-overlay">
+        <i class="bi bi-pencil"></i>
+      </div>
+    }
+  } @else {
+    <div class="thumb-picker-placeholder">
+      <i class="bi bi-image"></i>
+    </div>
+  }
+</div>

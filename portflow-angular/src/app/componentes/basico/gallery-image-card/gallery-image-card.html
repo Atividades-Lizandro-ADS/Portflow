@@ -1,0 +1,69 @@
+<div class="gallery-image-card">
+  <button type="button" class="gallery-image-card-remove" (click)="removed.emit()">
+    <i class="bi bi-x-circle-fill"></i>
+  </button>
+
+  <img class="gallery-image-card-thumb" [src]="image().preview" alt="preview" />
+
+  <div class="gallery-image-card-fields">
+    <input
+      class="gallery-image-card-input"
+      type="text"
+      placeholder="Legenda"
+      maxlength="240"
+      [value]="image().caption"
+      (input)="changed.emit({ caption: $any($event.target).value })"
+    />
+    <input
+      class="gallery-image-card-input"
+      type="text"
+      placeholder="Legenda de acessibilidade"
+      maxlength="120"
+      [value]="image().acessibilityCaption"
+      (input)="changed.emit({ acessibilityCaption: $any($event.target).value })"
+    />
+
+    <div class="gallery-image-card-mature">
+      <span class="gallery-image-card-mature-label">Conteúdo maduro</span>
+      <label class="gallery-image-card-toggle">
+        <input
+          type="checkbox"
+          [checked]="image().is_mature"
+          (change)="changed.emit({ is_mature: $any($event.target).checked })"
+        />
+        <span class="gallery-image-card-toggle-track"></span>
+      </label>
+    </div>
+
+    @if (showCellSizes()) {
+      <div class="gallery-image-card-cells">
+        <div class="gallery-image-card-cell-group">
+          <span class="gallery-image-card-cell-label">Largura</span>
+          <div class="gallery-image-card-cell-options">
+            @for (opt of cellOptions; track opt) {
+              <button
+                type="button"
+                class="gallery-image-card-cell-btn"
+                [class.gallery-image-card-cell-btn-active]="image().cell_size_x === opt"
+                (click)="setCell('cell_size_x', opt)"
+              >{{ opt }}</button>
+            }
+          </div>
+        </div>
+        <div class="gallery-image-card-cell-group">
+          <span class="gallery-image-card-cell-label">Altura</span>
+          <div class="gallery-image-card-cell-options">
+            @for (opt of cellOptions; track opt) {
+              <button
+                type="button"
+                class="gallery-image-card-cell-btn"
+                [class.gallery-image-card-cell-btn-active]="image().cell_size_y === opt"
+                (click)="setCell('cell_size_y', opt)"
+              >{{ opt }}</button>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

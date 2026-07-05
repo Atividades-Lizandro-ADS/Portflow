@@ -1,0 +1,45 @@
+<div class="program-search">
+  <div class="program-search-row">
+    <input
+      class="program-search-input"
+      type="text"
+      placeholder="Buscar programa..."
+      [value]="search()"
+      (input)="onSearch($event)"
+    />
+    @if (searching()) {
+      <i class="bi bi-arrow-repeat program-search-spinner"></i>
+    }
+  </div>
+
+  @if (results().length) {
+    <div class="program-search-dropdown">
+      @for (prog of results(); track prog.id) {
+        <button type="button" class="program-search-item" (click)="add(prog)">
+          @if (prog.program_logo) {
+            <img [src]="prog.program_logo" [alt]="prog.program_name" class="program-search-logo" />
+          } @else {
+            <div class="program-search-logo-placeholder"></div>
+          }
+          <span>{{ prog.program_name }}</span>
+        </button>
+      }
+    </div>
+  }
+
+  @if (selected().length) {
+    <div class="program-search-chips">
+      @for (prog of selected(); track prog.id) {
+        <div class="program-search-chip">
+          @if (prog.program_logo) {
+            <img [src]="prog.program_logo" [alt]="prog.program_name" class="program-search-chip-logo" />
+          }
+          <span>{{ prog.program_name }}</span>
+          <button type="button" class="program-search-chip-remove" (click)="remove(prog.id)">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+      }
+    </div>
+  }
+</div>

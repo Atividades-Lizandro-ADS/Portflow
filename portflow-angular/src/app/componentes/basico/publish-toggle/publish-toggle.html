@@ -1,0 +1,10 @@
+<div class="publish-toggle">
+  <div>
+    <div class="publish-toggle-label">Publicar agora</div>
+    <div class="publish-toggle-sub">{{ value() ? 'Visível para todos' : 'Salvo como rascunho' }}</div>
+  </div>
+  <label class="publish-toggle-switch">
+    <input type="checkbox" [checked]="value()" (change)="valueChange.emit(!value())" />
+    <span class="publish-toggle-track"></span>
+  </label>
+</div>

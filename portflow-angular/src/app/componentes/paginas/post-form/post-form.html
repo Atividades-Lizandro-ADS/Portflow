@@ -1,0 +1,216 @@
+<div class="post-form-page">
+  <app-navbar />
+
+  @if (pageLoading()) {
+    <div class="post-form-center">Carregando...</div>
+  } @else {
+
+    <div class="post-form-mode-bar">
+      <button type="button" class="post-form-mode-btn" [class.post-form-mode-btn-active]="mode() === 'form'" (click)="mode.set('form')">
+        {{ isEditMode() ? 'Edição' : 'Cadastro' }}
+      </button>
+      <button type="button" class="post-form-mode-btn" [class.post-form-mode-btn-active]="mode() === 'preview'" (click)="mode.set('preview')">
+        Preview
+      </button>
+    </div>
+
+    @if (mode() === 'preview') {
+      <app-post-preview
+        [tittle]="tittle()"
+        [description]="description()"
+        [artType]="artType()"
+        [displayType]="displayType()"
+        [galleryImages]="newImages()"
+        [existingImages]="existingAsPostImages()"
+        [youtubeLink]="youtubeLink()"
+        [sketchfabLink]="sketchfabLink()"
+        [selectedPrograms]="selectedPrograms()"
+        [keywords]="keywords()"
+        [mviewFile]="mviewFile()"
+        [currentMview]="currentMview()"
+      />
+    } @else {
+
+      <div class="post-form-layout">
+
+        <!-- Top: aparece primeiro no mobile (= topo do create-post.jsx) -->
+        <div class="post-form-top">
+          <div class="graybox">
+            <div class="graybox-header">Thumbnail @if (!isEditMode()) { <span class="post-form-required">*</span> }</div>
+            <div class="graybox-body">
+              <app-thumb-picker-field [preview]="thumbPreview()" [showEditOverlay]="!!thumbPreview()" (picked)="onThumbPicked($event)" />
+            </div>
+          </div>
+
+          <div class="graybox">
+            <div class="graybox-header">Tipo de arte</div>
+            <div class="graybox-body">
+              <app-type-selector [options]="artTypeOptions" [value]="artType()" (valueChange)="setArtType($event)" />
+            </div>
+          </div>
+
+          <div class="graybox">
+            <div class="graybox-header">Exibição das imagens</div>
+            <div class="graybox-body">
+              <app-type-selector [options]="displayTypeOptions" [value]="displayType()" (valueChange)="setDisplayType($event)" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Main: conteúdo principal -->
+        <div class="post-form-main">
+          <div class="graybox">
+            <div class="graybox-header">Título <span class="post-form-required">*</span></div>
+            <div class="graybox-body">
+              <input class="graybox-input" type="text" placeholder="Título da obra" maxlength="150"
+                [value]="tittle()" (input)="tittle.set($any($event.target).value)" />
+            </div>
+          </div>
+
+          <div class="graybox">
+            <div class="graybox-header">Legenda <span class="post-form-required">*</span></div>
+            <div class="graybox-body">
+              <input class="graybox-input" type="text" placeholder="Resumo curto (máx 250 caracteres)" maxlength="250"
+                [value]="caption()" (input)="caption.set($any($event.target).value)" />
+            </div>
+          </div>
+
+          <div class="graybox">
+            <div class="graybox-header">Descrição <span class="post-form-required">*</span></div>
+            <div class="graybox-body">
+              <textarea class="graybox-input graybox-textarea" placeholder="Descreva sua obra em detalhes"
+                [value]="description()" (input)="description.set($any($event.target).value)"></textarea>
+            </div>
+          </div>
+
+          <div class="graybox">
+            <div class="graybox-header">Palavras-chave</div>
+            <div class="graybox-body">
+              <input class="graybox-input" type="text" placeholder="#arte #digital #3d ..."
+                [value]="keywords()" (input)="keywords.set($any($event.target).value)" />
+            </div>
+          </div>
+
+          @if (existingImages().length) {
+            <div class="graybox">
+              <div class="graybox-header">Imagens existentes</div>
+              <div class="graybox-body">
+                <div class="post-form-existing-list">
+                  @for (img of existingImages(); track img.id; let i = $index) {
+                    <div class="post-form-existing-card">
+                      <div class="post-form-existing-thumb-wrap">
+                        <img [src]="img.preview" class="post-form-existing-thumb" alt="" />
+                        <button type="button" class="post-form-existing-remove" (click)="removeExistingImage(i)">
+                          <i class="bi bi-x-circle-fill"></i>
+                        </button>
+                      </div>
+                      <div class="post-form-existing-fields">
+                        <input class="graybox-input" type="text" placeholder="Legenda"
+                          [value]="img.caption" (input)="updateExistingCaption(i, $event)" />
+                        <div class="post-form-existing-mature">
+                          <span class="post-form-toggle-label">Conteúdo maduro</span>
+                          <label class="post-form-toggle-switch">
+                            <input type="checkbox" [checked]="img.is_mature" (change)="updateExistingMature(i, $any($event.target).checked)" />
+                            <span class="post-form-toggle-track"></span>
+                          </label>
+                        </div>
+                        @if (displayType() === 'album') {
+                          <div class="post-form-cell-row">
+                            <div class="post-form-cell-group">
+                              <div class="post-form-cell-label">Largura</div>
+                              <div class="post-form-cell-options">
+                                @for (opt of cellOptions; track opt) {
+                                  <button type="button" class="post-form-cell-btn" [class.post-form-cell-btn-active]="img.cell_size_x === opt" (click)="updateExistingCell(i, 'cell_size_x', opt)">{{ opt }}</button>
+                                }
+                              </div>
+                            </div>
+                            <div class="post-form-cell-group">
+                              <div class="post-form-cell-label">Altura</div>
+                              <div class="post-form-cell-options">
+                                @for (opt of cellOptions; track opt) {
+                                  <button type="button" class="post-form-cell-btn" [class.post-form-cell-btn-active]="img.cell_size_y === opt" (click)="updateExistingCell(i, 'cell_size_y', opt)">{{ opt }}</button>
+                                }
+                              </div>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+
+          <div class="graybox">
+            <div class="graybox-header">Galeria de imagens</div>
+            <div class="graybox-body">
+              <app-gallery-picker-field [showCellSizes]="displayType() === 'album'" (imagesChange)="onNewImagesChange($event)" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom: restante dos campos da sidebar -->
+        <div class="post-form-bottom">
+          <div class="graybox">
+            <div class="graybox-header">Programas utilizados</div>
+            <div class="graybox-body">
+              <app-program-search-field [selected]="selectedPrograms()" (added)="addProgram($event)" (removed)="removeProgram($event)" />
+            </div>
+          </div>
+
+          <div class="graybox">
+            <div class="graybox-header">Marmoset Viewer (.mview)</div>
+            <div class="graybox-body">
+              <app-mview-picker-field [current]="currentMview()" (picked)="onMviewPicked($event)" (removed)="onMviewRemoved()" />
+            </div>
+          </div>
+
+          <div class="graybox">
+            <div class="graybox-header">Link do YouTube</div>
+            <div class="graybox-body">
+              <input class="graybox-input" type="url" placeholder="https://youtube.com/watch?v=..."
+                [value]="youtubeLink()" (input)="youtubeLink.set($any($event.target).value)" />
+            </div>
+          </div>
+
+          <div class="graybox">
+            <div class="graybox-header">Link do Sketchfab</div>
+            <div class="graybox-body">
+              <input class="graybox-input" type="url" placeholder="https://sketchfab.com/3d-models/..."
+                [value]="sketchfabLink()" (input)="sketchfabLink.set($any($event.target).value)" />
+            </div>
+          </div>
+
+          <app-publish-toggle [value]="published()" (valueChange)="published.set($event)" />
+
+          <div class="post-form-mature-row">
+            <div class="post-form-mature-labels">
+              <div class="post-form-mature-title">Conteúdo maduro</div>
+              <div class="post-form-mature-hint">
+                Se apenas parte do post tiver conteúdo sensível, marque as imagens individualmente. A thumbnail não deve conter conteúdo sensível.
+              </div>
+            </div>
+            <label class="post-form-toggle-switch">
+              <input type="checkbox" [checked]="isMature()" (change)="isMature.set($any($event.target).checked)" />
+              <span class="post-form-toggle-track"></span>
+            </label>
+          </div>
+
+          @if (error()) {
+            <div class="post-form-error">{{ error() }}</div>
+          }
+
+          <button type="button" class="post-form-submit" [disabled]="saving()" (click)="submit()">
+            @if (saving()) {
+              <i class="bi bi-arrow-repeat post-form-submit-spin"></i>
+            } @else {
+              {{ isEditMode() ? 'Salvar alterações' : (published() ? 'Publicar' : 'Salvar rascunho') }}
+            }
+          </button>
+        </div>
+
+      </div>
+    }
+  }
+</div>

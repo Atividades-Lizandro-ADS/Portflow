@@ -1,0 +1,24 @@
+.type-selector {
+  display: flex;
+  gap: 8px;
+}
+
+.type-selector-btn {
+  flex: 1;
+  padding: 8px 0;
+  text-align: center;
+  border-radius: 10px;
+  border: 1px solid var(--input-border);
+  background: var(--form-bg);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+
+  &.type-selector-btn-active {
+    border-color: var(--accent);
+    background: rgba(36, 186, 255, 0.12);
+    color: var(--accent);
+  }
+}

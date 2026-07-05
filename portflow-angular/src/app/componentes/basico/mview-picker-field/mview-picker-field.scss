@@ -1,0 +1,58 @@
+.mview-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mview-picker-hidden {
+  display: none;
+}
+
+.mview-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--form-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+
+  &:hover { border-color: var(--accent); }
+
+  i {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+
+    &.mview-picker-icon-active { color: var(--accent); }
+  }
+}
+
+.mview-picker-label {
+  flex: 1;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &.mview-picker-label-active { color: var(--accent); }
+}
+
+.mview-picker-remove {
+  background: transparent;
+  border: none;
+  color: var(--danger);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.mview-picker-error {
+  color: var(--danger);
+  font-size: 0.75rem;
+}

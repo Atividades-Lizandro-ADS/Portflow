@@ -1,0 +1,117 @@
+.program-search {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.program-search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.program-search-input {
+  flex: 1;
+  background: var(--form-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  color: var(--white);
+  font-size: 1rem;
+  font-family: inherit;
+  padding: 10px 12px;
+  outline: none;
+
+  &::placeholder { color: var(--text-secondary); }
+  &:focus { border-color: var(--accent); }
+}
+
+.program-search-spinner {
+  color: var(--accent);
+  font-size: 1.125rem;
+  flex-shrink: 0;
+  animation: pf-spin 0.8s linear infinite;
+}
+
+@keyframes pf-spin {
+  to { transform: rotate(360deg); }
+}
+
+.program-search-dropdown {
+  background: var(--light-bg);
+  border-radius: 8px;
+  border: 1px solid var(--header-bg);
+  overflow: hidden;
+}
+
+.program-search-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--header-bg);
+  color: var(--white);
+  font-size: 1rem;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: var(--header-bg); }
+}
+
+.program-search-logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.program-search-logo-placeholder {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: var(--header-bg);
+  flex-shrink: 0;
+}
+
+.program-search-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.program-search-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--header-bg);
+  border-radius: 100px;
+  padding: 4px 8px 4px 6px;
+  color: var(--white);
+  font-size: 0.875rem;
+}
+
+.program-search-chip-logo {
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  object-fit: contain;
+}
+
+.program-search-chip-remove {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+
+  &:hover { color: var(--danger); }
+}

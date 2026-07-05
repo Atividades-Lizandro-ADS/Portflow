@@ -1,0 +1,382 @@
+.post-form-page {
+  min-height: 100vh;
+  background: var(--dark-bg);
+}
+
+.post-form-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  color: var(--text-secondary);
+}
+
+// ── Mode bar ─────────────────────────────────────────────────────────────────
+
+.post-form-mode-bar {
+  display: flex;
+  background: var(--form-bg);
+  margin: 16px;
+  border-radius: 100px;
+  overflow: hidden;
+  padding: 3px;
+  gap: 3px;
+}
+
+.post-form-mode-btn {
+  flex: 1;
+  padding: 8px 0;
+  text-align: center;
+  border: none;
+  border-radius: 100px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+
+  &.post-form-mode-btn-active {
+    background: var(--dark-bg);
+    color: var(--white);
+  }
+}
+
+// ── Layout — mobile: flex column, ordem = React Native ───────────────────────
+
+.post-form-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 16px 48px;
+}
+
+// Ordem mobile: top (thumb + tipo + exibição) → main → bottom
+.post-form-top    { order: 1; }
+.post-form-main   { order: 2; }
+.post-form-bottom { order: 3; }
+
+.post-form-top,
+.post-form-main,
+.post-form-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// ── Graybox — mobile: label simples + input plano (padrão React Native) ───────
+
+.graybox {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.graybox-header {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.graybox-body {
+  // sem padding extra no mobile
+}
+
+.graybox-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--form-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  color: var(--white);
+  font-size: 1rem;
+  font-family: inherit;
+  padding: 10px 12px;
+  outline: none;
+
+  &::placeholder { color: var(--text-secondary); }
+  &:focus { border-color: var(--accent); }
+}
+
+.graybox-textarea {
+  min-height: 140px;
+  resize: none;
+  vertical-align: top;
+}
+
+// ── Imagens existentes ────────────────────────────────────────────────────────
+
+.post-form-existing-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.post-form-existing-card {
+  background: var(--light-bg);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.post-form-existing-thumb-wrap {
+  position: relative;
+}
+
+.post-form-existing-thumb {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+
+.post-form-existing-remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: var(--danger);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.post-form-existing-fields {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.post-form-existing-mature {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// ── Cell size selectors ───────────────────────────────────────────────────────
+
+.post-form-cell-row {
+  display: flex;
+  gap: 12px;
+}
+
+.post-form-cell-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.post-form-cell-label {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+.post-form-cell-options {
+  display: flex;
+  gap: 3px;
+}
+
+.post-form-cell-btn {
+  flex: 1;
+  padding: 4px 0;
+  border-radius: 4px;
+  border: 1px solid var(--input-border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+
+  &.post-form-cell-btn-active {
+    border-color: var(--accent);
+    background: rgba(36, 186, 255, 0.12);
+    color: var(--accent);
+  }
+}
+
+// ── Toggle switch ─────────────────────────────────────────────────────────────
+
+.post-form-toggle-label {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.post-form-toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+  cursor: pointer;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+
+    &:checked + .post-form-toggle-track { background: var(--accent); }
+    &:checked + .post-form-toggle-track::before { transform: translateX(18px); }
+  }
+}
+
+.post-form-toggle-track {
+  position: absolute;
+  inset: 0;
+  background: var(--input-border);
+  border-radius: 22px;
+  transition: background 0.2s;
+
+  &::before {
+    content: '';
+    position: absolute;
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background: var(--white);
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+}
+
+// ── Mature row — mobile: sem fundo, padrão RN ────────────────────────────────
+
+.post-form-mature-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.post-form-mature-labels {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.post-form-mature-title {
+  color: var(--white);
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.post-form-mature-hint {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+// ── Submit & erro ─────────────────────────────────────────────────────────────
+
+.post-form-required {
+  color: var(--danger);
+}
+
+.post-form-error {
+  color: var(--danger);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.post-form-submit {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--dark-bg);
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity 0.15s;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.post-form-submit-spin {
+  font-size: 1.125rem;
+  animation: pf-spin 0.8s linear infinite;
+}
+
+@keyframes pf-spin {
+  to { transform: rotate(360deg); }
+}
+
+// ── Desktop ≥768px — grid 2 colunas + graybox card ───────────────────────────
+
+@media (min-width: 768px) {
+
+  .post-form-mode-bar {
+    max-width: 320px;
+    margin: 16px auto;
+  }
+
+  .post-form-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-areas:
+      "main top"
+      "main bottom";
+    gap: 16px;
+    align-items: start;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px 48px;
+  }
+
+  // Cada grupo ocupa sua área no grid; order não tem efeito no grid
+  .post-form-main   { grid-area: main; }
+  .post-form-top    { grid-area: top; align-self: start; }
+  .post-form-bottom { grid-area: bottom; align-self: start; }
+
+  // Graybox desktop: card com header escuro
+  .graybox {
+    background: var(--form-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    gap: 0;
+  }
+
+  .graybox-header {
+    background: var(--header-bg);
+    color: var(--white);
+    font-size: 0.875rem;
+    font-weight: bold;
+    padding: 10px 16px;
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  .graybox-body {
+    padding: 16px;
+  }
+
+  .graybox-input {
+    background: var(--dark-bg);
+  }
+
+  // Mature row desktop: vira card
+  .post-form-mature-row {
+    background: var(--form-bg);
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .post-form-existing-thumb {
+    height: 160px;
+  }
+}

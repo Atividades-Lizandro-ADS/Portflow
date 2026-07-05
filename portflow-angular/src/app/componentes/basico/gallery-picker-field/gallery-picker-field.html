@@ -1,0 +1,32 @@
+<div class="gallery-picker">
+  <input
+    #fileInput
+    type="file"
+    accept="image/*"
+    multiple
+    class="gallery-picker-hidden"
+    (change)="onFilesChange($event)"
+  />
+
+  <div class="gallery-picker-header">
+    <span class="gallery-picker-title">Imagens da galeria</span>
+    <button type="button" class="gallery-picker-add" (click)="open(fileInput)">
+      <i class="bi bi-plus-lg"></i> Adicionar
+    </button>
+  </div>
+
+  @if (images().length === 0) {
+    <p class="gallery-picker-empty">Nenhuma imagem adicionada</p>
+  } @else {
+    <div class="gallery-picker-list">
+      @for (img of images(); track img.preview; let i = $index) {
+        <app-gallery-image-card
+          [image]="img"
+          [showCellSizes]="showCellSizes()"
+          (changed)="onChanged(i, $event)"
+          (removed)="onRemoved(i)"
+        />
+      }
+    </div>
+  }
+</div>

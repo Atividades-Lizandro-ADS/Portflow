@@ -1,0 +1,12 @@
+<div class="type-selector">
+  @for (opt of options(); track opt.value) {
+    <button
+      type="button"
+      class="type-selector-btn"
+      [class.type-selector-btn-active]="value() === opt.value"
+      (click)="valueChange.emit(opt.value)"
+    >
+      {{ opt.label }}
+    </button>
+  }
+</div>

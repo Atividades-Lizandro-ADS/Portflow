@@ -1,0 +1,25 @@
+<div class="mview-picker">
+  <input
+    #fileInput
+    type="file"
+    accept=".mview"
+    class="mview-picker-hidden"
+    (change)="onFileChange($event)"
+  />
+  <div class="mview-picker-row" (click)="open(fileInput)">
+    <i class="bi bi-box" [class.mview-picker-icon-active]="hasFile()"></i>
+    <span class="mview-picker-label" [class.mview-picker-label-active]="hasFile()">{{ label() }}</span>
+    @if (pickedFile()) {
+      <button
+        type="button"
+        class="mview-picker-remove"
+        (click)="$event.stopPropagation(); removePicked()"
+      >
+        <i class="bi bi-x-circle-fill"></i>
+      </button>
+    }
+  </div>
+  @if (error()) {
+    <span class="mview-picker-error">{{ error() }}</span>
+  }
+</div>
