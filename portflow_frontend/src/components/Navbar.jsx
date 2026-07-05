@@ -75,6 +75,10 @@ export default function Navbar() {
   return (
     <View style={[styles.container, { paddingTop: insets.top + 16 }]}>
       <View style={styles.row}>
+        <TouchableOpacity style={styles.brandBtn} onPress={() => router.push('/(tabs)/feed')}>
+          <Text style={styles.brandText}>Portflow</Text>
+        </TouchableOpacity>
+
         <View style={styles.searchWrapper}>
           <SearchInput
             value={searchText}
@@ -165,6 +169,11 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     height: NAVBAR_INNER_HEIGHT,
   },
+  brandBtn: {
+    justifyContent: 'center',
+    paddingRight: spacing.xs,
+  },
+  brandText: { color: colors.accent, fontWeight: 'bold', fontSize: fontSize.lg },
   searchWrapper: { flex: 1 },
   iconBtn: {
     padding: spacing.xs,

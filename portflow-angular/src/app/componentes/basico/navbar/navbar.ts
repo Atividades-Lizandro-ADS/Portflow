@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../../core/services/auth.service';
@@ -17,4 +17,5 @@ export class Navbar {
   private auth = inject(AuthService);
 
   user = toSignal(this.auth.currentUser$);
+  logoExist = signal(false);
 }

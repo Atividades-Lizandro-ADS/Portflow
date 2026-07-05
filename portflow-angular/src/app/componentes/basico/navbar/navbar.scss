@@ -9,6 +9,26 @@
   z-index: 100;
 }
 
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 4px 8px 4px 4px;
+  text-decoration: none;
+}
+
+.navbar-brand-logo {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
+}
+
+.navbar-brand-text {
+  color: var(--accent);
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
 .navbar-search {
   flex: 1;
   min-width: 0;

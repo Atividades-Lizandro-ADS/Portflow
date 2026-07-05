@@ -1,4 +1,12 @@
 <nav class="navbar">
+  <a routerLink="/feed" class="navbar-brand" aria-label="Portflow">
+    @if (!logoExist()) {
+      <img src="/site/logo.png" alt="Portflow" class="navbar-brand-logo" (error)="logoExist.set(true)" />
+    } @else {
+      <span class="navbar-brand-text">Portflow</span>
+    }
+  </a>
+
   <div class="navbar-search">
     <app-search-input />
   </div>
