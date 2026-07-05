@@ -35,12 +35,7 @@
           <span class="post-preview-section-label">Programas usados</span>
           <div class="post-preview-programs">
             @for (prog of selectedPrograms(); track prog.id) {
-              <div class="post-preview-program">
-                @if (prog.program_logo) {
-                  <img [src]="prog.program_logo" [alt]="prog.program_name" class="post-preview-program-logo" />
-                }
-                <span>{{ prog.program_name }}</span>
-              </div>
+              <app-program-chip [program]="prog" />
             }
           </div>
         </div>

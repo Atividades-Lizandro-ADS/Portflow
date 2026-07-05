@@ -65,12 +65,7 @@
               <span class="post-detail-section-label">Programas usados</span>
               <div class="post-detail-programs">
                 @for (prog of p.used_programs; track prog.id) {
-                  <div class="post-detail-program">
-                    @if (prog.program_logo) {
-                      <img [src]="prog.program_logo" [alt]="prog.program_name" class="post-detail-program-logo" />
-                    }
-                    <span>{{ prog.program_name }}</span>
-                  </div>
+                  <app-program-chip [program]="prog" />
                 }
               </div>
             </div>

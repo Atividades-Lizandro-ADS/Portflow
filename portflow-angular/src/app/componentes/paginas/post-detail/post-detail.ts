@@ -11,10 +11,11 @@ import { Marmoviewer } from '../../basico/marmoviewer/marmoviewer';
 import { AuthorCard } from '../../basico/author-card/author-card';
 import { ToggleBtn } from '../../basico/toggle-btn/toggle-btn';
 import { CommentsSection } from '../../basico/comments-section/comments-section';
+import { ProgramChip } from '../../basico/program-chip/program-chip';
 
 @Component({
   selector: 'app-post-detail',
-  imports: [RouterLink, Navbar, PostGallery, Marmoviewer, AuthorCard, ToggleBtn, CommentsSection],
+  imports: [RouterLink, Navbar, PostGallery, Marmoviewer, AuthorCard, ToggleBtn, CommentsSection, ProgramChip],
   templateUrl: './post-detail.html',
   styleUrl: './post-detail.scss',
 })

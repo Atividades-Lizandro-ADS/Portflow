@@ -7,9 +7,11 @@ import { Search } from './componentes/paginas/search/search';
 import { Feed } from './componentes/paginas/feed/feed';
 import { PostDetail } from './componentes/paginas/post-detail/post-detail';
 import { PostForm } from './componentes/paginas/post-form/post-form';
+import { About } from './componentes/paginas/about/about';
 
 export const routes: Routes = [
   { path: 'feed', component: Feed },
+  { path: 'profile/:id', component: About },
   { path: 'post/:id', component: PostDetail },
   { path: 'create-post', component: PostForm, canActivate: [authGuard] },
   { path: 'edit-post/:id', component: PostForm, canActivate: [authGuard] },

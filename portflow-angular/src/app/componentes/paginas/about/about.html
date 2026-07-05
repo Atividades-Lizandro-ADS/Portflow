@@ -1,0 +1,140 @@
+<div class="about-page">
+  <app-navbar />
+
+  @if (loading()) {
+    <div class="about-feedback">Carregando...</div>
+  }
+
+  @if (error()) {
+    <div class="about-feedback about-feedback-error">{{ error() }}</div>
+  }
+
+  @if (profile(); as p) {
+    @if (p.profile_banner) {
+      <img [src]="p.profile_banner" class="about-banner" alt="" />
+    } @else {
+      <div class="about-banner about-banner-placeholder"></div>
+    }
+
+    <div class="about-header">
+      <app-avatar [uri]="p.user_picture" [size]="80" />
+      <div class="about-header-info">
+        <span class="about-header-name">{{ p.first_name || p.username }}</span>
+        <span class="about-header-username">&#64;{{ p.username }}</span>
+      </div>
+    </div>
+
+    <div class="profile-tabs">
+      <button type="button" class="profile-tab" [class.active]="tab() === 'portfolio'" (click)="tab.set('portfolio')">
+        Portfolio
+      </button>
+      <button type="button" class="profile-tab" [class.active]="tab() === 'sobre'" (click)="tab.set('sobre')">
+        Sobre
+      </button>
+    </div>
+
+    @if (tab() === 'portfolio') {
+      <div class="about-section">
+        <h2 class="about-section-title">Trabalhos publicados</h2>
+        @if (p.posts.length) {
+          <div class="about-grid">
+            @for (post of p.posts; track post.id) {
+              <app-post-card [post]="post" />
+            }
+          </div>
+        } @else {
+          <p class="about-empty">Nenhum post publicado ainda.</p>
+        }
+      </div>
+
+      @if (isOwner() && p.drafts.length) {
+        <div class="about-section">
+          <h2 class="about-section-title">Rascunhos</h2>
+          <div class="about-grid">
+            @for (post of p.drafts; track post.id) {
+              <app-post-card [post]="post" />
+            }
+          </div>
+        </div>
+      }
+
+      @if (isOwner() && p.liked_posts.length) {
+        <div class="about-section">
+          <h2 class="about-section-title">Meus Likes</h2>
+          <div class="about-grid">
+            @for (post of p.liked_posts; track post.id) {
+              <app-post-card [post]="post" />
+            }
+          </div>
+        </div>
+      }
+
+      @if (isOwner() && p.saved_posts.length) {
+        <div class="about-section">
+          <h2 class="about-section-title">Favoritos</h2>
+          <div class="about-grid">
+            @for (post of p.saved_posts; track post.id) {
+              <app-post-card [post]="post" />
+            }
+          </div>
+        </div>
+      }
+    }
+
+    @if (tab() === 'sobre') {
+      <div class="about-card">
+        <div class="about-card-header">
+          <h2 class="about-card-title">Sobre</h2>
+          @if (isOwner() && p.about) {
+            <button type="button" class="about-edit-btn" disabled>
+              <i class="bi bi-pencil"></i> Editar
+            </button>
+          }
+        </div>
+
+        @if (!p.about) {
+          <p class="about-empty">Nenhuma informação disponível.</p>
+        }
+
+        @if (p.about?.summary) {
+          <p class="about-summary">{{ p.about?.summary }}</p>
+        }
+
+        <div class="about-groups">
+          @if (p.about?.hiring?.length) {
+            <div class="about-group">
+              <span class="about-group-label">Disponível para</span>
+              <div class="about-chips-row">
+                @for (h of p.about?.hiring ?? []; track h.id) {
+                  <span class="about-tag">{{ h.hire_type }}</span>
+                }
+              </div>
+            </div>
+          }
+
+          @if (p.about?.skills?.length) {
+            <div class="about-group">
+              <span class="about-group-label">Habilidades</span>
+              <div class="about-chips-row">
+                @for (s of p.about?.skills ?? []; track s.id) {
+                  <span class="about-tag">{{ s.skill_type }}</span>
+                }
+              </div>
+            </div>
+          }
+
+          @if (p.about?.programs_known?.length) {
+            <div class="about-group">
+              <span class="about-group-label">Programas</span>
+              <div class="about-chips-row">
+                @for (prog of p.about?.programs_known ?? []; track prog.id) {
+                  <app-program-chip [program]="prog" />
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+</div>

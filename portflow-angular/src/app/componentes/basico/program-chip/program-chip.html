@@ -1,0 +1,6 @@
+<div class="program-chip">
+  @if (program().program_logo) {
+    <img [src]="program().program_logo" [alt]="program().program_name" class="program-chip-logo" />
+  }
+  <span>{{ program().program_name }}</span>
+</div>

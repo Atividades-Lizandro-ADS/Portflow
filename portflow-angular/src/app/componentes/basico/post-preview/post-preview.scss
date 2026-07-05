@@ -193,23 +193,6 @@
   gap: 8px;
 }
 
-.post-preview-program {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--header-bg);
-  border-radius: 8px;
-  padding: 6px 12px;
-  color: var(--white);
-  font-size: 0.875rem;
-}
-
-.post-preview-program-logo {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-}
-
 .post-preview-tags {
   display: flex;
   flex-wrap: wrap;

@@ -5,10 +5,11 @@ import { AuthService } from '../../../core/services/auth.service';
 import { GalleryFormImage, PostImage, PostOwner, Program } from '../../../core/models/post';
 import { PostGallery } from '../post-gallery/post-gallery';
 import { AuthorCard } from '../author-card/author-card';
+import { ProgramChip } from '../program-chip/program-chip';
 
 @Component({
   selector: 'app-post-preview',
-  imports: [PostGallery, AuthorCard],
+  imports: [PostGallery, AuthorCard, ProgramChip],
   templateUrl: './post-preview.html',
   styleUrl: './post-preview.scss',
 })
