@@ -145,7 +145,7 @@
           <div class="graybox">
             <div class="graybox-header">Galeria de imagens</div>
             <div class="graybox-body">
-              <app-gallery-picker-field [showCellSizes]="displayType() === 'album'" (imagesChange)="onNewImagesChange($event)" />
+              <app-gallery-picker-field [showCellSizes]="displayType() === 'album'" [initialImages]="newImages()" (imagesChange)="onNewImagesChange($event)" />
             </div>
           </div>
         </div>

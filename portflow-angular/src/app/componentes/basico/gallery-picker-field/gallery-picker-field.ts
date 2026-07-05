@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, linkedSignal, output } from '@angular/core';
 import { GalleryImageCard } from '../gallery-image-card/gallery-image-card';
 import { GalleryFormImage } from '../../../core/models/post';
 
@@ -10,9 +10,10 @@ import { GalleryFormImage } from '../../../core/models/post';
 })
 export class GalleryPickerField {
   showCellSizes = input(false);
+  initialImages = input<GalleryFormImage[]>([]);
   imagesChange = output<GalleryFormImage[]>();
 
-  images = signal<GalleryFormImage[]>([]);
+  images = linkedSignal(() => this.initialImages());
 
   open(fileInput: HTMLInputElement): void {
     fileInput.click();
