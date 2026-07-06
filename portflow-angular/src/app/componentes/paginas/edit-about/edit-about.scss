@@ -1,0 +1,93 @@
+.edit-about-page {
+  min-height: 100vh;
+}
+
+.edit-about-feedback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.edit-about-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 16px 48px;
+}
+
+.edit-about-title {
+  color: var(--white);
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.edit-about-username-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.edit-about-username-icon {
+  position: absolute;
+  right: 12px;
+  font-size: 1.125rem;
+}
+
+.edit-about-username-spin {
+  color: var(--text-secondary);
+  animation: edit-about-spin 0.8s linear infinite;
+}
+
+.edit-about-username-ok {
+  color: var(--drag-active);
+}
+
+.edit-about-username-taken {
+  color: var(--danger);
+}
+
+.edit-about-username-hint {
+  display: block;
+  font-size: 0.75rem;
+  margin-top: 4px;
+}
+
+.edit-about-username-hint-ok {
+  color: var(--drag-active);
+}
+
+.edit-about-username-hint-taken {
+  color: var(--danger);
+}
+
+.edit-about-options-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.edit-about-empty-hint {
+  color: var(--input-border);
+  font-size: 0.875rem;
+}
+
+.edit-about-error {
+  color: var(--danger);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+@keyframes edit-about-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (min-width: 768px) {
+  .edit-about-content {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 32px 24px 48px;
+  }
+}

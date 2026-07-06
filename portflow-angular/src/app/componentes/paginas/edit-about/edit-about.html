@@ -1,0 +1,108 @@
+<div class="edit-about-page">
+  <app-navbar />
+
+  @if (loading()) {
+    <div class="edit-about-feedback">Carregando...</div>
+  } @else {
+    <div class="edit-about-content">
+      <h1 class="edit-about-title">Editar Perfil</h1>
+
+      <div class="graybox">
+        <div class="graybox-header">Banner</div>
+        <div class="graybox-body">
+          <app-image-picker-field shape="banner" [preview]="bannerPreview()" (picked)="onBannerPicked($event)" />
+        </div>
+      </div>
+
+      <div class="graybox">
+        <div class="graybox-header">Foto de perfil</div>
+        <div class="graybox-body">
+          <app-image-picker-field shape="circle" [size]="80" [preview]="avatarPreview()" (picked)="onAvatarPicked($event)" />
+        </div>
+      </div>
+
+      <div class="graybox">
+        <div class="graybox-header">Nome</div>
+        <div class="graybox-body">
+          <input class="graybox-input" type="text" placeholder="Seu nome"
+            [value]="firstName()" (input)="firstName.set($any($event.target).value)" />
+        </div>
+      </div>
+
+      <div class="graybox">
+        <div class="graybox-header">Usuário</div>
+        <div class="graybox-body">
+          <div class="edit-about-username-row">
+            <input class="graybox-input" type="text" placeholder="username"
+              [value]="username()" (input)="onUsernameChange($any($event.target).value)" />
+            @if (usernameStatus() === 'checking') {
+              <i class="bi bi-arrow-repeat edit-about-username-icon edit-about-username-spin"></i>
+            }
+            @if (usernameStatus() === 'available') {
+              <i class="bi bi-check-circle-fill edit-about-username-icon edit-about-username-ok"></i>
+            }
+            @if (usernameStatus() === 'taken') {
+              <i class="bi bi-x-circle-fill edit-about-username-icon edit-about-username-taken"></i>
+            }
+          </div>
+          @if (usernameStatus() === 'available') {
+            <span class="edit-about-username-hint edit-about-username-hint-ok">Username disponível</span>
+          }
+          @if (usernameStatus() === 'taken') {
+            <span class="edit-about-username-hint edit-about-username-hint-taken">Username já em uso</span>
+          }
+        </div>
+      </div>
+
+      <div class="graybox">
+        <div class="graybox-header">Resumo</div>
+        <div class="graybox-body">
+          <textarea class="graybox-input graybox-textarea"
+            placeholder="Fale sobre você, sua trajetória e estilo artístico..."
+            [value]="summary()" (input)="summary.set($any($event.target).value)"></textarea>
+        </div>
+      </div>
+
+      <div class="graybox">
+        <div class="graybox-header">Disponível para contratação</div>
+        <div class="graybox-body">
+          <div class="edit-about-options-row">
+            @for (h of hiringOptions(); track h.id) {
+              <app-option-chip [label]="h.hire_type" [active]="isHiringSelected(h.id)" (toggle)="toggleHiring(h)" />
+            }
+            @if (!hiringOptions().length) {
+              <span class="edit-about-empty-hint">Nenhuma opção cadastrada pelo admin.</span>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="graybox">
+        <div class="graybox-header">Habilidades</div>
+        <div class="graybox-body">
+          <div class="edit-about-options-row">
+            @for (s of skillOptions(); track s.id) {
+              <app-option-chip [label]="s.skill_type" [active]="isSkillSelected(s.id)" (toggle)="toggleSkill(s)" />
+            }
+            @if (!skillOptions().length) {
+              <span class="edit-about-empty-hint">Nenhuma opção cadastrada pelo admin.</span>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="graybox">
+        <div class="graybox-header">Programas que domina</div>
+        <div class="graybox-body">
+          <app-program-search-field [selected]="selectedPrograms()" (added)="addProgram($event)" (removed)="removeProgram($event)" />
+        </div>
+      </div>
+
+      @if (error()) {
+        <div class="edit-about-error">{{ error() }}</div>
+      }
+
+      <app-basic-btn label="Salvar" type="button" [loading]="saving()" (clicked)="submit()" />
+    </div>
+  }
+</div>

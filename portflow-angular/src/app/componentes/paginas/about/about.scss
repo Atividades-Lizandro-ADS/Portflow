@@ -124,17 +124,10 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: transparent;
-  border: none;
   color: var(--accent);
   font-size: 0.875rem;
   font-weight: bold;
-  cursor: pointer;
-
-  &:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-  }
+  text-decoration: none;
 }
 
 .about-summary {

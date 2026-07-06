@@ -64,48 +64,6 @@
   gap: 16px;
 }
 
-// ── Graybox — mobile: label simples + input plano (padrão React Native) ───────
-
-.graybox {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.graybox-header {
-  color: var(--text-secondary);
-  font-size: 0.75rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-}
-
-.graybox-body {
-  // sem padding extra no mobile
-}
-
-.graybox-input {
-  width: 100%;
-  box-sizing: border-box;
-  background: var(--form-bg);
-  border: 1px solid var(--input-border);
-  border-radius: 4px;
-  color: var(--white);
-  font-size: 1rem;
-  font-family: inherit;
-  padding: 10px 12px;
-  outline: none;
-
-  &::placeholder { color: var(--text-secondary); }
-  &:focus { border-color: var(--accent); }
-}
-
-.graybox-textarea {
-  min-height: 140px;
-  resize: none;
-  vertical-align: top;
-}
-
 // ── Imagens existentes ────────────────────────────────────────────────────────
 
 .post-form-existing-list {
@@ -342,32 +300,6 @@
   .post-form-main   { grid-area: main; }
   .post-form-top    { grid-area: top; align-self: start; }
   .post-form-bottom { grid-area: bottom; align-self: start; }
-
-  // Graybox desktop: card com header escuro
-  .graybox {
-    background: var(--form-bg);
-    border-radius: 10px;
-    overflow: hidden;
-    gap: 0;
-  }
-
-  .graybox-header {
-    background: var(--header-bg);
-    color: var(--white);
-    font-size: 0.875rem;
-    font-weight: bold;
-    padding: 10px 16px;
-    text-transform: none;
-    letter-spacing: normal;
-  }
-
-  .graybox-body {
-    padding: 16px;
-  }
-
-  .graybox-input {
-    background: var(--dark-bg);
-  }
 
   // Mature row desktop: vira card
   .post-form-mature-row {

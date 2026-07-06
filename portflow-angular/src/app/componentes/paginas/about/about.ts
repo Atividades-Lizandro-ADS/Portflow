@@ -1,8 +1,8 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../../core/services/auth.service';
-import { ProfileService } from '../../../core/services/profile';
+import { ProfileService } from '../../../core/services/profile.service';
 import { Profile as ProfileModel } from '../../../core/models/profile';
 import { Navbar } from '../../basico/navbar/navbar';
 import { Avatar } from '../../basico/avatar/avatar';
@@ -11,7 +11,7 @@ import { ProgramChip } from '../../basico/program-chip/program-chip';
 
 @Component({
   selector: 'app-about',
-  imports: [Navbar, Avatar, PostCard, ProgramChip],
+  imports: [RouterLink, Navbar, Avatar, PostCard, ProgramChip],
   templateUrl: './about.html',
   styleUrl: './about.scss',
 })

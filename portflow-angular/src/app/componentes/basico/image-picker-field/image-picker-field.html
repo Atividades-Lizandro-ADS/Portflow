@@ -1,0 +1,26 @@
+<div
+  class="image-picker"
+  [class.image-picker-circle]="shape() === 'circle'"
+  [class.image-picker-banner]="shape() === 'banner'"
+  [style.width.px]="shape() === 'circle' ? size() : null"
+  [style.height.px]="shape() === 'circle' ? size() : null"
+  (click)="open(fileInput)"
+>
+  <input
+    #fileInput
+    type="file"
+    accept="image/*"
+    class="image-picker-hidden"
+    (change)="onFileChange($event)"
+  />
+  @if (preview()) {
+    <img [src]="preview()!" class="image-picker-preview" alt="" />
+  } @else {
+    <div class="image-picker-placeholder">
+      <i class="bi bi-image"></i>
+    </div>
+  }
+  <div class="image-picker-badge">
+    <i class="bi bi-camera-fill"></i>
+  </div>
+</div>

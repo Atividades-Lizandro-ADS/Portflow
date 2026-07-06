@@ -86,9 +86,9 @@
         <div class="about-card-header">
           <h2 class="about-card-title">Sobre</h2>
           @if (isOwner() && p.about) {
-            <button type="button" class="about-edit-btn" disabled>
+            <a routerLink="/edit-about" class="about-edit-btn">
               <i class="bi bi-pencil"></i> Editar
-            </button>
+            </a>
           }
         </div>
 

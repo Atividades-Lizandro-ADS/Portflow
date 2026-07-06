@@ -1,0 +1,16 @@
+.option-chip {
+  padding: 6px 16px;
+  border-radius: 100px;
+  border: 1px solid var(--input-border);
+  background: var(--form-bg);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.option-chip-active {
+  border-color: var(--accent);
+  background: rgba(36, 186, 255, 0.12);
+  color: var(--accent);
+  font-weight: bold;
+}

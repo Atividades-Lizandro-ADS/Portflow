@@ -1,17 +1,18 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Profile } from '../models/profile';
+import { map } from 'rxjs/operators';
+import { Skill } from '../models/profile';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ProfileService {
+export class SkillService {
   private http = inject(HttpClient);
-  private api = `${environment.apiUrl}/api/profiles`;
+  private api = `${environment.apiUrl}/api/skills`;
 
-  get(id: number | string): Observable<Profile> {
-    return this.http.get<Profile>(`${this.api}/${id}/`);
+  list(): Observable<Skill[]> {
+    return this.http.get<{ results: Skill[] }>(`${this.api}/`).pipe(map(res => res.results));
   }
 }
