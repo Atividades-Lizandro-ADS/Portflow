@@ -15,6 +15,12 @@ from .notification_template_serializer import NotificationTemplateSerializer
 from .notification_serializer import NotificationSerializer
 from .commission_tier_serializer import CommissionTierSerializer
 from .follow_serializer import FollowSerializer
+from .conversation_serializer import ConversationSerializer
+from .chat_attachment_serializer import ChatAttachmentSerializer
+from .chat_message_serializer import ChatMessageSerializer
+from .briefing_attachment_serializer import BriefingAttachmentSerializer
+from .briefing_serializer import BriefingSerializer
+from .delivery_extension_request_serializer import DeliveryExtensionRequestSerializer
 
 __all__ = [
     'RegisterSerializer',
@@ -31,4 +37,10 @@ __all__ = [
     'NotificationTemplateSerializer', 'NotificationSerializer',
     'CommissionTierSerializer',
     'FollowSerializer',
+    'ConversationSerializer',
+    'ChatAttachmentSerializer',
+    'ChatMessageSerializer',
+    'BriefingAttachmentSerializer',
+    'BriefingSerializer',
+    'DeliveryExtensionRequestSerializer',
 ]

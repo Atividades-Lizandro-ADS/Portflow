@@ -8,6 +8,8 @@ from .views import (
     CommentViewSet, PostImageViewSet, UsedProgramsViewSet,
     HiringViewSet, SkillViewSet, NotificationViewSet, NotificationStreamView,
     CommissionTierViewSet, FollowViewSet,
+    ConversationViewSet, ChatMessageViewSet, ChatAttachmentViewSet,
+    BriefingViewSet, DeliveryExtensionRequestViewSet,
 )
 
 router = DefaultRouter()
@@ -22,6 +24,11 @@ router.register('skills', SkillViewSet, basename='skill')
 router.register('notifications', NotificationViewSet, basename='notification')
 router.register('commission-tiers', CommissionTierViewSet, basename='commission-tier')
 router.register('follows', FollowViewSet, basename='follow')
+router.register('conversations', ConversationViewSet, basename='conversation')
+router.register('chat-messages', ChatMessageViewSet, basename='chat-message')
+router.register('chat-attachments', ChatAttachmentViewSet, basename='chat-attachment')
+router.register('briefings', BriefingViewSet, basename='briefing')
+router.register('extension-requests', DeliveryExtensionRequestViewSet, basename='extension-request')
 
 urlpatterns = router.urls + [
     path('notif-stream/', NotificationStreamView.as_view(), name='notification_stream'),

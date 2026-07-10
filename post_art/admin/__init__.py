@@ -12,3 +12,9 @@ from . import notification_template_admin
 from . import notification_admin
 from . import commission_tier_admin
 from . import follow_admin
+from . import conversation_admin
+from . import chat_message_admin
+from . import chat_attachment_admin
+from . import briefing_admin
+from . import briefing_attachment_admin
+from . import delivery_extension_request_admin

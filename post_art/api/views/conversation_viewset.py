@@ -1,0 +1,34 @@
+from django.db.models import Q
+from rest_framework import viewsets, exceptions
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from ..serializers import ConversationSerializer
+from ...models import Conversation
+
+
+class ConversationViewSet(viewsets.ModelViewSet):
+    serializer_class = ConversationSerializer
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['get', 'post', 'head', 'options']
+
+    def get_queryset(self):
+        profile = self.request.user.profile
+        return Conversation.objects.filter(
+            Q(client=profile) | Q(artist=profile)
+        ).select_related('tier', 'client__user_profile', 'artist__user_profile')
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        tier = serializer.validated_data['tier']
+
+        if tier.profile == request.user.profile:
+            raise exceptions.ValidationError('Você não pode iniciar uma conversa com você mesmo.')
+
+        conversation, _ = Conversation.objects.get_or_create(
+            client=request.user.profile,
+            artist=tier.profile,
+            tier=tier,
+        )
+        return Response(self.get_serializer(conversation).data)
