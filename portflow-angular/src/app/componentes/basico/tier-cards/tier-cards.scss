@@ -1,0 +1,94 @@
+:host {
+  display: block;
+}
+
+.tier-card {
+  background: var(--light-bg);
+  border-radius: 8px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  min-height: 140px;
+  cursor: pointer;
+}
+
+.tier-card-image-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.tier-card-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tier-card-image-placeholder {
+  background: var(--header-bg);
+}
+
+.tier-card-body {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.tier-card-title {
+  color: var(--white);
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.tier-card-description {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  margin: 0;
+  flex: 1;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.tier-card-price-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--header-bg);
+  margin-top: auto;
+}
+
+.tier-card-price {
+  color: var(--accent);
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.tier-card-negotiable {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .tier-card {
+    min-height: 180px;
+  }
+
+  .tier-card-body {
+    padding: 20px 24px;
+    gap: 8px;
+  }
+
+  .tier-card-title {
+    font-size: 1.125rem;
+  }
+}

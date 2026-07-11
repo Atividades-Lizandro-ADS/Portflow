@@ -1,0 +1,19 @@
+<div class="tier-card">
+  <div class="tier-card-image-wrap">
+    @if (tier().thumb) {
+      <img class="tier-card-image" [src]="tier().thumb" [alt]="tier().name" />
+    } @else {
+      <div class="tier-card-image tier-card-image-placeholder"></div>
+    }
+  </div>
+  <div class="tier-card-body">
+    <h3 class="tier-card-title">{{ tier().name }}</h3>
+    <p class="tier-card-description">{{ tier().description | textSize:300 }}</p>
+    <div class="tier-card-price-row">
+      <span class="tier-card-price">{{ priceLabel() }}</span>
+      @if (tier().negotiable) {
+        <span class="tier-card-negotiable">É negociável · {{ negotiationLabel() }}</span>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,56 @@
+@if (visible() && tier(); as t) {
+  <div class="tier-detail-modal-backdrop" (click)="close.emit()">
+    <div class="tier-detail-modal-panel" (click)="$event.stopPropagation()">
+      <button type="button" class="tier-detail-modal-close" (click)="close.emit()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+      <div class="tier-detail-modal-scroll">
+        @if (t.thumb) {
+          <img class="tier-detail-modal-image" [src]="t.thumb" [alt]="t.name" />
+        } @else {
+          <div class="tier-detail-modal-image tier-detail-modal-image-placeholder"></div>
+        }
+
+        <div class="tier-detail-modal-content">
+          <h1 class="tier-detail-modal-title">{{ t.name }}</h1>
+          <p class="tier-detail-modal-description">{{ t.description }}</p>
+
+          <div class="tier-detail-modal-price-row">
+            <span class="tier-detail-modal-price">{{ priceLabel() }}</span>
+            @if (t.negotiable) {
+              <span class="tier-detail-modal-negotiable">É negociável · {{ negotiationLabel() }}</span>
+            }
+          </div>
+
+          @if (canNegotiate()) {
+            <div class="tier-detail-modal-negotiate-box">
+              <p class="tier-detail-modal-negotiate-message">Se interessou por essa tier? Negocie com o artista</p>
+              <textarea
+                class="tier-detail-modal-input"
+                [value]="message()"
+                (input)="onMessageInput($event)"
+                placeholder="Escreva sua mensagem..."
+              ></textarea>
+              <button
+                type="button"
+                class="tier-detail-modal-negotiate-btn"
+                [disabled]="!message().trim() || sending()"
+                (click)="startNegotiation()"
+              >
+                @if (sending()) {
+                  <span class="tier-detail-modal-spinner"></span>
+                } @else {
+                  Iniciar negociação
+                }
+              </button>
+              @if (error()) {
+                <p class="tier-detail-modal-error">{{ error() }}</p>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

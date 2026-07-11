@@ -1,0 +1,179 @@
+.tier-detail-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.tier-detail-modal-panel {
+  background: var(--dark-bg);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 720px;
+  max-height: 90vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.tier-detail-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.55);
+  color: var(--white);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.tier-detail-modal-scroll {
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+.tier-detail-modal-image {
+  width: 100%;
+  height: 320px;
+  max-height: 800px;
+  object-fit: cover;
+  display: block;
+}
+
+.tier-detail-modal-image-placeholder {
+  background: var(--header-bg);
+}
+
+.tier-detail-modal-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tier-detail-modal-title {
+  color: var(--white);
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 0;
+}
+
+.tier-detail-modal-description {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.tier-detail-modal-price-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--header-bg);
+}
+
+.tier-detail-modal-price {
+  color: var(--accent);
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.tier-detail-modal-negotiable {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.tier-detail-modal-negotiate-box {
+  margin-top: 8px;
+  background: var(--light-bg);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tier-detail-modal-negotiate-message {
+  color: var(--white);
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.tier-detail-modal-input {
+  width: 100%;
+  min-height: 90px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  color: var(--white);
+  font-size: 1rem;
+  font-family: inherit;
+  padding: 12px;
+  resize: vertical;
+  outline: none;
+
+  &:focus {
+    border-color: var(--accent);
+  }
+
+  &::placeholder {
+    color: var(--text-secondary);
+  }
+}
+
+.tier-detail-modal-negotiate-btn {
+  background: var(--accent);
+  color: var(--dark-bg);
+  border: none;
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: 0.875rem;
+  font-weight: bold;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.tier-detail-modal-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid var(--dark-bg);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: tier-detail-modal-spin 0.7s linear infinite;
+}
+
+@keyframes tier-detail-modal-spin {
+  to { transform: rotate(360deg); }
+}
+
+.tier-detail-modal-error {
+  color: var(--danger);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .tier-detail-modal-image {
+    height: 400px;
+  }
+}
