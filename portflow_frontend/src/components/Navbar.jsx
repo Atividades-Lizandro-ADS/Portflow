@@ -143,6 +143,11 @@ export default function Navbar() {
             label="Criar Post"
             onPress={() => { setShowCreateMenu(false); router.push('/create-post'); }}
           />
+          <MenuItem
+            icon="pricetags-outline"
+            label="Tiers de comission"
+            onPress={() => { setShowCreateMenu(false); router.push('/comission-tier-form'); }}
+          />
         </View>
       </Modal>
 

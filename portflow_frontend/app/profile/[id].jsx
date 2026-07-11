@@ -10,14 +10,11 @@ import Avatar from '../../src/components/Avatar';
 import PostCard from '../../src/components/PostCard';
 import ProgramChip from '../../src/components/ProgramChip';
 import TabSwitch from '../../src/components/molecules/TabSwitch';
+import TierCard from '../../src/components/molecules/TierCard';
+import TierDetailModal from '../../src/components/organisms/TierDetailModal';
 import { useAuth } from '../../src/context/AuthContext';
 import { getProfile } from '../../src/api/profiles';
 import { colors, fontSize, spacing, radius } from '../../src/theme';
-
-const PROFILE_TABS = [
-  { id: 'portfolio', label: 'Portfolio' },
-  { id: 'sobre', label: 'Sobre' },
-];
 
 function PostsGrid({ posts }) {
   if (!posts?.length) return <Text style={styles.empty}>Nenhum post aqui ainda.</Text>;
@@ -40,6 +37,7 @@ export default function ProfileScreen() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState('portfolio');
+  const [selectedTier, setSelectedTier] = useState(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -60,6 +58,13 @@ export default function ProfileScreen() {
   const posts = profile?.posts ?? [];
   const drafts = profile?.drafts ?? [];
   const likedPosts = profile?.liked_posts ?? [];
+  const tiers = profile?.commission_tiers ?? [];
+
+  const profileTabs = [
+    { id: 'portfolio', label: 'Portfolio' },
+    { id: 'sobre', label: 'Sobre' },
+    ...(profile?.commissions_open && !isOwner ? [{ id: 'tiers', label: 'Tiers' }] : []),
+  ];
 
   const handleEditAbout = () => {
     if (!about) return;
@@ -81,8 +86,8 @@ export default function ProfileScreen() {
   };
 
   return (
+    <>
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 60 }}>
-
       {/* Banner */}
       {profile?.profile_banner ? (
         <Image source={{ uri: profile.profile_banner }} style={styles.banner} resizeMode="cover" />
@@ -106,7 +111,7 @@ export default function ProfileScreen() {
 
       {/* Tab bar */}
       <View style={styles.tabBarWrap}>
-        <TabSwitch options={PROFILE_TABS} active={tab} onChange={setTab} />
+        <TabSwitch options={profileTabs} active={tab} onChange={setTab} />
       </View>
 
       {tab === 'portfolio' && (
@@ -186,7 +191,25 @@ export default function ProfileScreen() {
         </View>
       )}
 
+      {tab === 'tiers' && (
+        <View style={styles.tierList}>
+          {tiers.map((t) => (
+            <TierCard key={t.id} tier={t} onPress={() => setSelectedTier(t)} />
+          ))}
+          {!tiers.length && (
+            <Text style={styles.empty}>Nenhum tier cadastrado ainda.</Text>
+          )}
+        </View>
+      )}
+
     </ScrollView>
+
+      <TierDetailModal
+        visible={!!selectedTier}
+        tier={selectedTier}
+        onClose={() => setSelectedTier(null)}
+      />
+    </>
   );
 }
 
@@ -219,6 +242,7 @@ const styles = StyleSheet.create({
   tagChip: { backgroundColor: colors.headerBg, borderRadius: radius.pill, paddingHorizontal: spacing.md, paddingVertical: spacing.xs },
   tagChipText: { color: colors.white, fontSize: fontSize.sm },
   tabBarWrap: { marginHorizontal: spacing.lg, marginBottom: spacing.md },
+  tierList: { paddingHorizontal: spacing.lg, paddingBottom: spacing.md, gap: spacing.md },
   sectionTitle: { color: colors.white, fontSize: fontSize.lg, fontWeight: 'bold', marginHorizontal: spacing.lg, marginTop: spacing.lg, marginBottom: spacing.sm },
   grid: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: spacing.sm, gap: spacing.sm },
   gridItem: { width: '48.5%' },

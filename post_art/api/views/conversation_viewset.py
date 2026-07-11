@@ -26,6 +26,9 @@ class ConversationViewSet(viewsets.ModelViewSet):
         if tier.profile == request.user.profile:
             raise exceptions.ValidationError('Você não pode iniciar uma conversa com você mesmo.')
 
+        if not tier.profile.commissions_open:
+            raise exceptions.ValidationError('Este artista não está com comissões abertas no momento.')
+
         conversation, _ = Conversation.objects.get_or_create(
             client=request.user.profile,
             artist=tier.profile,
