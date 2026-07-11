@@ -9,9 +9,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Avatar from '../../src/components/Avatar';
 import PostCard from '../../src/components/PostCard';
 import ProgramChip from '../../src/components/ProgramChip';
+import TabSwitch from '../../src/components/molecules/TabSwitch';
 import { useAuth } from '../../src/context/AuthContext';
 import { getProfile } from '../../src/api/profiles';
 import { colors, fontSize, spacing, radius } from '../../src/theme';
+
+const PROFILE_TABS = [
+  { id: 'portfolio', label: 'Portfolio' },
+  { id: 'sobre', label: 'Sobre' },
+];
 
 function PostsGrid({ posts }) {
   if (!posts?.length) return <Text style={styles.empty}>Nenhum post aqui ainda.</Text>;
@@ -99,18 +105,8 @@ export default function ProfileScreen() {
       </View>
 
       {/* Tab bar */}
-      <View style={styles.tabBar}>
-        {['portfolio', 'sobre'].map((t) => (
-          <TouchableOpacity
-            key={t}
-            style={[styles.tabBtn, tab === t && styles.tabActive]}
-            onPress={() => setTab(t)}
-          >
-            <Text style={[styles.tabText, tab === t && styles.tabTextActive]}>
-              {t === 'portfolio' ? 'Portfolio' : 'Sobre'}
-            </Text>
-          </TouchableOpacity>
-        ))}
+      <View style={styles.tabBarWrap}>
+        <TabSwitch options={PROFILE_TABS} active={tab} onChange={setTab} />
       </View>
 
       {tab === 'portfolio' && (
@@ -222,11 +218,7 @@ const styles = StyleSheet.create({
   chipsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   tagChip: { backgroundColor: colors.headerBg, borderRadius: radius.pill, paddingHorizontal: spacing.md, paddingVertical: spacing.xs },
   tagChipText: { color: colors.white, fontSize: fontSize.sm },
-  tabBar: { flexDirection: 'row', backgroundColor: colors.formBg, marginHorizontal: spacing.lg, borderRadius: radius.pill, overflow: 'hidden', marginBottom: spacing.md },
-  tabBtn: { flex: 1, paddingVertical: spacing.sm, alignItems: 'center', borderRadius: radius.pill },
-  tabActive: { backgroundColor: colors.darkBg },
-  tabText: { color: colors.textSecondary, fontSize: fontSize.sm, fontWeight: 'bold' },
-  tabTextActive: { color: colors.white },
+  tabBarWrap: { marginHorizontal: spacing.lg, marginBottom: spacing.md },
   sectionTitle: { color: colors.white, fontSize: fontSize.lg, fontWeight: 'bold', marginHorizontal: spacing.lg, marginTop: spacing.lg, marginBottom: spacing.sm },
   grid: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: spacing.sm, gap: spacing.sm },
   gridItem: { width: '48.5%' },

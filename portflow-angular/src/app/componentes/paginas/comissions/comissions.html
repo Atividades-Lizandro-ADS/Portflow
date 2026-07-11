@@ -1,0 +1,19 @@
+<div class="comissions-page">
+  <app-navbar />
+
+  <div class="comissions-header">
+    <h1 class="comissions-title">Comissions</h1>
+  </div>
+
+  <div class="comissions-tabs">
+    <app-switch [options]="tabOptions" [active]="tab()" (change)="onTabChange($event)" />
+  </div>
+
+  @if (tab() === 'chats') {
+    <div class="comissions-empty">Nenhum chat por aqui ainda.</div>
+  }
+
+  @if (tab() === 'tiers') {
+    <div class="comissions-empty">Nenhum tier cadastrado ainda.</div>
+  }
+</div>

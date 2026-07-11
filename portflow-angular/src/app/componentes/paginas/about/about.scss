@@ -55,25 +55,7 @@
 }
 
 .profile-tabs {
-  display: flex;
-  gap: 8px;
   padding: 0 16px 16px;
-
-  .profile-tab {
-    background: var(--form-bg);
-    color: var(--white);
-    border: none;
-    border-radius: 100px;
-    padding: 8px 20px;
-    cursor: pointer;
-    font-size: 0.875rem;
-
-    &.active {
-      background: var(--accent);
-      color: var(--dark-bg);
-      font-weight: bold;
-    }
-  }
 }
 
 .about-section {

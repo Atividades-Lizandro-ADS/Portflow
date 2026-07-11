@@ -8,10 +8,11 @@ import { Navbar } from '../../basico/navbar/navbar';
 import { Avatar } from '../../basico/avatar/avatar';
 import { PostCard } from '../../basico/post-card/post-card';
 import { ProgramChip } from '../../basico/program-chip/program-chip';
+import { Switch, SwitchOption } from '../../basico/switch/switch';
 
 @Component({
   selector: 'app-about',
-  imports: [RouterLink, Navbar, Avatar, PostCard, ProgramChip],
+  imports: [RouterLink, Navbar, Avatar, PostCard, ProgramChip, Switch],
   templateUrl: './about.html',
   styleUrl: './about.scss',
 })
@@ -27,7 +28,16 @@ export class About implements OnInit {
   error = signal('');
   tab = signal<'portfolio' | 'sobre'>('portfolio');
 
+  tabOptions: SwitchOption[] = [
+    { id: 'portfolio', label: 'Portfolio' },
+    { id: 'sobre', label: 'Sobre' },
+  ];
+
   isOwner = computed(() => this.user()?.profile_id === this.profile()?.id);
+
+  onTabChange(id: string): void {
+    this.tab.set(id as 'portfolio' | 'sobre');
+  }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');

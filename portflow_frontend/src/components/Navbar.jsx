@@ -120,6 +120,11 @@ export default function Navbar() {
             label="Meu perfil"
             onPress={() => { setShowUserMenu(false); router.push(`/profile/${profileId}`); }}
           />
+          <MenuItem
+            icon="briefcase-outline"
+            label="Comissions"
+            onPress={() => { setShowUserMenu(false); router.push('/comissions'); }}
+          />
           {/* <MenuItem
             icon="bookmark-outline"
             label="Meus favoritos"

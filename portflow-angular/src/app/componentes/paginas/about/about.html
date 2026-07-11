@@ -25,12 +25,7 @@
     </div>
 
     <div class="profile-tabs">
-      <button type="button" class="profile-tab" [class.active]="tab() === 'portfolio'" (click)="tab.set('portfolio')">
-        Portfolio
-      </button>
-      <button type="button" class="profile-tab" [class.active]="tab() === 'sobre'" (click)="tab.set('sobre')">
-        Sobre
-      </button>
+      <app-switch [options]="tabOptions" [active]="tab()" (change)="onTabChange($event)" />
     </div>
 
     @if (tab() === 'portfolio') {

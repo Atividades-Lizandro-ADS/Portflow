@@ -1,0 +1,20 @@
+.switch {
+  display: flex;
+  gap: 8px;
+}
+
+.switch-tab {
+  background: var(--form-bg);
+  color: var(--white);
+  border: none;
+  border-radius: 100px;
+  padding: 8px 20px;
+  cursor: pointer;
+  font-size: 0.875rem;
+
+  &.active {
+    background: var(--accent);
+    color: var(--dark-bg);
+    font-weight: bold;
+  }
+}

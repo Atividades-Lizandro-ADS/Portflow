@@ -1,0 +1,12 @@
+<div class="switch">
+  @for (option of options(); track option.id) {
+    <button
+      type="button"
+      class="switch-tab"
+      [class.active]="active() === option.id"
+      (click)="change.emit(option.id)"
+    >
+      {{ option.label }}
+    </button>
+  }
+</div>

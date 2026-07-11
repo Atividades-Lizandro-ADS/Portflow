@@ -9,10 +9,12 @@ import { PostDetail } from './componentes/paginas/post-detail/post-detail';
 import { PostForm } from './componentes/paginas/post-form/post-form';
 import { About } from './componentes/paginas/about/about';
 import { EditAbout } from './componentes/paginas/edit-about/edit-about';
+import { Comissions } from './componentes/paginas/comissions/comissions';
 
 export const routes: Routes = [
   { path: 'feed', component: Feed },
   { path: 'profile/:id', component: About },
+  { path: 'comissions', component: Comissions, canActivate: [authGuard] },
   { path: 'edit-about', component: EditAbout, canActivate: [authGuard] },
   { path: 'post/:id', component: PostDetail },
   { path: 'create-post', component: PostForm, canActivate: [authGuard] },
