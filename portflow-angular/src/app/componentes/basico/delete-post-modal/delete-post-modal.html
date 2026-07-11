@@ -1,0 +1,36 @@
+@if (visible()) {
+  <div class="delete-post-modal-backdrop" (click)="onCancel()">
+    <div class="delete-post-modal-card" (click)="$event.stopPropagation()">
+      <i class="bi bi-exclamation-triangle-fill delete-post-modal-icon"></i>
+      <h2 class="delete-post-modal-title">Excluir post</h2>
+      <p class="delete-post-modal-message">
+        Esta ação não pode ser desfeita. Todos os likes, comentários e imagens ligados a este post serão excluídos permanentemente.
+      </p>
+      <p class="delete-post-modal-message">
+        Para confirmar, digite <span class="delete-post-modal-post-name">{{ postTitle() }}</span> abaixo:
+      </p>
+      <app-no-paste-input
+        [ngModel]="confirmText()"
+        (ngModelChange)="confirmText.set($event)"
+        [placeholder]="postTitle()"
+        autocomplete="off"
+      />
+      <div class="delete-post-modal-actions">
+        <button class="delete-post-modal-btn-cancel" (click)="onCancel()" [disabled]="loading()">
+          Cancelar
+        </button>
+        <button
+          class="delete-post-modal-btn-confirm"
+          (click)="onConfirm()"
+          [disabled]="!canConfirm() || loading()"
+        >
+          @if (loading()) {
+            <span class="delete-post-modal-spinner"></span>
+          } @else {
+            Eu entendo, apagar post
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}

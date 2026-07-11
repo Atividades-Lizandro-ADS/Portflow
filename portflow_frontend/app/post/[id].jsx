@@ -14,6 +14,7 @@ import PostMeta from '../../src/components/molecules/PostMeta';
 import PostKeywords from '../../src/components/molecules/PostKeywords';
 import PostEmbeds from '../../src/components/molecules/PostEmbeds';
 import MatureContentGate from '../../src/components/organisms/MatureContentGate';
+import DeletePostModal from '../../src/components/organisms/DeletePostModal';
 import { getPost, deletePost } from '../../src/api/posts';
 import { getComments } from '../../src/api/comments';
 import { useAuth } from '../../src/context/AuthContext';
@@ -29,6 +30,8 @@ export default function PostDetailScreen() {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [matureConfirmed, setMatureConfirmed] = useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -63,17 +66,18 @@ export default function PostDetailScreen() {
   const youtubeId = extractYoutubeId(post.youtube_link);
   const sketchfabId = extractSketchfabId(post.sketchfab_link);
 
-  const handleDelete = () => {
-    Alert.alert('Excluir post', 'Tem certeza? Esta ação não pode ser desfeita.', [
-      { text: 'Cancelar', style: 'cancel' },
-      {
-        text: 'Excluir', style: 'destructive',
-        onPress: async () => {
-          try { await deletePost(post.id); router.back(); }
-          catch { Alert.alert('Erro', 'Não foi possível excluir o post.'); }
-        },
-      },
-    ]);
+  const handleDelete = () => setDeleteModalVisible(true);
+
+  const confirmDelete = async () => {
+    setDeleting(true);
+    try {
+      await deletePost(post.id);
+      setDeleteModalVisible(false);
+      router.back();
+    } catch {
+      setDeleting(false);
+      Alert.alert('Erro', 'Não foi possível excluir o post.');
+    }
   };
 
   return (
@@ -134,6 +138,14 @@ export default function PostDetailScreen() {
 
         <CommentsSection postId={post.id} initialComments={comments} />
       </ScrollView>
+
+      <DeletePostModal
+        visible={deleteModalVisible}
+        postTitle={post.tittle}
+        loading={deleting}
+        onCancel={() => setDeleteModalVisible(false)}
+        onConfirm={confirmDelete}
+      />
     </KeyboardAvoidingView>
   );
 }

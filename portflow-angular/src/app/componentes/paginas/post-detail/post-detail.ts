@@ -12,10 +12,11 @@ import { AuthorCard } from '../../basico/author-card/author-card';
 import { ToggleBtn } from '../../basico/toggle-btn/toggle-btn';
 import { CommentsSection } from '../../basico/comments-section/comments-section';
 import { ProgramChip } from '../../basico/program-chip/program-chip';
+import { DeletePostModal } from '../../basico/delete-post-modal/delete-post-modal';
 
 @Component({
   selector: 'app-post-detail',
-  imports: [RouterLink, Navbar, PostGallery, Marmoviewer, AuthorCard, ToggleBtn, CommentsSection, ProgramChip],
+  imports: [RouterLink, Navbar, PostGallery, Marmoviewer, AuthorCard, ToggleBtn, CommentsSection, ProgramChip, DeletePostModal],
   templateUrl: './post-detail.html',
   styleUrl: './post-detail.scss',
 })
@@ -32,6 +33,8 @@ export class PostDetail implements OnInit {
   post = signal<PostDetailModel | null>(null);
   loading = signal(true);
   error = signal('');
+  deleteModalVisible = signal(false);
+  deleting = signal(false);
 
   isOwner = computed(() => this.user()?.profile_id === this.post()?.post_owner?.id);
 
@@ -57,11 +60,22 @@ export class PostDetail implements OnInit {
     });
   }
 
-  deletePost(): void {
+  openDeleteModal(): void {
+    this.deleteModalVisible.set(true);
+  }
+
+  closeDeleteModal(): void {
+    if (this.deleting()) return;
+    this.deleteModalVisible.set(false);
+  }
+
+  confirmDelete(): void {
     const p = this.post();
     if (!p) return;
+    this.deleting.set(true);
     this.posts.delete(p.id).subscribe({
       next: () => this.router.navigate(['/feed']),
+      error: () => this.deleting.set(false),
     });
   }
 }

@@ -1,0 +1,25 @@
+@if (multiline()) {
+  <textarea
+    class="no-paste-input"
+    [placeholder]="placeholder()"
+    [attr.maxlength]="maxLength()"
+    [disabled]="isDisabled()"
+    [value]="value()"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+    (paste)="onPaste($event)"
+  ></textarea>
+} @else {
+  <input
+    class="no-paste-input"
+    [type]="type()"
+    [placeholder]="placeholder()"
+    [attr.maxlength]="maxLength()"
+    [disabled]="isDisabled()"
+    [attr.autocomplete]="autocomplete()"
+    [value]="value()"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+    (paste)="onPaste($event)"
+  />
+}

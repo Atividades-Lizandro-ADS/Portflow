@@ -26,7 +26,7 @@
               <a [routerLink]="['/edit-post', p.id]" class="post-detail-btn-edit">
                 <i class="bi bi-pencil"></i> Editar
               </a>
-              <button class="post-detail-btn-delete" (click)="deletePost()">
+              <button class="post-detail-btn-delete" (click)="openDeleteModal()">
                 <i class="bi bi-trash"></i> Excluir
               </button>
             </div>
@@ -114,5 +114,13 @@
       </div>
 
     </div>
+
+    <app-delete-post-modal
+      [visible]="deleteModalVisible()"
+      [postTitle]="p.tittle"
+      [loading]="deleting()"
+      (cancel)="closeDeleteModal()"
+      (confirm)="confirmDelete()"
+    />
   }
 </div>

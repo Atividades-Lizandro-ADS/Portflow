@@ -1,0 +1,110 @@
+.delete-post-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.delete-post-modal-card {
+  background: var(--light-bg);
+  border-radius: 20px;
+  padding: 24px;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.delete-post-modal-icon {
+  align-self: center;
+  font-size: 1.75rem;
+  color: var(--danger);
+}
+
+.delete-post-modal-title {
+  color: var(--white);
+  font-size: 1.125rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 0;
+}
+
+.delete-post-modal-message {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.delete-post-modal-post-name {
+  color: var(--danger);
+  font-weight: bold;
+}
+
+.delete-post-modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.delete-post-modal-btn-cancel {
+  flex: 1;
+  padding: 12px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: bold;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.delete-post-modal-btn-confirm {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background: var(--danger);
+  color: var(--white);
+  border: none;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+
+  &:disabled {
+    background: var(--modal-bg);
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    opacity: 0.88;
+  }
+}
+
+.delete-post-modal-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid var(--white);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: delete-post-modal-spin 0.7s linear infinite;
+}
+
+@keyframes delete-post-modal-spin {
+  to { transform: rotate(360deg); }
+}
