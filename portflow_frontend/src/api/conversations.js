@@ -7,6 +7,9 @@ export const getConversation = (id) => api.get(`/api/conversations/${id}/`);
 export const createConversation = (tierId) =>
   api.post('/api/conversations/', { tier: tierId });
 
+export const heartbeatConversation = (id) =>
+  api.post(`/api/conversations/${id}/heartbeat/`);
+
 export const getChatMessages = (conversationId) =>
   api.get('/api/chat-messages/', { params: { conversation: conversationId } });
 

@@ -12,10 +12,8 @@ export interface ConversationPage {
 }
 
 export interface ChatMessagePage {
-  count: number;
-  next: string | null;
-  previous: string | null;
   results: ChatMessage[];
+  has_more: boolean;
 }
 
 @Injectable({
@@ -37,10 +35,10 @@ export class Conversation {
     return this.http.post<ConversationModel>(`${this.api}/conversations/`, { tier: tierId });
   }
 
-  getMessages(conversationId: number | string): Observable<ChatMessagePage> {
-    return this.http.get<ChatMessagePage>(`${this.api}/chat-messages/`, {
-      params: { conversation: conversationId },
-    });
+  getMessages(conversationId: number | string, before?: number): Observable<ChatMessagePage> {
+    const params: Record<string, string> = { conversation: String(conversationId) };
+    if (before) params['before'] = String(before);
+    return this.http.get<ChatMessagePage>(`${this.api}/chat-messages/`, { params });
   }
 
   sendMessage(conversationId: number | string, body: string, attachments: File[] = []): Observable<ChatMessage> {
@@ -49,5 +47,9 @@ export class Conversation {
     form.append('body', body ?? '');
     attachments.forEach(file => form.append('attachments[]', file));
     return this.http.post<ChatMessage>(`${this.api}/chat-messages/`, form);
+  }
+
+  heartbeat(conversationId: number | string): Observable<void> {
+    return this.http.post<void>(`${this.api}/conversations/${conversationId}/heartbeat/`, {});
   }
 }

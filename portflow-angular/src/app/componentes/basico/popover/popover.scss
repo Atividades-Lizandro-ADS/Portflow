@@ -64,5 +64,10 @@
     &.popover-panel-open {
       display: block;
     }
+
+    &.popover-panel-up {
+      top: auto;
+      bottom: calc(100% + 8px);
+    }
   }
 }

@@ -1,7 +1,9 @@
 .chat-page {
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .chat-feedback {
@@ -14,6 +16,7 @@
 }
 
 .chat-header {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -53,11 +56,42 @@
 
 .chat-messages {
   flex: 1;
+  min-height: 0;
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.chat-load-more-sentinel {
+  height: 1px;
+}
+
+.chat-load-more {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.chat-load-more-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid var(--text-secondary);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: chat-load-more-spin 0.7s linear infinite;
+}
+
+@keyframes chat-load-more-spin {
+  to { transform: rotate(360deg); }
 }
 
 .chat-empty {
@@ -68,6 +102,7 @@
 }
 
 .chat-blocked-banner {
+  flex-shrink: 0;
   color: var(--text-secondary);
   font-size: 0.75rem;
   text-align: center;
@@ -75,6 +110,7 @@
 }
 
 .chat-pending-row {
+  flex-shrink: 0;
   display: flex;
   gap: 8px;
   margin: 0 16px 8px;
@@ -82,8 +118,9 @@
 }
 
 .chat-input-row {
+  flex-shrink: 0;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 8px;
   margin: 0 16px 16px;
   padding: 8px 12px;

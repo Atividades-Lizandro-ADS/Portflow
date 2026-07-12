@@ -58,7 +58,7 @@ export class NotificationService implements OnDestroy {
 
     this.es.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      if (data.type === 'chat_message') {
+      if (data.type === 'chat_message' || data.type === 'briefing_updated') {
         this.newChatMessage$.next(data as SseChatMessage);
       } else {
         this.newNotification$.next(data as SseNotification);

@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, inject, output, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, input, output, signal } from '@angular/core';
 
 @Component({
   selector: 'app-popover',
@@ -8,6 +8,8 @@ import { Component, ElementRef, HostListener, inject, output, signal } from '@an
 })
 export class Popover {
   private el = inject(ElementRef);
+
+  direction = input<'up' | 'down'>('down');
 
   open = signal(false);
   opened = output<void>();

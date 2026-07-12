@@ -5,7 +5,7 @@
 
   <div class="popover-backdrop" [class.popover-backdrop-open]="open()" (click)="close()"></div>
 
-  <div class="popover-panel" [class.popover-panel-open]="open()">
+  <div class="popover-panel" [class.popover-panel-open]="open()" [class.popover-panel-up]="direction() === 'up'">
     <div class="popover-handle"></div>
     <ng-content select="[panel]" />
   </div>

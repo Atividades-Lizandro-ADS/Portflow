@@ -8,6 +8,9 @@ from ..serializers import ChatMessageSerializer
 from ...models import ChatMessage, ChatAttachment
 
 
+PAGE_SIZE = 100
+
+
 class ChatMessageViewSet(viewsets.ModelViewSet):
     serializer_class = ChatMessageSerializer
     permission_classes = [IsAuthenticated]
@@ -22,6 +25,20 @@ class ChatMessageViewSet(viewsets.ModelViewSet):
         if conversation_id:
             qs = qs.filter(conversation_id=conversation_id)
         return qs
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset().order_by('-pk')
+        before = request.query_params.get('before')
+        if before:
+            queryset = queryset.filter(pk__lt=before)
+
+        page = list(queryset[:PAGE_SIZE + 1])
+        has_more = len(page) > PAGE_SIZE
+        page = page[:PAGE_SIZE]
+        page.reverse()
+
+        serializer = self.get_serializer(page, many=True)
+        return Response({'results': serializer.data, 'has_more': has_more})
 
     def perform_create(self, serializer):
         conversation = serializer.validated_data['conversation']

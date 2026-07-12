@@ -5,9 +5,9 @@ import { colors, fontSize, spacing, radius } from '../../theme';
 const STATUS_LABELS = { pending: 'Pendente', accepted: 'Aceito', declined: 'Recusado' };
 const STATUS_COLORS = { pending: colors.textSecondary, accepted: colors.accent, declined: colors.danger };
 
-export default function BriefingCard({ briefing, onView }) {
+export default function BriefingCard({ briefing, isMine, onView }) {
   return (
-    <View style={styles.wrap}>
+    <View style={[styles.wrap, isMine && styles.wrapMine]}>
       <View style={styles.card}>
         <View style={styles.header}>
           <Ionicons name="document-text" size={18} color={colors.accent} />
@@ -27,9 +27,10 @@ export default function BriefingCard({ briefing, onView }) {
 }
 
 const styles = StyleSheet.create({
-  wrap: { alignItems: 'center', paddingHorizontal: spacing.md, marginBottom: spacing.sm },
+  wrap: { flexDirection: 'row', paddingHorizontal: spacing.md, marginBottom: spacing.sm },
+  wrapMine: { justifyContent: 'flex-end' },
   card: {
-    width: '85%', backgroundColor: colors.lightBg, borderRadius: radius.card,
+    maxWidth: '85%', backgroundColor: colors.lightBg, borderRadius: radius.card,
     borderWidth: 1, borderColor: colors.headerBg, padding: spacing.md, gap: spacing.sm,
   },
   header: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },

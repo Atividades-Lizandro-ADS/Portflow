@@ -16,6 +16,7 @@ export default function ChatBubble({ message, isMine, onOpenBriefing }) {
     return (
       <BriefingCard
         briefing={message.related_briefing_detail}
+        isMine={isMine}
         onView={() => onOpenBriefing?.(message.related_briefing_detail)}
       />
     );

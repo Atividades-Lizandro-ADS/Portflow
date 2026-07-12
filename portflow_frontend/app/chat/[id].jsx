@@ -13,7 +13,7 @@ import AttachMenuModal from '../../src/components/molecules/AttachMenuModal';
 import BriefingFormModal from '../../src/components/organisms/BriefingFormModal';
 import BriefingDetailModal from '../../src/components/organisms/BriefingDetailModal';
 import { useAuth } from '../../src/context/AuthContext';
-import { getConversation, getChatMessages, sendChatMessage } from '../../src/api/conversations';
+import { getConversation, getChatMessages, sendChatMessage, heartbeatConversation } from '../../src/api/conversations';
 import { useChatStream } from '../../src/hooks/useChatStream';
 import { colors, fontSize, spacing, radius } from '../../src/theme';
 
@@ -61,6 +61,16 @@ export default function ChatScreen() {
       requestAnimationFrame(() => scrollRef.current?.scrollToEnd({ animated: true }));
     });
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      heartbeatConversation(id).catch(() => {});
+      const interval = setInterval(() => {
+        heartbeatConversation(id).catch(() => {});
+      }, 25000);
+      return () => clearInterval(interval);
+    }, [id])
+  );
 
   const isClient = conversation && conversation.client === user?.profile_id;
   const isArtist = conversation && conversation.artist === user?.profile_id;

@@ -1,6 +1,6 @@
 @if (isBriefingMessage()) {
   @if (message().related_briefing_detail; as briefing) {
-    <app-briefing-card [briefing]="briefing" (view)="openBriefing.emit()" />
+    <app-briefing-card [briefing]="briefing" [isMine]="isMine()" (view)="openBriefing.emit()" />
   } @else {
     <div class="chat-bubble-system"><span>Briefing removido</span></div>
   }

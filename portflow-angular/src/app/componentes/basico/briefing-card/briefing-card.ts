@@ -15,6 +15,7 @@ const STATUS_LABELS: Record<Briefing['status'], string> = {
 })
 export class BriefingCard {
   briefing = input.required<Briefing>();
+  isMine = input(false);
   view = output<void>();
 
   statusLabel = computed(() => STATUS_LABELS[this.briefing().status]);

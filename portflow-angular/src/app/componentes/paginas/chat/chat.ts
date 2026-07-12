@@ -1,7 +1,10 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  Component, DestroyRef, ElementRef, Injector, OnInit, computed, effect,
+  inject, signal, viewChild, afterNextRender,
+} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { forkJoin } from 'rxjs';
+import { forkJoin, interval } from 'rxjs';
 import { Navbar } from '../../basico/navbar/navbar';
 import { Avatar } from '../../basico/avatar/avatar';
 import { AttachMenu } from '../../basico/attach-menu/attach-menu';
@@ -29,6 +32,12 @@ export class Chat implements OnInit {
   private auth = inject(AuthService);
   private conversations = inject(ConversationService);
   private notifStream = inject(NotificationService);
+  private destroyRef = inject(DestroyRef);
+  private injector = inject(Injector);
+
+  private messagesEl = viewChild<ElementRef<HTMLDivElement>>('messagesEl');
+  private topSentinel = viewChild<ElementRef<HTMLDivElement>>('topSentinel');
+  private observer: IntersectionObserver | null = null;
 
   user = toSignal(this.auth.currentUser$);
 
@@ -36,6 +45,8 @@ export class Chat implements OnInit {
   conversation = signal<ConversationModel | null>(null);
   messages = signal<ChatMessage[]>([]);
   loading = signal(true);
+  loadingMore = signal(false);
+  hasMoreMessages = signal(false);
   text = signal('');
   sending = signal(false);
 
@@ -58,6 +69,19 @@ export class Chat implements OnInit {
         if (!id || event.conversation_id !== id) return;
         this.refresh();
       });
+
+    effect(() => {
+      const container = this.messagesEl();
+      const sentinel = this.topSentinel();
+      if (!container || !sentinel || this.observer) return;
+      this.observer = new IntersectionObserver(
+        entries => { if (entries[0].isIntersecting) this.loadOlderMessages(); },
+        { root: container.nativeElement, threshold: 0.1 },
+      );
+      this.observer.observe(sentinel.nativeElement);
+    });
+
+    this.destroyRef.onDestroy(() => this.observer?.disconnect());
   }
 
   ngOnInit(): void {
@@ -71,22 +95,74 @@ export class Chat implements OnInit {
     this.conversationId.set(+id);
     this.loading.set(true);
     this.refresh(() => this.loading.set(false));
+    this.startHeartbeat();
+  }
+
+  private startHeartbeat(): void {
+    const id = this.conversationId();
+    if (!id) return;
+    this.conversations.heartbeat(id).subscribe();
+    interval(25000)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.conversations.heartbeat(id).subscribe());
   }
 
   private refresh(onDone?: () => void): void {
     const id = this.conversationId();
     if (!id) { onDone?.(); return; }
+    const isFirstLoad = this.messages().length === 0;
     forkJoin({
       conversation: this.conversations.get(id),
       messages: this.conversations.getMessages(id),
     }).subscribe({
       next: ({ conversation, messages }) => {
         this.conversation.set(conversation);
-        this.messages.set(messages.results);
+        this.mergeLatestMessages(messages.results);
+        if (isFirstLoad) this.hasMoreMessages.set(messages.has_more);
         onDone?.();
+        this.scrollToBottom();
       },
       error: () => onDone?.(),
     });
+  }
+
+  private mergeLatestMessages(latest: ChatMessage[]): void {
+    this.messages.update(existing => {
+      const byId = new Map(existing.map(m => [m.id, m]));
+      for (const m of latest) byId.set(m.id, m);
+      return Array.from(byId.values()).sort((a, b) => a.id - b.id);
+    });
+  }
+
+  private loadOlderMessages(): void {
+    const id = this.conversationId();
+    const oldestId = this.messages()[0]?.id;
+    if (!id || !oldestId || this.loadingMore() || !this.hasMoreMessages()) return;
+
+    const container = this.messagesEl()?.nativeElement;
+    const prevScrollHeight = container?.scrollHeight ?? 0;
+    const prevScrollTop = container?.scrollTop ?? 0;
+
+    this.loadingMore.set(true);
+    this.conversations.getMessages(id, oldestId).subscribe({
+      next: page => {
+        this.messages.update(list => [...page.results, ...list]);
+        this.hasMoreMessages.set(page.has_more);
+        this.loadingMore.set(false);
+        afterNextRender(() => {
+          if (!container) return;
+          container.scrollTop = prevScrollTop + (container.scrollHeight - prevScrollHeight);
+        }, { injector: this.injector });
+      },
+      error: () => this.loadingMore.set(false),
+    });
+  }
+
+  private scrollToBottom(): void {
+    afterNextRender(() => {
+      const el = this.messagesEl()?.nativeElement;
+      if (el) el.scrollTop = el.scrollHeight;
+    }, { injector: this.injector });
   }
 
   isMine(message: ChatMessage): boolean {
@@ -120,6 +196,7 @@ export class Chat implements OnInit {
         this.text.set('');
         this.pendingAttachments.set([]);
         this.sending.set(false);
+        this.scrollToBottom();
       },
       error: () => this.sending.set(false),
     });

@@ -1,11 +1,15 @@
+from django.core.cache import cache
 from django.db.models import Max, Q
 from django.db.models.functions import Coalesce
 from rest_framework import viewsets, exceptions
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from ..serializers import ConversationSerializer
 from ...models import Conversation
+
+CHAT_VIEWING_TTL = 40
 
 
 class ConversationViewSet(viewsets.ModelViewSet):
@@ -43,3 +47,9 @@ class ConversationViewSet(viewsets.ModelViewSet):
             tier=tier,
         )
         return Response(self.get_serializer(conversation).data)
+
+    @action(detail=True, methods=['post'])
+    def heartbeat(self, request, pk=None):
+        conversation = self.get_object()
+        cache.set(f'chat-viewing:{request.user.profile.pk}', conversation.pk, timeout=CHAT_VIEWING_TTL)
+        return Response(status=204)

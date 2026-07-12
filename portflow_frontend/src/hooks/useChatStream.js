@@ -20,7 +20,9 @@ export function useChatStream(conversationId, onMessage) {
       es.addEventListener('message', (event) => {
         try {
           const data = JSON.parse(event.data);
-          if (data.type === 'chat_message' && String(data.conversation_id) === String(conversationId)) {
+          const isRelevant = (data.type === 'chat_message' || data.type === 'briefing_updated')
+            && String(data.conversation_id) === String(conversationId);
+          if (isRelevant) {
             onMessageRef.current(data);
           }
         } catch {}
