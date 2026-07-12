@@ -117,7 +117,7 @@
 
     <app-delete-post-modal
       [visible]="deleteModalVisible()"
-      [postTitle]="p.tittle"
+      [itemName]="p.tittle"
       [loading]="deleting()"
       (cancel)="closeDeleteModal()"
       (confirm)="confirmDelete()"

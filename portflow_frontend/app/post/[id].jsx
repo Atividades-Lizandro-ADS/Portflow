@@ -141,7 +141,7 @@ export default function PostDetailScreen() {
 
       <DeletePostModal
         visible={deleteModalVisible}
-        postTitle={post.tittle}
+        itemName={post.tittle}
         loading={deleting}
         onCancel={() => setDeleteModalVisible(false)}
         onConfirm={confirmDelete}

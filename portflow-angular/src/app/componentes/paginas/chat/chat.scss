@@ -46,6 +46,11 @@
   font-size: 0.75rem;
 }
 
+.chat-header-tier-removed {
+  color: var(--danger);
+  margin-left: 4px;
+}
+
 .chat-messages {
   flex: 1;
   padding: 16px;

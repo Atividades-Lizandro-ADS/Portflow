@@ -7,6 +7,6 @@ class CommissionTierSerializer(serializers.ModelSerializer):
         model = CommissionTier
         fields = (
             'id', 'profile', 'name', 'description', 'thumb',
-            'price', 'negotiable', 'negotiation_direction',
+            'price', 'negotiable', 'negotiation_direction', 'is_active',
         )
-        read_only_fields = ('id', 'profile')
+        read_only_fields = ('id', 'profile', 'is_active')

@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { Tier, NegotiationDirection } from '../../../core/models/tier';
 import { TextSizePipe } from '../../../core/pipes/text-size-pipe';
 
@@ -16,6 +16,10 @@ const NEGOTIATION_LABELS: Record<NegotiationDirection, string> = {
 })
 export class TierCards {
   tier = input.required<Tier>();
+  showActions = input(false);
+
+  edit = output<void>();
+  remove = output<void>();
 
   priceLabel = computed(() =>
     Number(this.tier().price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })

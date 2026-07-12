@@ -1,15 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView,
   ActivityIndicator, KeyboardAvoidingView, Platform, Switch,
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import ScreenHeader from '../src/components/ScreenHeader';
-import SectionLabel from '../src/components/atoms/SectionLabel';
-import ThumbPickerField from '../src/components/molecules/ThumbPickerField';
-import TypeSelector from '../src/components/molecules/TypeSelector';
-import { createTier } from '../src/api/tiers';
-import { colors, fontSize, spacing, radius } from '../src/theme';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import ScreenHeader from '../../src/components/ScreenHeader';
+import SectionLabel from '../../src/components/atoms/SectionLabel';
+import ThumbPickerField from '../../src/components/molecules/ThumbPickerField';
+import TypeSelector from '../../src/components/molecules/TypeSelector';
+import { getTier, updateTier } from '../../src/api/tiers';
+import { colors, fontSize, spacing, radius } from '../../src/theme';
 
 const NEGOTIATION_OPTIONS = [
   { value: 'up', label: 'Só pra cima' },
@@ -17,17 +17,32 @@ const NEGOTIATION_OPTIONS = [
   { value: 'both', label: 'Os dois lados' },
 ];
 
-export default function ComissionTierFormScreen() {
+export default function EditTierScreen() {
+  const { id } = useLocalSearchParams();
   const router = useRouter();
+
+  const [pageLoading, setPageLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const [thumb, setThumb] = useState(null);
+  const [currentThumb, setCurrentThumb] = useState(null);
+  const [newThumb, setNewThumb] = useState(null);
   const [negotiable, setNegotiable] = useState(false);
   const [negotiationDirection, setNegotiationDirection] = useState('both');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+
+  useEffect(() => {
+    getTier(id).then(({ data }) => {
+      setName(data.name ?? '');
+      setDescription(data.description ?? '');
+      setPrice(data.price ?? '');
+      setCurrentThumb(data.thumb ?? null);
+      setNegotiable(data.negotiable ?? false);
+      setNegotiationDirection(data.negotiation_direction ?? 'both');
+    }).finally(() => setPageLoading(false));
+  }, [id]);
 
   const handleSubmit = async () => {
     if (!name.trim()) { setError('O nome do tier é obrigatório.'); return; }
@@ -35,7 +50,7 @@ export default function ComissionTierFormScreen() {
     const normalizedPrice = price.trim().replace(',', '.');
     if (!normalizedPrice || Number.isNaN(Number(normalizedPrice))) { setError('Informe um preço válido.'); return; }
     setError('');
-    setLoading(true);
+    setSaving(true);
     try {
       const form = new FormData();
       form.append('name', name.trim());
@@ -43,10 +58,10 @@ export default function ComissionTierFormScreen() {
       form.append('price', normalizedPrice);
       form.append('negotiable', negotiable ? 'true' : 'false');
       if (negotiable) form.append('negotiation_direction', negotiationDirection);
-      if (thumb) {
-        form.append('thumb', { uri: thumb.uri, name: thumb.fileName ?? 'thumb.jpg', type: thumb.mimeType ?? 'image/jpeg' });
+      if (newThumb) {
+        form.append('thumb', { uri: newThumb.uri, name: newThumb.fileName ?? 'thumb.jpg', type: newThumb.mimeType ?? 'image/jpeg' });
       }
-      await createTier(form);
+      await updateTier(id, form);
       router.back();
     } catch (e) {
       const detail = e.response?.data;
@@ -54,18 +69,24 @@ export default function ComissionTierFormScreen() {
         const first = Object.values(detail)[0];
         setError(Array.isArray(first) ? first[0] : String(first));
       } else {
-        setError('Erro ao criar tier. Tente novamente.');
+        setError('Erro ao salvar o tier. Tente novamente.');
       }
-    } finally { setLoading(false); }
+    } finally { setSaving(false); }
   };
+
+  if (pageLoading) {
+    return <View style={styles.center}><ActivityIndicator color={colors.accent} size="large" /></View>;
+  }
+
+  const thumbUri = newThumb?.uri ?? currentThumb;
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScreenHeader onBack={() => router.back()} title="Novo tier" />
+      <ScreenHeader onBack={() => router.back()} title="Editar tier" />
 
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <SectionLabel>Imagem (opcional)</SectionLabel>
-        <ThumbPickerField thumbUri={thumb?.uri} onPick={setThumb} />
+        <ThumbPickerField thumbUri={thumbUri} onPick={setNewThumb} showEditOverlay={!!thumbUri} />
 
         <SectionLabel>Nome *</SectionLabel>
         <TextInput
@@ -127,10 +148,10 @@ export default function ComissionTierFormScreen() {
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
-        <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit} disabled={loading}>
-          {loading
+        <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit} disabled={saving}>
+          {saving
             ? <ActivityIndicator color={colors.darkBg} />
-            : <Text style={styles.submitText}>Criar tier</Text>}
+            : <Text style={styles.submitText}>Salvar alterações</Text>}
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -139,6 +160,7 @@ export default function ComissionTierFormScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.darkBg },
+  center: { flex: 1, backgroundColor: colors.darkBg, alignItems: 'center', justifyContent: 'center' },
   content: { padding: spacing.lg, gap: spacing.md, paddingBottom: spacing.xxl },
   input: {
     backgroundColor: colors.formBg, borderWidth: 1, borderColor: colors.inputBorder,

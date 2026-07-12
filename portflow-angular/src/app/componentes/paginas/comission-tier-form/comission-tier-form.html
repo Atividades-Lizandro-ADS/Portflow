@@ -1,5 +1,84 @@
 <div class="comission-tier-form-page">
   <app-navbar />
 
-  <h1 class="comission-tier-form-title">Novo tier</h1>
+  @if (pageLoading()) {
+    <div class="comission-tier-form-center">Carregando...</div>
+  } @else {
+
+  <div class="comission-tier-form-layout">
+
+    <div class="comission-tier-form-top">
+      <div class="graybox">
+        <div class="graybox-header">Imagem (opcional)</div>
+        <div class="graybox-body">
+          <app-thumb-picker-field [preview]="thumbPreview()" [showEditOverlay]="!!thumbPreview()" (picked)="onThumbPicked($event)" />
+        </div>
+      </div>
+    </div>
+
+    <div class="comission-tier-form-main">
+      <div class="graybox">
+        <div class="graybox-header">Nome <span class="comission-tier-form-required">*</span></div>
+        <div class="graybox-body">
+          <input class="graybox-input" type="text" placeholder="Ex: Ilustração simples" maxlength="100"
+            [value]="name()" (input)="name.set($any($event.target).value)" />
+        </div>
+      </div>
+
+      <div class="graybox">
+        <div class="graybox-header">Descrição <span class="comission-tier-form-required">*</span></div>
+        <div class="graybox-body">
+          <textarea class="graybox-input graybox-textarea" placeholder="Descreva o que está incluso nesse tier"
+            [value]="description()" (input)="description.set($any($event.target).value)"></textarea>
+        </div>
+      </div>
+
+      <div class="graybox">
+        <div class="graybox-header">Preço (R$) <span class="comission-tier-form-required">*</span></div>
+        <div class="graybox-body">
+          <input class="graybox-input" type="text" inputmode="decimal" placeholder="0,00"
+            [value]="price()" (input)="price.set($any($event.target).value)" />
+        </div>
+      </div>
+
+      <div class="comission-tier-form-negotiable-row">
+        <div class="comission-tier-form-negotiable-labels">
+          <div class="comission-tier-form-negotiable-title">Preço negociável</div>
+          <div class="comission-tier-form-negotiable-hint">
+            Permite que o cliente negocie o valor durante a conversa.
+          </div>
+        </div>
+        <label class="comission-tier-form-toggle-switch">
+          <input type="checkbox" [checked]="negotiable()" (change)="negotiable.set($any($event.target).checked)" />
+          <span class="comission-tier-form-toggle-track"></span>
+        </label>
+      </div>
+
+    </div>
+
+    <div class="comission-tier-form-bottom">
+      @if (negotiable()) {
+        <div class="graybox">
+          <div class="graybox-header">Direção da negociação</div>
+          <div class="graybox-body">
+            <app-type-selector [options]="negotiationOptions" [value]="negotiationDirection()" (valueChange)="setNegotiationDirection($event)" />
+          </div>
+        </div>
+      }
+
+      @if (error()) {
+        <div class="comission-tier-form-error">{{ error() }}</div>
+      }
+
+      <button type="button" class="comission-tier-form-submit" [disabled]="saving()" (click)="submit()">
+        @if (saving()) {
+          <i class="bi bi-arrow-repeat comission-tier-form-submit-spin"></i>
+        } @else {
+          {{ isEditMode() ? 'Salvar alterações' : 'Criar tier' }}
+        }
+      </button>
+    </div>
+
+  </div>
+  }
 </div>

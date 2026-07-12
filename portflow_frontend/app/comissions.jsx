@@ -6,10 +6,12 @@ import { Ionicons } from '@expo/vector-icons';
 import TabSwitch from '../src/components/molecules/TabSwitch';
 import TierCard from '../src/components/molecules/TierCard';
 import TierDetailModal from '../src/components/organisms/TierDetailModal';
+import DeletePostModal from '../src/components/organisms/DeletePostModal';
 import ChatListItem from '../src/components/molecules/ChatListItem';
 import { useAuth } from '../src/context/AuthContext';
 import { getProfile } from '../src/api/profiles';
 import { getConversations } from '../src/api/conversations';
+import { deleteTier } from '../src/api/tiers';
 import { colors, fontSize, spacing, radius } from '../src/theme';
 
 const COMISSIONS_TABS = [
@@ -24,6 +26,8 @@ export default function ComissionsScreen() {
   const [tab, setTab] = useState('chats');
   const [profile, setProfile] = useState(null);
   const [selectedTier, setSelectedTier] = useState(null);
+  const [tierToDelete, setTierToDelete] = useState(null);
+  const [deletingTier, setDeletingTier] = useState(false);
   const [conversations, setConversations] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
 
@@ -58,6 +62,21 @@ export default function ComissionsScreen() {
       router.push(`/chat/${group.conversations[0].id}`);
     } else {
       setSelectedGroup(group);
+    }
+  };
+
+  const handleConfirmDeleteTier = async () => {
+    if (!tierToDelete) return;
+    setDeletingTier(true);
+    try {
+      await deleteTier(tierToDelete.id);
+      setProfile((prev) => prev ? {
+        ...prev,
+        commission_tiers: prev.commission_tiers.filter((t) => t.id !== tierToDelete.id),
+      } : prev);
+      setTierToDelete(null);
+    } finally {
+      setDeletingTier(false);
     }
   };
 
@@ -117,7 +136,13 @@ export default function ComissionsScreen() {
       {tab === 'tiers' && (
         <View style={styles.tierList}>
           {tiers.map((tier) => (
-            <TierCard key={tier.id} tier={tier} onPress={() => setSelectedTier(tier)} />
+            <TierCard
+              key={tier.id}
+              tier={tier}
+              onPress={() => setSelectedTier(tier)}
+              onEdit={() => router.push(`/edit-tier/${tier.id}`)}
+              onDelete={() => setTierToDelete(tier)}
+            />
           ))}
           {!tiers.length && (
             <Text style={styles.empty}>Nenhum tier cadastrado ainda.</Text>
@@ -134,6 +159,17 @@ export default function ComissionsScreen() {
         visible={!!selectedTier}
         tier={selectedTier}
         onClose={() => setSelectedTier(null)}
+      />
+
+      <DeletePostModal
+        visible={!!tierToDelete}
+        itemName={tierToDelete?.name ?? ''}
+        loading={deletingTier}
+        title="Excluir tier"
+        message="Esta ação não pode ser desfeita. O tier deixará de ficar visível, mas as conversas já existentes com clientes serão preservadas."
+        confirmLabel="Eu entendo, apagar tier"
+        onCancel={() => !deletingTier && setTierToDelete(null)}
+        onConfirm={handleConfirmDeleteTier}
       />
     </>
   );

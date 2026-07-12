@@ -18,6 +18,7 @@ export const routes: Routes = [
   { path: 'profile/:id', component: About },
   { path: 'comissions', component: Comissions, canActivate: [authGuard] },
   { path: 'comission-tier-form', component: ComissionTierForm, canActivate: [authGuard] },
+  { path: 'comission-tier-form/:id', component: ComissionTierForm, canActivate: [authGuard] },
   { path: 'chat/:id', component: Chat, canActivate: [authGuard] },
   { path: 'edit-about', component: EditAbout, canActivate: [authGuard] },
   { path: 'post/:id', component: PostDetail },

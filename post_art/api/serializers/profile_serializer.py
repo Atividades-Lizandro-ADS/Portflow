@@ -22,7 +22,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     followers_count = serializers.IntegerField(source='followers_set.count', read_only=True)
     following_count = serializers.IntegerField(source='following_set.count', read_only=True)
     is_following = serializers.SerializerMethodField()
-    commission_tiers = CommissionTierSerializer(many=True, read_only=True)
+    commission_tiers = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
@@ -45,6 +45,10 @@ class ProfileSerializer(serializers.ModelSerializer):
         if not request or not request.user.is_authenticated:
             return False
         return Follow.objects.filter(follower=request.user.profile, following=obj).exists()
+
+    def get_commission_tiers(self, obj):
+        qs = obj.commission_tiers.filter(is_active=True)
+        return CommissionTierSerializer(qs, many=True, context=self.context).data
 
     def get_posts(self, obj):
         from .post_art_serializer import PostFeedSerializer

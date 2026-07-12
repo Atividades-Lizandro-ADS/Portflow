@@ -1,11 +1,26 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { colors, fontSize, spacing, radius } from '../../theme';
 import { truncateText } from '../../utils/text';
 import { NEGOTIATION_LABELS, formatTierPrice } from '../../utils/tier';
 
-export default function TierCard({ tier, onPress }) {
+export default function TierCard({ tier, onPress, onEdit, onDelete }) {
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.85} disabled={!onPress}>
+      {(onEdit || onDelete) && (
+        <View style={styles.actions}>
+          {onEdit && (
+            <TouchableOpacity style={styles.actionBtn} onPress={onEdit}>
+              <Ionicons name="pencil" size={14} color={colors.white} />
+            </TouchableOpacity>
+          )}
+          {onDelete && (
+            <TouchableOpacity style={styles.actionBtn} onPress={onDelete}>
+              <Ionicons name="trash" size={14} color={colors.danger} />
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
       {tier.thumb ? (
         <Image source={{ uri: tier.thumb }} style={styles.image} resizeMode="cover" />
       ) : (
@@ -36,6 +51,15 @@ const styles = StyleSheet.create({
     borderRadius: radius.card,
     overflow: 'hidden',
     height: 140,
+  },
+  actions: {
+    position: 'absolute', top: spacing.xs, right: spacing.xs, zIndex: 1,
+    flexDirection: 'row', gap: spacing.xs,
+  },
+  actionBtn: {
+    width: 28, height: 28, borderRadius: 14,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    alignItems: 'center', justifyContent: 'center',
   },
   image: { flex: 1, height: '100%' },
   imagePlaceholder: { backgroundColor: colors.headerBg },

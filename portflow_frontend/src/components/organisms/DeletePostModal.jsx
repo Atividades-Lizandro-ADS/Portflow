@@ -4,14 +4,19 @@ import { Ionicons } from '@expo/vector-icons';
 import NoPasteTextInput from '../atoms/NoPasteTextInput';
 import { colors, fontSize, spacing, radius } from '../../theme';
 
-export default function DeletePostModal({ visible, postTitle, loading, onCancel, onConfirm }) {
+export default function DeletePostModal({
+  visible, itemName, loading, onCancel, onConfirm,
+  title = 'Excluir post',
+  message = 'Esta ação não pode ser desfeita. Todos os likes, comentários e imagens ligados a este post serão excluídos permanentemente.',
+  confirmLabel = 'Eu entendo, apagar post',
+}) {
   const [confirmText, setConfirmText] = useState('');
 
   useEffect(() => {
     if (visible) setConfirmText('');
   }, [visible]);
 
-  const canConfirm = confirmText === postTitle;
+  const canConfirm = confirmText === itemName;
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancel}>
@@ -19,17 +24,15 @@ export default function DeletePostModal({ visible, postTitle, loading, onCancel,
         <TouchableOpacity style={StyleSheet.absoluteFill} onPress={onCancel} activeOpacity={1} />
         <View style={styles.card}>
           <Ionicons name="warning" size={28} color={colors.danger} style={styles.icon} />
-          <Text style={styles.title}>Excluir post</Text>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.message}>{message}</Text>
           <Text style={styles.message}>
-            Esta ação não pode ser desfeita. Todos os likes, comentários e imagens ligados a este post serão excluídos permanentemente.
-          </Text>
-          <Text style={styles.message}>
-            Para confirmar, digite <Text style={styles.postName}>{postTitle}</Text> abaixo:
+            Para confirmar, digite <Text style={styles.postName}>{itemName}</Text> abaixo:
           </Text>
           <NoPasteTextInput
             value={confirmText}
             onChangeText={setConfirmText}
-            placeholder={postTitle}
+            placeholder={itemName}
             autoCapitalize="none"
             autoCorrect={false}
           />
@@ -44,7 +47,7 @@ export default function DeletePostModal({ visible, postTitle, loading, onCancel,
             >
               {loading
                 ? <ActivityIndicator color={colors.white} />
-                : <Text style={styles.confirmBtnText}>Eu entendo, apagar post</Text>}
+                : <Text style={styles.confirmBtnText}>{confirmLabel}</Text>}
             </TouchableOpacity>
           </View>
         </View>

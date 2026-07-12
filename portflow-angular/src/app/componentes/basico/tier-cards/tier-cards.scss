@@ -3,6 +3,7 @@
 }
 
 .tier-card {
+  position: relative;
   background: var(--light-bg);
   border-radius: 8px;
   overflow: hidden;
@@ -10,6 +11,33 @@
   grid-template-columns: 1fr 2fr;
   min-height: 140px;
   cursor: pointer;
+}
+
+.tier-card-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  display: flex;
+  gap: 6px;
+}
+
+.tier-card-action-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+
+  &.tier-card-action-btn-danger {
+    color: var(--danger);
+  }
 }
 
 .tier-card-image-wrap {

@@ -1,4 +1,14 @@
 <div class="tier-card">
+  @if (showActions()) {
+    <div class="tier-card-actions">
+      <button type="button" class="tier-card-action-btn" (click)="$event.stopPropagation(); edit.emit()">
+        <i class="bi bi-pencil"></i>
+      </button>
+      <button type="button" class="tier-card-action-btn tier-card-action-btn-danger" (click)="$event.stopPropagation(); remove.emit()">
+        <i class="bi bi-trash"></i>
+      </button>
+    </div>
+  }
   <div class="tier-card-image-wrap">
     @if (tier().thumb) {
       <img class="tier-card-image" [src]="tier().thumb" [alt]="tier().name" />

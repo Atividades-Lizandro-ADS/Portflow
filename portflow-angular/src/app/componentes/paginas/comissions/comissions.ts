@@ -6,9 +6,11 @@ import { Switch, SwitchOption } from '../../basico/switch/switch';
 import { TierCards } from '../../basico/tier-cards/tier-cards';
 import { TierDetailModal } from '../../basico/tier-detail-modal/tier-detail-modal';
 import { ChatListItem } from '../../basico/chat-list-item/chat-list-item';
+import { DeletePostModal } from '../../basico/delete-post-modal/delete-post-modal';
 import { AuthService } from '../../../core/services/auth.service';
 import { ProfileService } from '../../../core/services/profile.service';
 import { Conversation as ConversationService } from '../../../core/services/conversation';
+import { CommissionTier as CommissionTierService } from '../../../core/services/commission-tier';
 import { Profile, ProfileMinimal } from '../../../core/models/profile';
 import { Tier } from '../../../core/models/tier';
 import { Conversation as ConversationModel } from '../../../core/models/conversation';
@@ -20,7 +22,7 @@ interface ChatGroup {
 
 @Component({
   selector: 'app-comissions',
-  imports: [Navbar, Switch, TierCards, TierDetailModal, ChatListItem, RouterLink],
+  imports: [Navbar, Switch, TierCards, TierDetailModal, ChatListItem, DeletePostModal, RouterLink],
   templateUrl: './comissions.html',
   styleUrl: './comissions.scss',
 })
@@ -28,12 +30,15 @@ export class Comissions implements OnInit {
   private auth = inject(AuthService);
   private profiles = inject(ProfileService);
   private conversationsApi = inject(ConversationService);
+  private tiersApi = inject(CommissionTierService);
   private router = inject(Router);
 
   user = toSignal(this.auth.currentUser$);
   profile = signal<Profile | null>(null);
   loading = signal(true);
   selectedTier = signal<Tier | null>(null);
+  tierToDelete = signal<Tier | null>(null);
+  deletingTier = signal(false);
 
   conversations = signal<ConversationModel[]>([]);
   selectedGroup = signal<ChatGroup | null>(null);
@@ -87,5 +92,35 @@ export class Comissions implements OnInit {
     } else {
       this.selectedGroup.set(group);
     }
+  }
+
+  onEditTier(tier: Tier): void {
+    this.router.navigate(['/comission-tier-form', tier.id]);
+  }
+
+  onDeleteTier(tier: Tier): void {
+    this.tierToDelete.set(tier);
+  }
+
+  cancelDeleteTier(): void {
+    if (this.deletingTier()) return;
+    this.tierToDelete.set(null);
+  }
+
+  confirmDeleteTier(): void {
+    const tier = this.tierToDelete();
+    if (!tier) return;
+    this.deletingTier.set(true);
+    this.tiersApi.delete(tier.id).subscribe({
+      next: () => {
+        this.profile.update(p => p ? {
+          ...p,
+          commission_tiers: p.commission_tiers.filter(t => t.id !== tier.id),
+        } : p);
+        this.deletingTier.set(false);
+        this.tierToDelete.set(null);
+      },
+      error: () => this.deletingTier.set(false),
+    });
   }
 }

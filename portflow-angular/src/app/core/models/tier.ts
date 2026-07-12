@@ -9,4 +9,5 @@ export interface Tier {
   price: string;
   negotiable: boolean;
   negotiation_direction: NegotiationDirection | null;
+  is_active: boolean;
 }

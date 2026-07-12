@@ -66,7 +66,12 @@ export default function ChatScreen() {
             <Text style={styles.headerName} numberOfLines={1}>
               {conversation.other_profile.first_name || conversation.other_profile.username}
             </Text>
-            <Text style={styles.headerTier} numberOfLines={1}>{conversation.tier_detail.name}</Text>
+            <Text style={styles.headerTier} numberOfLines={1}>
+              {conversation.tier_detail.name}
+              {!conversation.tier_detail.is_active && (
+                <Text style={styles.headerTierRemoved}> (tier removido)</Text>
+              )}
+            </Text>
           </View>
         </View>
       </ScreenHeader>
@@ -111,6 +116,7 @@ const styles = StyleSheet.create({
   headerInfo: { flex: 1, gap: 2 },
   headerName: { color: colors.white, fontSize: fontSize.md, fontWeight: 'bold' },
   headerTier: { color: colors.textSecondary, fontSize: fontSize.xs },
+  headerTierRemoved: { color: colors.danger },
   messages: { paddingVertical: spacing.md, flexGrow: 1 },
   empty: { color: colors.textSecondary, fontSize: fontSize.sm, textAlign: 'center', marginTop: spacing.xl },
   inputRow: {

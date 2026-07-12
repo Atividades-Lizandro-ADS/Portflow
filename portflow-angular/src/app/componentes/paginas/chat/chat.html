@@ -17,7 +17,12 @@
       <app-avatar [uri]="c.other_profile.user_picture" [size]="40" />
       <div class="chat-header-info">
         <span class="chat-header-name">{{ c.other_profile.first_name || c.other_profile.username }}</span>
-        <span class="chat-header-tier">{{ c.tier_detail.name }}</span>
+        <span class="chat-header-tier">
+          {{ c.tier_detail.name }}
+          @if (!c.tier_detail.is_active) {
+            <span class="chat-header-tier-removed">(tier removido)</span>
+          }
+        </span>
       </div>
     </div>
 

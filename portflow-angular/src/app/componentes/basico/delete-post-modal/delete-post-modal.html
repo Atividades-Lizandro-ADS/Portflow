@@ -2,17 +2,17 @@
   <div class="delete-post-modal-backdrop" (click)="onCancel()">
     <div class="delete-post-modal-card" (click)="$event.stopPropagation()">
       <i class="bi bi-exclamation-triangle-fill delete-post-modal-icon"></i>
-      <h2 class="delete-post-modal-title">Excluir post</h2>
+      <h2 class="delete-post-modal-title">{{ title() }}</h2>
       <p class="delete-post-modal-message">
-        Esta ação não pode ser desfeita. Todos os likes, comentários e imagens ligados a este post serão excluídos permanentemente.
+        {{ message() }}
       </p>
       <p class="delete-post-modal-message">
-        Para confirmar, digite <span class="delete-post-modal-post-name">{{ postTitle() }}</span> abaixo:
+        Para confirmar, digite <span class="delete-post-modal-post-name">{{ itemName() }}</span> abaixo:
       </p>
       <app-no-paste-input
         [ngModel]="confirmText()"
         (ngModelChange)="confirmText.set($event)"
-        [placeholder]="postTitle()"
+        [placeholder]="itemName()"
         autocomplete="off"
       />
       <div class="delete-post-modal-actions">
@@ -27,7 +27,7 @@
           @if (loading()) {
             <span class="delete-post-modal-spinner"></span>
           } @else {
-            Eu entendo, apagar post
+            {{ confirmLabel() }}
           }
         </button>
       </div>
