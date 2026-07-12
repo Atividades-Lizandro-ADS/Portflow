@@ -9,10 +9,13 @@ import { Avatar } from '../../basico/avatar/avatar';
 import { PostCard } from '../../basico/post-card/post-card';
 import { ProgramChip } from '../../basico/program-chip/program-chip';
 import { Switch, SwitchOption } from '../../basico/switch/switch';
+import { TierCards } from '../../basico/tier-cards/tier-cards';
+import { TierDetailModal } from '../../basico/tier-detail-modal/tier-detail-modal';
+import { Tier } from '../../../core/models/tier';
 
 @Component({
   selector: 'app-about',
-  imports: [RouterLink, Navbar, Avatar, PostCard, ProgramChip, Switch],
+  imports: [RouterLink, Navbar, Avatar, PostCard, ProgramChip, Switch, TierCards, TierDetailModal],
   templateUrl: './about.html',
   styleUrl: './about.scss',
 })
@@ -26,17 +29,24 @@ export class About implements OnInit {
   profile = signal<ProfileModel | null>(null);
   loading = signal(true);
   error = signal('');
-  tab = signal<'portfolio' | 'sobre'>('portfolio');
+  tab = signal<'portfolio' | 'sobre' | 'tiers'>('portfolio');
+  selectedTier = signal<Tier | null>(null);
 
-  tabOptions: SwitchOption[] = [
-    { id: 'portfolio', label: 'Portfolio' },
-    { id: 'sobre', label: 'Sobre' },
-  ];
+  tabOptions = computed<SwitchOption[]>(() => {
+    const options: SwitchOption[] = [
+      { id: 'portfolio', label: 'Portfolio' },
+      { id: 'sobre', label: 'Sobre' },
+    ];
+    if (this.profile()?.commissions_open && !this.isOwner()) {
+      options.push({ id: 'tiers', label: 'Tiers' });
+    }
+    return options;
+  });
 
   isOwner = computed(() => this.user()?.profile_id === this.profile()?.id);
 
   onTabChange(id: string): void {
-    this.tab.set(id as 'portfolio' | 'sobre');
+    this.tab.set(id as 'portfolio' | 'sobre' | 'tiers');
   }
 
   ngOnInit(): void {

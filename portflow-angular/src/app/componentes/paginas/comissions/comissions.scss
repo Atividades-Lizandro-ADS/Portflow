@@ -22,6 +22,35 @@
   padding: 0 16px 24px;
 }
 
+.comissions-tier-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 16px 24px;
+}
+
+.comissions-empty-inline {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.comissions-add-tier-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--dark-bg);
+  font-size: 0.875rem;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+}
+
 @media (min-width: 768px) {
   .comissions-header {
     padding: 32px 32px 0;
@@ -33,5 +62,11 @@
 
   .comissions-empty {
     padding: 0 32px 32px;
+  }
+
+  .comissions-tier-list {
+    width: 80%;
+    margin: 0 auto;
+    padding: 0 0 32px;
   }
 }

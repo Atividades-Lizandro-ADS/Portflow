@@ -14,6 +14,23 @@
   }
 
   @if (tab() === 'tiers') {
-    <div class="comissions-empty">Nenhum tier cadastrado ainda.</div>
+    <div class="comissions-tier-list">
+      @for (tier of profile()?.commission_tiers ?? []; track tier.id) {
+        <app-tier-cards [tier]="tier" (click)="selectedTier.set(tier)" />
+      }
+      @if (!loading() && !(profile()?.commission_tiers ?? []).length) {
+        <p class="comissions-empty-inline">Nenhum tier cadastrado ainda.</p>
+      }
+      <a routerLink="/comission-tier-form" class="comissions-add-tier-btn">
+        <i class="bi bi-plus-lg"></i>
+        <span>Adicionar tier</span>
+      </a>
+    </div>
   }
+
+  <app-tier-detail-modal
+    [visible]="!!selectedTier()"
+    [tier]="selectedTier()"
+    (close)="selectedTier.set(null)"
+  />
 </div>

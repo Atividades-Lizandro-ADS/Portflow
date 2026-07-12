@@ -75,6 +75,12 @@
   gap: 8px;
 }
 
+.about-tier-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .about-empty {
   color: var(--text-secondary);
   font-size: 0.875rem;
@@ -179,6 +185,11 @@
   .about-card {
     margin: 0 32px 32px;
     padding: 24px;
+  }
+
+  .about-tier-list {
+    width: 80%;
+    margin: 0 auto;
   }
 
   .about-groups {

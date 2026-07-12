@@ -25,7 +25,7 @@
     </div>
 
     <div class="profile-tabs">
-      <app-switch [options]="tabOptions" [active]="tab()" (change)="onTabChange($event)" />
+      <app-switch [options]="tabOptions()" [active]="tab()" (change)="onTabChange($event)" />
     </div>
 
     @if (tab() === 'portfolio') {
@@ -131,5 +131,26 @@
         </div>
       </div>
     }
+
+    @if (tab() === 'tiers') {
+      <div class="about-section">
+        <h2 class="about-section-title">Tiers de comissão</h2>
+        @if (p.commission_tiers.length) {
+          <div class="about-tier-list">
+            @for (tier of p.commission_tiers; track tier.id) {
+              <app-tier-cards [tier]="tier" (click)="selectedTier.set(tier)" />
+            }
+          </div>
+        } @else {
+          <p class="about-empty">Nenhum tier cadastrado ainda.</p>
+        }
+      </div>
+    }
   }
+
+  <app-tier-detail-modal
+    [visible]="!!selectedTier()"
+    [tier]="selectedTier()"
+    (close)="selectedTier.set(null)"
+  />
 </div>

@@ -1,4 +1,5 @@
 import { Program, PostFeed } from './post';
+import { Tier } from './tier';
 
 export interface Hiring {
   id: number;
@@ -24,6 +25,8 @@ export interface Profile {
   username: string;
   user_picture: string | null;
   profile_banner: string | null;
+  commissions_open: boolean;
+  commission_tiers: Tier[];
   about: ProfileAbout | null;
   posts: PostFeed[];
   drafts: PostFeed[];
