@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -6,8 +6,10 @@ import { Ionicons } from '@expo/vector-icons';
 import TabSwitch from '../src/components/molecules/TabSwitch';
 import TierCard from '../src/components/molecules/TierCard';
 import TierDetailModal from '../src/components/organisms/TierDetailModal';
+import ChatListItem from '../src/components/molecules/ChatListItem';
 import { useAuth } from '../src/context/AuthContext';
 import { getProfile } from '../src/api/profiles';
+import { getConversations } from '../src/api/conversations';
 import { colors, fontSize, spacing, radius } from '../src/theme';
 
 const COMISSIONS_TABS = [
@@ -22,15 +24,42 @@ export default function ComissionsScreen() {
   const [tab, setTab] = useState('chats');
   const [profile, setProfile] = useState(null);
   const [selectedTier, setSelectedTier] = useState(null);
+  const [conversations, setConversations] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState(null);
 
   useFocusEffect(
     useCallback(() => {
       if (!user?.profile_id) return;
       getProfile(user.profile_id).then(({ data }) => setProfile(data));
+      getConversations().then(({ data }) => setConversations(data.results ?? data));
     }, [user?.profile_id])
   );
 
   const tiers = profile?.commission_tiers ?? [];
+
+  const chatGroups = useMemo(() => {
+    const groups = [];
+    const byProfile = new Map();
+    for (const conversation of conversations) {
+      const key = conversation.other_profile.id;
+      let group = byProfile.get(key);
+      if (!group) {
+        group = { profile: conversation.other_profile, conversations: [] };
+        byProfile.set(key, group);
+        groups.push(group);
+      }
+      group.conversations.push(conversation);
+    }
+    return groups;
+  }, [conversations]);
+
+  const handleGroupPress = (group) => {
+    if (group.conversations.length === 1) {
+      router.push(`/chat/${group.conversations[0].id}`);
+    } else {
+      setSelectedGroup(group);
+    }
+  };
 
   return (
     <>
@@ -43,8 +72,46 @@ export default function ComissionsScreen() {
         <TabSwitch options={COMISSIONS_TABS} active={tab} onChange={setTab} />
       </View>
 
-      {tab === 'chats' && (
-        <Text style={styles.empty}>Nenhum chat por aqui ainda.</Text>
+      {tab === 'chats' && !selectedGroup && (
+        <View style={styles.chatList}>
+          {chatGroups.map((group) => {
+            const last = group.conversations[0]?.last_message;
+            return (
+              <ChatListItem
+                key={group.profile.id}
+                avatarUri={group.profile.user_picture}
+                title={group.profile.first_name || group.profile.username}
+                subtitle={last?.body}
+                timestamp={last?.created_at ?? group.conversations[0]?.created_at}
+                onPress={() => handleGroupPress(group)}
+              />
+            );
+          })}
+          {!chatGroups.length && (
+            <Text style={styles.empty}>Nenhum chat por aqui ainda.</Text>
+          )}
+        </View>
+      )}
+
+      {tab === 'chats' && selectedGroup && (
+        <View style={styles.chatList}>
+          <TouchableOpacity style={styles.backRow} onPress={() => setSelectedGroup(null)}>
+            <Ionicons name="arrow-back" size={18} color={colors.accent} />
+            <Text style={styles.backRowText}>
+              {selectedGroup.profile.first_name || selectedGroup.profile.username}
+            </Text>
+          </TouchableOpacity>
+          {selectedGroup.conversations.map((conversation) => (
+            <ChatListItem
+              key={conversation.id}
+              avatarUri={conversation.tier_detail.thumb}
+              title={conversation.tier_detail.name}
+              subtitle={conversation.last_message?.body}
+              timestamp={conversation.last_message?.created_at ?? conversation.created_at}
+              onPress={() => router.push(`/chat/${conversation.id}`)}
+            />
+          ))}
+        </View>
       )}
 
       {tab === 'tiers' && (
@@ -78,6 +145,12 @@ const styles = StyleSheet.create({
   title: { color: colors.white, fontSize: fontSize.xl, fontWeight: 'bold' },
   tabBarWrap: { marginHorizontal: spacing.lg, marginBottom: spacing.md },
   empty: { color: colors.textSecondary, fontSize: fontSize.sm, marginHorizontal: spacing.lg },
+  chatList: { paddingBottom: spacing.md },
+  backRow: {
+    flexDirection: 'row', alignItems: 'center', gap: spacing.sm,
+    paddingHorizontal: spacing.md, paddingVertical: spacing.md,
+  },
+  backRowText: { color: colors.accent, fontSize: fontSize.md, fontWeight: 'bold' },
   tierList: { paddingHorizontal: spacing.lg, gap: spacing.md },
   addTierBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.xs,

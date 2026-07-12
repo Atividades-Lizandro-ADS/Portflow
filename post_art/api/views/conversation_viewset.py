@@ -1,4 +1,5 @@
-from django.db.models import Q
+from django.db.models import Max, Q
+from django.db.models.functions import Coalesce
 from rest_framework import viewsets, exceptions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -16,7 +17,11 @@ class ConversationViewSet(viewsets.ModelViewSet):
         profile = self.request.user.profile
         return Conversation.objects.filter(
             Q(client=profile) | Q(artist=profile)
-        ).select_related('tier', 'client__user_profile', 'artist__user_profile')
+        ).select_related(
+            'tier', 'client__user_profile', 'artist__user_profile'
+        ).annotate(
+            last_activity=Coalesce(Max('messages__created_at'), 'created_at')
+        ).order_by('-last_activity')
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
