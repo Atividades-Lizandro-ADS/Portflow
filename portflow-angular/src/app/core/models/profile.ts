@@ -1,6 +1,14 @@
 import { Program, PostFeed } from './post';
 import { Tier } from './tier';
 
+export interface ProfileMinimal {
+  id: number;
+  first_name: string;
+  username: string;
+  user_picture: string | null;
+  commissions_open: boolean;
+}
+
 export interface Hiring {
   id: number;
   hire_type: string;

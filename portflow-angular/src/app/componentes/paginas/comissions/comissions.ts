@@ -1,29 +1,42 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Navbar } from '../../basico/navbar/navbar';
 import { Switch, SwitchOption } from '../../basico/switch/switch';
 import { TierCards } from '../../basico/tier-cards/tier-cards';
 import { TierDetailModal } from '../../basico/tier-detail-modal/tier-detail-modal';
+import { ChatListItem } from '../../basico/chat-list-item/chat-list-item';
 import { AuthService } from '../../../core/services/auth.service';
 import { ProfileService } from '../../../core/services/profile.service';
-import { Profile } from '../../../core/models/profile';
+import { Conversation as ConversationService } from '../../../core/services/conversation';
+import { Profile, ProfileMinimal } from '../../../core/models/profile';
 import { Tier } from '../../../core/models/tier';
+import { Conversation as ConversationModel } from '../../../core/models/conversation';
+
+interface ChatGroup {
+  profile: ProfileMinimal;
+  conversations: ConversationModel[];
+}
 
 @Component({
   selector: 'app-comissions',
-  imports: [Navbar, Switch, TierCards, TierDetailModal, RouterLink],
+  imports: [Navbar, Switch, TierCards, TierDetailModal, ChatListItem, RouterLink],
   templateUrl: './comissions.html',
   styleUrl: './comissions.scss',
 })
 export class Comissions implements OnInit {
   private auth = inject(AuthService);
   private profiles = inject(ProfileService);
+  private conversationsApi = inject(ConversationService);
+  private router = inject(Router);
 
   user = toSignal(this.auth.currentUser$);
   profile = signal<Profile | null>(null);
   loading = signal(true);
   selectedTier = signal<Tier | null>(null);
+
+  conversations = signal<ConversationModel[]>([]);
+  selectedGroup = signal<ChatGroup | null>(null);
 
   tab = signal<'chats' | 'tiers'>('chats');
 
@@ -31,6 +44,22 @@ export class Comissions implements OnInit {
     { id: 'chats', label: 'Chats' },
     { id: 'tiers', label: 'Tiers' },
   ];
+
+  chatGroups = computed<ChatGroup[]>(() => {
+    const groups: ChatGroup[] = [];
+    const byProfile = new Map<number, ChatGroup>();
+    for (const conversation of this.conversations()) {
+      const key = conversation.other_profile.id;
+      let group = byProfile.get(key);
+      if (!group) {
+        group = { profile: conversation.other_profile, conversations: [] };
+        byProfile.set(key, group);
+        groups.push(group);
+      }
+      group.conversations.push(conversation);
+    }
+    return groups;
+  });
 
   ngOnInit(): void {
     const id = this.user()?.profile_id;
@@ -42,9 +71,21 @@ export class Comissions implements OnInit {
       next: p => { this.profile.set(p); this.loading.set(false); },
       error: () => this.loading.set(false),
     });
+    this.conversationsApi.list().subscribe({
+      next: page => this.conversations.set(page.results),
+      error: () => {},
+    });
   }
 
   onTabChange(id: string): void {
     this.tab.set(id as 'chats' | 'tiers');
+  }
+
+  onGroupClick(group: ChatGroup): void {
+    if (group.conversations.length === 1) {
+      this.router.navigate(['/chat', group.conversations[0].id]);
+    } else {
+      this.selectedGroup.set(group);
+    }
   }
 }

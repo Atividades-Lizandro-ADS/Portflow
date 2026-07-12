@@ -1,0 +1,10 @@
+<div class="chat-list-item">
+  <app-avatar [uri]="avatarUri()" [size]="52" />
+  <div class="chat-list-item-info">
+    <span class="chat-list-item-title">{{ title() }}</span>
+    <span class="chat-list-item-subtitle">{{ subtitle() || 'Inicie a conversa' }}</span>
+  </div>
+  @if (timestamp()) {
+    <span class="chat-list-item-time">{{ timeLabel() }}</span>
+  }
+</div>

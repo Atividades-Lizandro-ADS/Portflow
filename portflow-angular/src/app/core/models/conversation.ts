@@ -1,10 +1,5 @@
-export interface Conversation {
-  id: number;
-  tier: number;
-  client: number;
-  artist: number;
-  created_at: string;
-}
+import { Tier } from './tier';
+import { ProfileMinimal } from './profile';
 
 export type ChatMessageType =
   | 'text'
@@ -12,6 +7,24 @@ export type ChatMessageType =
   | 'briefing_response'
   | 'extension_request'
   | 'extension_response';
+
+export interface LastMessagePreview {
+  body: string;
+  message_type: ChatMessageType;
+  sender: number;
+  created_at: string;
+}
+
+export interface Conversation {
+  id: number;
+  tier: number;
+  tier_detail: Tier;
+  client: number;
+  artist: number;
+  other_profile: ProfileMinimal;
+  last_message: LastMessagePreview | null;
+  created_at: string;
+}
 
 export interface ChatMessage {
   id: number;

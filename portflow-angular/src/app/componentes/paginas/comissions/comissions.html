@@ -9,8 +9,39 @@
     <app-switch [options]="tabOptions" [active]="tab()" (change)="onTabChange($event)" />
   </div>
 
-  @if (tab() === 'chats') {
-    <div class="comissions-empty">Nenhum chat por aqui ainda.</div>
+  @if (tab() === 'chats' && !selectedGroup()) {
+    <div class="comissions-chat-list">
+      @for (group of chatGroups(); track group.profile.id) {
+        <app-chat-list-item
+          [avatarUri]="group.profile.user_picture"
+          [title]="group.profile.first_name || group.profile.username"
+          [subtitle]="group.conversations[0].last_message?.body"
+          [timestamp]="group.conversations[0].last_message?.created_at ?? group.conversations[0].created_at"
+          (click)="onGroupClick(group)"
+        />
+      }
+      @if (!chatGroups().length) {
+        <p class="comissions-empty-inline">Nenhum chat por aqui ainda.</p>
+      }
+    </div>
+  }
+
+  @if (tab() === 'chats' && selectedGroup(); as group) {
+    <div class="comissions-chat-list">
+      <button type="button" class="comissions-chat-back" (click)="selectedGroup.set(null)">
+        <i class="bi bi-arrow-left"></i>
+        <span>{{ group.profile.first_name || group.profile.username }}</span>
+      </button>
+      @for (conversation of group.conversations; track conversation.id) {
+        <app-chat-list-item
+          [avatarUri]="conversation.tier_detail.thumb"
+          [title]="conversation.tier_detail.name"
+          [subtitle]="conversation.last_message?.body"
+          [timestamp]="conversation.last_message?.created_at ?? conversation.created_at"
+          [routerLink]="['/chat', conversation.id]"
+        />
+      }
+    </div>
   }
 
   @if (tab() === 'tiers') {
