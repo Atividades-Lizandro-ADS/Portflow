@@ -23,6 +23,9 @@ api.interceptors.response.use(
         const refresh = await SecureStore.getItemAsync('refresh_token');
         const { data } = await axios.post(`${BASE_URL}/api/auth/token/refresh/`, { refresh });
         await SecureStore.setItemAsync('access_token', data.access);
+        if (data.refresh) {
+          await SecureStore.setItemAsync('refresh_token', data.refresh);
+        }
         original.headers.Authorization = `Bearer ${data.access}`;
         return api(original);
       } catch {

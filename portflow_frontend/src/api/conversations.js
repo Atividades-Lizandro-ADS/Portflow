@@ -10,5 +10,14 @@ export const createConversation = (tierId) =>
 export const getChatMessages = (conversationId) =>
   api.get('/api/chat-messages/', { params: { conversation: conversationId } });
 
-export const sendChatMessage = (conversationId, body) =>
-  api.post('/api/chat-messages/', { conversation: conversationId, body });
+export const sendChatMessage = (conversationId, body, attachments = []) => {
+  const form = new FormData();
+  form.append('conversation', conversationId);
+  form.append('body', body ?? '');
+  attachments.forEach((file) => {
+    form.append('attachments[]', { uri: file.uri, name: file.name, type: file.mimeType ?? 'application/octet-stream' });
+  });
+  return api.post('/api/chat-messages/', form, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+};

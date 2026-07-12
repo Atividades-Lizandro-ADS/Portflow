@@ -25,6 +25,9 @@ class BriefingSerializer(serializers.ModelSerializer):
         tier = conversation.tier
         agreed_price = attrs.get('agreed_price')
 
+        if conversation.briefings.filter(status='pending').exists():
+            raise serializers.ValidationError('Já existe um briefing pendente nesta conversa.')
+
         if not tier.negotiable and agreed_price != tier.price:
             raise serializers.ValidationError('Esta tier não é negociável; o valor precisa ser igual ao preço da tier.')
         if tier.negotiable:

@@ -52,7 +52,12 @@ export class AuthService {
     return this.http.post<TokenResponse>(`${this.api}/token/refresh/`, {
       refresh: this.getRefreshToken(),
     }).pipe(
-      tap(res => localStorage.setItem(ACCESS_KEY, res.access))
+      tap(res => {
+        localStorage.setItem(ACCESS_KEY, res.access);
+        if (res.refresh) {
+          localStorage.setItem(REFRESH_KEY, res.refresh);
+        }
+      })
     );
   }
 

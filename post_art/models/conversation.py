@@ -14,3 +14,9 @@ class Conversation(models.Model):
 
     def __str__(self):
         return f'{self.client} ↔ {self.artist} ({self.tier.name})'
+
+    def has_open_briefing(self):
+        return self.briefings.filter(status__in=('pending', 'accepted')).exists()
+
+    def can_send_messages(self):
+        return self.artist.commissions_open or self.has_open_briefing()
