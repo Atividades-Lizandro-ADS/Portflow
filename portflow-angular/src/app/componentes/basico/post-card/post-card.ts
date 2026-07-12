@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PostFeed } from '../../../core/models/post';
 
@@ -9,5 +9,5 @@ import { PostFeed } from '../../../core/models/post';
   styleUrl: './post-card.scss',
 })
 export class PostCard {
-  @Input() post!: PostFeed;
+  post = input.required<PostFeed>();
 }

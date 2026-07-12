@@ -1,13 +1,13 @@
-<a [routerLink]="['/post', post.id]" class="post-card">
-  @if (post.post_thumb) {
-    <img [src]="post.post_thumb" [class.blurred]="post.is_mature" alt="" />
+<a [routerLink]="['/post', post().id]" class="post-card">
+  @if (post().post_thumb) {
+    <img [src]="post().post_thumb" [class.blurred]="post().is_mature" alt="" />
   } @else {
     <div class="post-card__placeholder"></div>
   }
-  @if (post.is_mature) {
+  @if (post().is_mature) {
     <span class="post-card__badge">18+</span>
   }
   <div class="post-card__overlay">
-    <p class="post-card__title">{{ post.tittle }}</p>
+    <p class="post-card__title">{{ post().tittle }}</p>
   </div>
 </a>
