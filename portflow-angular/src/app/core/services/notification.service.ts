@@ -37,7 +37,7 @@ export class NotificationService implements OnDestroy {
   private reconnectTimer?: ReturnType<typeof setTimeout>;
 
   connect(): void {
-    if (this.es?.readyState === EventSource.OPEN) return;
+    if (this.es && this.es.readyState !== EventSource.CLOSED) return;
     this.openEventSource();
   }
 
@@ -51,6 +51,7 @@ export class NotificationService implements OnDestroy {
     const token = this.auth.getAccessToken();
     if (!token) return;
 
+    this.es?.close();
     this.es = new EventSource(
       `${environment.apiUrl}/api/notif-stream/?token=${token}`,
     );
@@ -67,6 +68,7 @@ export class NotificationService implements OnDestroy {
     this.es.onerror = () => {
       this.es?.close();
       this.es = null;
+      clearTimeout(this.reconnectTimer);
       this.auth.refresh().subscribe({
         next: () => {
           this.reconnectTimer = setTimeout(() => this.openEventSource(), 1000);
