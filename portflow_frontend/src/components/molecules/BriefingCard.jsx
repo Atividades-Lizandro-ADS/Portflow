@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   wrap: { flexDirection: 'row', paddingHorizontal: spacing.md, marginBottom: spacing.sm },
   wrapMine: { justifyContent: 'flex-end' },
   card: {
-    maxWidth: '85%', backgroundColor: colors.lightBg, borderRadius: radius.card,
+    minWidth: 220, maxWidth: '85%', backgroundColor: colors.lightBg, borderRadius: radius.card,
     borderWidth: 1, borderColor: colors.headerBg, padding: spacing.md, gap: spacing.sm,
   },
   header: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
