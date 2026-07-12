@@ -14,6 +14,16 @@ export interface SseNotification {
   created_at: string;
 }
 
+export interface SseChatMessage {
+  type: 'chat_message';
+  id: number;
+  conversation_id: number;
+  sender_id: number;
+  message_type: string;
+  body: string;
+  created_at: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class NotificationService implements OnDestroy {
   private auth = inject(AuthService);
@@ -21,6 +31,7 @@ export class NotificationService implements OnDestroy {
   private api = `${environment.apiUrl}/api/notifications`;
 
   readonly newNotification$ = new Subject<SseNotification>();
+  readonly newChatMessage$ = new Subject<SseChatMessage>();
 
   private es: EventSource | null = null;
   private reconnectTimer?: ReturnType<typeof setTimeout>;
@@ -45,7 +56,12 @@ export class NotificationService implements OnDestroy {
     );
 
     this.es.onmessage = (event) => {
-      this.newNotification$.next(JSON.parse(event.data) as SseNotification);
+      const data = JSON.parse(event.data);
+      if (data.type === 'chat_message') {
+        this.newChatMessage$.next(data as SseChatMessage);
+      } else {
+        this.newNotification$.next(data as SseNotification);
+      }
     };
 
     this.es.onerror = () => {

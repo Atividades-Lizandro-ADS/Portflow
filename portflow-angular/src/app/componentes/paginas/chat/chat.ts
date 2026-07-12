@@ -1,9 +1,10 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Navbar } from '../../basico/navbar/navbar';
 import { Avatar } from '../../basico/avatar/avatar';
 import { AuthService } from '../../../core/services/auth.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { Conversation as ConversationService } from '../../../core/services/conversation';
 import { Conversation as ConversationModel, ChatMessage } from '../../../core/models/conversation';
 
@@ -17,6 +18,7 @@ export class Chat implements OnInit {
   private route = inject(ActivatedRoute);
   private auth = inject(AuthService);
   private conversations = inject(ConversationService);
+  private notifStream = inject(NotificationService);
 
   user = toSignal(this.auth.currentUser$);
 
@@ -26,7 +28,33 @@ export class Chat implements OnInit {
   text = signal('');
   sending = signal(false);
 
+  constructor() {
+    this.notifStream.newChatMessage$
+      .pipe(takeUntilDestroyed())
+      .subscribe(event => {
+        const conversationId = this.conversation()?.id;
+        if (!conversationId || event.conversation_id !== conversationId) return;
+
+        this.messages.update(list => {
+          if (list.some(m => m.id === event.id)) return list;
+          return [...list, {
+            id: event.id,
+            conversation: event.conversation_id,
+            sender: event.sender_id,
+            body: event.body,
+            message_type: event.message_type as ChatMessage['message_type'],
+            related_briefing: null,
+            related_extension_request: null,
+            is_read: false,
+            created_at: event.created_at,
+          }];
+        });
+      });
+  }
+
   ngOnInit(): void {
+    this.notifStream.connect();
+
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
       this.loading.set(false);

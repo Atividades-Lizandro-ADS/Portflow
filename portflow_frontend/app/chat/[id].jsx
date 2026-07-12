@@ -10,6 +10,7 @@ import Avatar from '../../src/components/Avatar';
 import ChatBubble from '../../src/components/molecules/ChatBubble';
 import { useAuth } from '../../src/context/AuthContext';
 import { getConversation, getChatMessages, sendChatMessage } from '../../src/api/conversations';
+import { useChatStream } from '../../src/hooks/useChatStream';
 import { colors, fontSize, spacing, radius } from '../../src/theme';
 
 export default function ChatScreen() {
@@ -35,6 +36,22 @@ export default function ChatScreen() {
         .finally(() => setLoading(false));
     }, [id])
   );
+
+  useChatStream(id, (event) => {
+    setMessages((prev) => {
+      if (prev.some((m) => m.id === event.id)) return prev;
+      return [...prev, {
+        id: event.id,
+        conversation: event.conversation_id,
+        sender: event.sender_id,
+        body: event.body,
+        message_type: event.message_type,
+        is_read: false,
+        created_at: event.created_at,
+      }];
+    });
+    requestAnimationFrame(() => scrollRef.current?.scrollToEnd({ animated: true }));
+  });
 
   const handleSend = async () => {
     if (!text.trim()) return;
