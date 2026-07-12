@@ -1,0 +1,91 @@
+@if (visible() && tier(); as t) {
+  <div class="briefing-form-modal-backdrop" (click)="close.emit()">
+    <div class="briefing-form-modal-panel" (click)="$event.stopPropagation()">
+      <button type="button" class="briefing-form-modal-close" (click)="close.emit()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+      <div class="briefing-form-modal-scroll">
+        <h1 class="briefing-form-modal-title">Briefing — {{ t.name }}</h1>
+
+        <div class="graybox">
+          <div class="graybox-header">Valor <span class="briefing-form-modal-required">*</span></div>
+          <div class="graybox-body">
+            @if (t.negotiable) {
+              <input
+                class="graybox-input"
+                type="text"
+                inputmode="decimal"
+                [placeholder]="t.price"
+                [value]="agreedPrice()"
+                (input)="agreedPrice.set($any($event.target).value)"
+              />
+              <p class="briefing-form-modal-hint">
+                Preço base {{ priceLabel() }} · {{ negotiationLabel() }}
+              </p>
+            } @else {
+              <p class="briefing-form-modal-fixed-price">{{ priceLabel() }}</p>
+              <p class="briefing-form-modal-hint">Esta tier não é negociável.</p>
+            }
+          </div>
+        </div>
+
+        <div class="graybox">
+          <div class="graybox-header">Detalhes do pedido <span class="briefing-form-modal-required">*</span></div>
+          <div class="graybox-body">
+            <textarea
+              class="graybox-input graybox-textarea"
+              placeholder="Descreva o que você precisa..."
+              [value]="requestDetails()"
+              (input)="requestDetails.set($any($event.target).value)"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="graybox">
+          <div class="graybox-header">Prazo desejado <span class="briefing-form-modal-required">*</span></div>
+          <div class="graybox-body">
+            <input
+              class="graybox-input"
+              type="date"
+              [min]="minDate"
+              [value]="requestedDeadline()"
+              (input)="requestedDeadline.set($any($event.target).value)"
+            />
+          </div>
+        </div>
+
+        <div class="graybox">
+          <div class="graybox-header">Referências (opcional)</div>
+          <div class="graybox-body">
+            <label class="briefing-form-modal-attach-btn">
+              <i class="bi bi-paperclip"></i>
+              <span>Anexar arquivo</span>
+              <input type="file" multiple hidden (change)="onReferencesSelected($event)" />
+            </label>
+
+            @if (references().length) {
+              <div class="briefing-form-modal-references">
+                @for (file of references(); track file.name + $index) {
+                  <app-chat-attachment [pendingFile]="file" [removable]="true" (remove)="removeReference($index)" />
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        @if (error()) {
+          <p class="briefing-form-modal-error">{{ error() }}</p>
+        }
+
+        <button type="button" class="briefing-form-modal-submit" [disabled]="sending()" (click)="submit()">
+          @if (sending()) {
+            <i class="bi bi-arrow-repeat briefing-form-modal-submit-spin"></i>
+          } @else {
+            Enviar briefing
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}

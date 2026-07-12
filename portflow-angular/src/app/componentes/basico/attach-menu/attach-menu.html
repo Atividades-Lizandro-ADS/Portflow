@@ -1,0 +1,37 @@
+<app-popover #popoverRef>
+  <button trigger type="button" class="attach-menu-trigger">
+    <i class="bi bi-plus-circle"></i>
+  </button>
+
+  <div panel class="attach-menu-panel">
+    <label class="attach-menu-item" [class.attach-menu-item-disabled]="messagingDisabled()">
+      <i class="bi bi-image"></i>
+      <span>Foto</span>
+      <input type="file" accept="image/*" hidden [disabled]="messagingDisabled()" (change)="onImageSelected($event)" />
+    </label>
+
+    <label class="attach-menu-item" [class.attach-menu-item-disabled]="messagingDisabled()">
+      <i class="bi bi-file-earmark"></i>
+      <span>Arquivo</span>
+      <input type="file" hidden [disabled]="messagingDisabled()" (change)="onFileSelected($event)" />
+    </label>
+
+    @if (isClient()) {
+      <button
+        type="button"
+        class="attach-menu-item"
+        [class.attach-menu-item-disabled]="briefingDisabled()"
+        [disabled]="briefingDisabled()"
+        (click)="onOpenBriefing()"
+      >
+        <i class="bi bi-file-earmark-text"></i>
+        <span class="attach-menu-item-label">
+          <span>Enviar briefing</span>
+          @if (briefingDisabled()) {
+            <span class="attach-menu-item-hint">Já existe um briefing pendente</span>
+          }
+        </span>
+      </button>
+    }
+  </div>
+</app-popover>

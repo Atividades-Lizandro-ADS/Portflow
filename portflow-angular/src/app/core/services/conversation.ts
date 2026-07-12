@@ -43,7 +43,11 @@ export class Conversation {
     });
   }
 
-  sendMessage(conversationId: number | string, body: string): Observable<ChatMessage> {
-    return this.http.post<ChatMessage>(`${this.api}/chat-messages/`, { conversation: conversationId, body });
+  sendMessage(conversationId: number | string, body: string, attachments: File[] = []): Observable<ChatMessage> {
+    const form = new FormData();
+    form.append('conversation', String(conversationId));
+    form.append('body', body ?? '');
+    attachments.forEach(file => form.append('attachments[]', file));
+    return this.http.post<ChatMessage>(`${this.api}/chat-messages/`, form);
   }
 }

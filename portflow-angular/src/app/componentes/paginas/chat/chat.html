@@ -28,28 +28,77 @@
 
     <div class="chat-messages">
       @for (m of messages(); track m.id) {
-        <div class="chat-bubble-row" [class.mine]="isMine(m)">
-          <div class="chat-bubble" [class.mine]="isMine(m)">
-            <p class="chat-bubble-text">{{ m.body }}</p>
-            <span class="chat-bubble-time">{{ formatTime(m.created_at) }}</span>
-          </div>
-        </div>
+        <app-chat-bubble
+          [message]="m"
+          [isMine]="isMine(m)"
+          (openBriefing)="activeBriefing.set(m.related_briefing_detail)"
+        />
       }
       @if (!messages().length) {
         <p class="chat-empty">Nenhuma mensagem ainda. Diga oi!</p>
       }
     </div>
 
+    @if (!canSendMessage()) {
+      <p class="chat-blocked-banner">
+        @if (isArtist()) {
+          Comissões fechadas. Aguardando um briefing do cliente.
+        } @else {
+          Este artista está com comissões fechadas — envie um briefing para negociar.
+        }
+      </p>
+    }
+
+    @if (pendingAttachments().length) {
+      <div class="chat-pending-row">
+        @for (file of pendingAttachments(); track file.name + $index) {
+          <app-chat-attachment [pendingFile]="file" [removable]="true" (remove)="removePendingAttachment($index)" />
+        }
+      </div>
+    }
+
     <div class="chat-input-row">
-      <textarea
-        class="chat-input"
-        [value]="text()"
-        (input)="onTextInput($event)"
-        placeholder="Escreva uma mensagem..."
-      ></textarea>
-      <button type="button" class="chat-send-btn" [disabled]="!text().trim() || sending()" (click)="handleSend()">
-        <i class="bi bi-send-fill"></i>
-      </button>
+      <app-attach-menu
+        [isClient]="isClient()"
+        [messagingDisabled]="!canSendMessage()"
+        [briefingDisabled]="hasPendingBriefing()"
+        (pickImage)="onPickImage($event)"
+        (pickFile)="onPickFile($event)"
+        (openBriefing)="briefingFormVisible.set(true)"
+      />
+
+      @if (canSendMessage()) {
+        <textarea
+          class="chat-input"
+          [value]="text()"
+          (input)="onTextInput($event)"
+          placeholder="Escreva uma mensagem..."
+        ></textarea>
+        <button
+          type="button"
+          class="chat-send-btn"
+          [disabled]="(!text().trim() && !pendingAttachments().length) || sending()"
+          (click)="handleSend()"
+        >
+          <i class="bi bi-send-fill"></i>
+        </button>
+      }
     </div>
+
+    <app-briefing-form-modal
+      [visible]="briefingFormVisible()"
+      [conversationId]="c.id"
+      [tier]="c.tier_detail"
+      (close)="briefingFormVisible.set(false)"
+      (created)="onBriefingCreated()"
+    />
+
+    <app-briefing-detail-modal
+      [visible]="!!activeBriefing()"
+      [briefing]="activeBriefing()"
+      [conversation]="c"
+      (close)="activeBriefing.set(null)"
+      (responded)="onBriefingResponded()"
+    />
   }
 </div>

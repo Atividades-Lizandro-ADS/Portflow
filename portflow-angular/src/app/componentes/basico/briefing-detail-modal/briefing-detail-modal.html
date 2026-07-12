@@ -1,0 +1,103 @@
+@if (visible() && briefing(); as b) {
+  <div class="briefing-detail-modal-backdrop" (click)="close.emit()">
+    <div class="briefing-detail-modal-panel" (click)="$event.stopPropagation()">
+      <button type="button" class="briefing-detail-modal-close" (click)="close.emit()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+      <div class="briefing-detail-modal-scroll">
+        <div class="briefing-detail-modal-header">
+          <h1 class="briefing-detail-modal-title">Briefing — {{ b.tier_name_snapshot }}</h1>
+          <span
+            class="briefing-detail-modal-badge"
+            [class.briefing-detail-modal-badge-accepted]="b.status === 'accepted'"
+            [class.briefing-detail-modal-badge-declined]="b.status === 'declined'"
+          >
+            {{ statusLabel() }}
+          </span>
+        </div>
+
+        <div class="briefing-detail-modal-price-row">
+          <span class="briefing-detail-modal-price">{{ agreedPriceLabel() }}</span>
+          @if (priceChanged()) {
+            <span class="briefing-detail-modal-price-original">Valor base da tier: {{ tierPriceLabel() }}</span>
+          }
+        </div>
+
+        <div class="briefing-detail-modal-section">
+          <span class="briefing-detail-modal-label">Detalhes do pedido</span>
+          <p class="briefing-detail-modal-text">{{ b.request_details }}</p>
+        </div>
+
+        <div class="briefing-detail-modal-section">
+          <span class="briefing-detail-modal-label">Prazo solicitado</span>
+          <p class="briefing-detail-modal-text">{{ requestedDeadlineLabel() }}</p>
+        </div>
+
+        @if (b.status === 'accepted' && b.deadline) {
+          <div class="briefing-detail-modal-section">
+            <span class="briefing-detail-modal-label">Prazo combinado</span>
+            <p class="briefing-detail-modal-text">{{ deadlineLabel() }}</p>
+          </div>
+        }
+
+        @if (b.status === 'declined' && b.decline_reason) {
+          <div class="briefing-detail-modal-section">
+            <span class="briefing-detail-modal-label">Motivo da recusa</span>
+            <p class="briefing-detail-modal-text">{{ b.decline_reason }}</p>
+          </div>
+        }
+
+        @if (b.attachments.length) {
+          <div class="briefing-detail-modal-section">
+            <span class="briefing-detail-modal-label">Referências</span>
+            <div class="briefing-detail-modal-attachments">
+              @for (att of b.attachments; track att.id) {
+                <app-chat-attachment [attachment]="att" />
+              }
+            </div>
+          </div>
+        }
+
+        @if (error()) {
+          <p class="briefing-detail-modal-error">{{ error() }}</p>
+        }
+
+        @if (canRespond()) {
+          <div class="briefing-detail-modal-actions">
+            <button type="button" class="briefing-detail-modal-decline-btn" (click)="openDecline()">Recusar</button>
+            <button type="button" class="briefing-detail-modal-accept-btn" (click)="openAccept()">Aceitar</button>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+<app-confirm-action-modal
+  [visible]="showAccept()"
+  title="Aceitar briefing"
+  [message]="acceptMessage()"
+  confirmLabel="Aceitar briefing"
+  [loading]="loading()"
+  (cancel)="cancelAccept()"
+  (confirm)="confirmAccept()"
+/>
+
+<app-confirm-action-modal
+  [visible]="showDecline()"
+  title="Recusar briefing"
+  message="Tem certeza que deseja recusar este briefing? Essa ação não pode ser desfeita."
+  confirmLabel="Recusar briefing"
+  tone="danger"
+  [loading]="loading()"
+  (cancel)="cancelDecline()"
+  (confirm)="confirmDecline()"
+>
+  <textarea
+    class="briefing-detail-modal-reason-input"
+    placeholder="Motivo da recusa (opcional)"
+    [value]="declineReason()"
+    (input)="declineReason.set($any($event.target).value)"
+  ></textarea>
+</app-confirm-action-modal>

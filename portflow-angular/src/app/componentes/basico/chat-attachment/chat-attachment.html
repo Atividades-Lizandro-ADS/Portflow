@@ -1,0 +1,29 @@
+<div class="chat-attachment" [class.chat-attachment-pending]="removable()">
+  @if (isImage()) {
+    <button type="button" class="chat-attachment-image-btn" (click)="openImage.emit()">
+      <img [src]="previewUrl()" [alt]="name()" class="chat-attachment-image" />
+    </button>
+  } @else if (attachment()) {
+    <a class="chat-attachment-file" [href]="previewUrl()" [attr.download]="name()">
+      <i class="bi bi-file-earmark-arrow-down"></i>
+      <span class="chat-attachment-file-info">
+        <span class="chat-attachment-file-name">{{ name() }}</span>
+        <span class="chat-attachment-file-size">{{ sizeLabel() }}</span>
+      </span>
+    </a>
+  } @else {
+    <div class="chat-attachment-file">
+      <i class="bi bi-file-earmark"></i>
+      <span class="chat-attachment-file-info">
+        <span class="chat-attachment-file-name">{{ name() }}</span>
+        <span class="chat-attachment-file-size">{{ sizeLabel() }}</span>
+      </span>
+    </div>
+  }
+
+  @if (removable()) {
+    <button type="button" class="chat-attachment-remove" (click)="remove.emit()">
+      <i class="bi bi-x-circle-fill"></i>
+    </button>
+  }
+</div>

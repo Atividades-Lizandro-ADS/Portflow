@@ -1,0 +1,186 @@
+.briefing-detail-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.briefing-detail-modal-panel {
+  background: var(--dark-bg);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.briefing-detail-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.55);
+  color: var(--white);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.briefing-detail-modal-scroll {
+  overflow-y: auto;
+  max-height: 90vh;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.briefing-detail-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-right: 32px;
+}
+
+.briefing-detail-modal-title {
+  color: var(--white);
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.briefing-detail-modal-badge {
+  flex-shrink: 0;
+  border: 1px solid var(--text-secondary);
+  color: var(--text-secondary);
+  border-radius: 100px;
+  padding: 2px 10px;
+  font-size: 0.75rem;
+  font-weight: bold;
+
+  &.briefing-detail-modal-badge-accepted {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  &.briefing-detail-modal-badge-declined {
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+}
+
+.briefing-detail-modal-price-row {
+  padding-top: 16px;
+  border-top: 1px solid var(--header-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.briefing-detail-modal-price {
+  color: var(--accent);
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.briefing-detail-modal-price-original {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+.briefing-detail-modal-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.briefing-detail-modal-label {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: bold;
+}
+
+.briefing-detail-modal-text {
+  color: var(--white);
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.briefing-detail-modal-attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.briefing-detail-modal-error {
+  color: var(--danger);
+  font-size: 0.875rem;
+  text-align: center;
+  margin: 0;
+}
+
+.briefing-detail-modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.briefing-detail-modal-decline-btn {
+  flex: 1;
+  padding: 12px;
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.briefing-detail-modal-accept-btn {
+  flex: 1;
+  padding: 12px;
+  background: var(--accent);
+  color: var(--dark-bg);
+  border: none;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.briefing-detail-modal-reason-input {
+  width: 100%;
+  min-height: 70px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  color: var(--white);
+  font-size: 0.875rem;
+  font-family: inherit;
+  padding: 12px;
+  resize: vertical;
+  outline: none;
+
+  &:focus {
+    border-color: var(--accent);
+  }
+
+  &::placeholder {
+    color: var(--text-secondary);
+  }
+}

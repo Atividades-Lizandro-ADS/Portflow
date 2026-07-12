@@ -1,0 +1,37 @@
+@if (visible()) {
+  <div class="confirm-action-modal-backdrop" (click)="onCancel()">
+    <div class="confirm-action-modal-card" (click)="$event.stopPropagation()">
+      <i
+        class="confirm-action-modal-icon bi"
+        [class.bi-exclamation-triangle-fill]="tone() === 'danger'"
+        [class.bi-question-circle-fill]="tone() !== 'danger'"
+        [class.confirm-action-modal-icon-danger]="tone() === 'danger'"
+      ></i>
+      <h2 class="confirm-action-modal-title">{{ title() }}</h2>
+      @if (message()) {
+        <p class="confirm-action-modal-message">{{ message() }}</p>
+      }
+
+      <ng-content />
+
+      <div class="confirm-action-modal-actions">
+        <button type="button" class="confirm-action-modal-btn-cancel" (click)="onCancel()" [disabled]="loading()">
+          {{ cancelLabel() }}
+        </button>
+        <button
+          type="button"
+          class="confirm-action-modal-btn-confirm"
+          [class.confirm-action-modal-btn-confirm-danger]="tone() === 'danger'"
+          (click)="onConfirm()"
+          [disabled]="loading()"
+        >
+          @if (loading()) {
+            <span class="confirm-action-modal-spinner"></span>
+          } @else {
+            {{ confirmLabel() }}
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}

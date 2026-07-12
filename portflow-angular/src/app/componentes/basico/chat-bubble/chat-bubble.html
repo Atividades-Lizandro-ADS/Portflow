@@ -1,0 +1,25 @@
+@if (isBriefingMessage()) {
+  @if (message().related_briefing_detail; as briefing) {
+    <app-briefing-card [briefing]="briefing" (view)="openBriefing.emit()" />
+  } @else {
+    <div class="chat-bubble-system"><span>Briefing removido</span></div>
+  }
+} @else {
+  <div class="chat-bubble-row" [class.mine]="isMine()">
+    <div class="chat-bubble" [class.mine]="isMine()">
+      @if (message().attachments.length) {
+        <div class="chat-bubble-attachments">
+          @for (att of message().attachments; track att.id) {
+            <app-chat-attachment [attachment]="att" (openImage)="onOpenImage(att)" />
+          }
+        </div>
+      }
+      @if (message().body) {
+        <p class="chat-bubble-text">{{ message().body }}</p>
+      }
+      <span class="chat-bubble-time">{{ timeLabel() }}</span>
+    </div>
+  </div>
+}
+
+<app-gallery-lightbox [images]="lightboxImages()" [index]="lightboxIndex()" (close)="onCloseImage()" />

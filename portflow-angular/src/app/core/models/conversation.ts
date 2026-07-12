@@ -1,5 +1,7 @@
 import { Tier } from './tier';
 import { ProfileMinimal } from './profile';
+import { Briefing } from './briefing';
+import { ChatAttachment } from './chat-attachment';
 
 export type ChatMessageType =
   | 'text'
@@ -23,6 +25,7 @@ export interface Conversation {
   artist: number;
   other_profile: ProfileMinimal;
   last_message: LastMessagePreview | null;
+  can_send_message: boolean;
   created_at: string;
 }
 
@@ -33,7 +36,9 @@ export interface ChatMessage {
   body: string;
   message_type: ChatMessageType;
   related_briefing: number | null;
+  related_briefing_detail: Briefing | null;
   related_extension_request: number | null;
   is_read: boolean;
   created_at: string;
+  attachments: ChatAttachment[];
 }

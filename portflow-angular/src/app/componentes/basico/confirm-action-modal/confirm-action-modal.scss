@@ -1,0 +1,115 @@
+.confirm-action-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.confirm-action-modal-card {
+  background: var(--light-bg);
+  border-radius: 20px;
+  padding: 24px;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.confirm-action-modal-icon {
+  align-self: center;
+  font-size: 1.75rem;
+  color: var(--accent);
+
+  &.confirm-action-modal-icon-danger {
+    color: var(--danger);
+  }
+}
+
+.confirm-action-modal-title {
+  color: var(--white);
+  font-size: 1.125rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 0;
+}
+
+.confirm-action-modal-message {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.confirm-action-modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.confirm-action-modal-btn-cancel {
+  flex: 1;
+  padding: 12px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: bold;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.confirm-action-modal-btn-confirm {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background: var(--accent);
+  color: var(--dark-bg);
+  border: none;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+
+  &.confirm-action-modal-btn-confirm-danger {
+    background: var(--danger);
+    color: var(--white);
+  }
+
+  &:disabled {
+    background: var(--modal-bg);
+    color: var(--text-secondary);
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    opacity: 0.88;
+  }
+}
+
+.confirm-action-modal-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid var(--dark-bg);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: confirm-action-modal-spin 0.7s linear infinite;
+}
+
+@keyframes confirm-action-modal-spin {
+  to { transform: rotate(360deg); }
+}

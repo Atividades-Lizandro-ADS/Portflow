@@ -1,0 +1,66 @@
+.briefing-card-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 0 12px;
+  margin-bottom: 8px;
+}
+
+.briefing-card {
+  width: 85%;
+  max-width: 360px;
+  background: var(--light-bg);
+  border: 1px solid var(--header-bg);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.briefing-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  i {
+    color: var(--accent);
+    font-size: 1.125rem;
+  }
+}
+
+.briefing-card-title {
+  color: var(--white);
+  font-size: 0.875rem;
+  font-weight: bold;
+}
+
+.briefing-card-badge {
+  align-self: flex-start;
+  border: 1px solid var(--text-secondary);
+  color: var(--text-secondary);
+  border-radius: 100px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: bold;
+
+  &.briefing-card-badge-accepted {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  &.briefing-card-badge-declined {
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+}
+
+.briefing-card-view-btn {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 0.875rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 4px 0;
+}

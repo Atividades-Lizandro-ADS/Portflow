@@ -1,0 +1,16 @@
+<div class="briefing-card-wrap">
+  <div class="briefing-card">
+    <div class="briefing-card-header">
+      <i class="bi bi-file-earmark-text"></i>
+      <span class="briefing-card-title">Briefing — {{ briefing().tier_name_snapshot }}</span>
+    </div>
+    <span
+      class="briefing-card-badge"
+      [class.briefing-card-badge-accepted]="briefing().status === 'accepted'"
+      [class.briefing-card-badge-declined]="briefing().status === 'declined'"
+    >
+      {{ statusLabel() }}
+    </span>
+    <button type="button" class="briefing-card-view-btn" (click)="view.emit()">Visualizar</button>
+  </div>
+</div>
