@@ -81,6 +81,7 @@ export default function ProfileScreen() {
         currentUsername: profile.username ?? '',
         avatarUri: profile.user_picture ?? '',
         bannerUri: profile.profile_banner ?? '',
+        commissionsOpen: String(!!profile.commissions_open),
       },
     });
   };

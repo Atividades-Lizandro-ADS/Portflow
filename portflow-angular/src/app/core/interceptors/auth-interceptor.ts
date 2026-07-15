@@ -3,6 +3,7 @@ import { HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { catchError, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
+import { NotificationService } from '../services/notification.service';
 
 const PUBLIC_ENDPOINTS = ['/api/auth/login/', '/api/auth/register/', '/api/auth/token/refresh/'];
 
@@ -16,6 +17,7 @@ function withBearer(req: HttpRequest<unknown>, token: string): HttpRequest<unkno
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
+  const notifStream = inject(NotificationService);
   const router = inject(Router);
 
   if (isPublic(req.url)) return next(req);
@@ -31,6 +33,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         switchMap(res => next(withBearer(req, res.access))),
         catchError(refreshErr => {
           auth.clearSession();
+          notifStream.disconnect();
           router.navigate(['/login']);
           return throwError(() => refreshErr);
         })

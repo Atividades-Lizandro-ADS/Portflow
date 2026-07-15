@@ -8,5 +8,8 @@ import { Component, input, output } from '@angular/core';
 })
 export class PublishToggle {
   value = input(true);
+  label = input('Publicar agora');
+  subOn = input('Visível para todos');
+  subOff = input('Salvo como rascunho');
   valueChange = output<boolean>();
 }

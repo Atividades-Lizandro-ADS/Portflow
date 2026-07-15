@@ -139,6 +139,7 @@ export default function MyProfileScreen() {
         hiring: JSON.stringify(profile.about.hiring ?? []),
         skills: JSON.stringify(profile.about.skills ?? []),
         programs: JSON.stringify(profile.about.programs_known ?? []),
+        commissionsOpen: String(!!profile.commissions_open),
       },
     });
   };

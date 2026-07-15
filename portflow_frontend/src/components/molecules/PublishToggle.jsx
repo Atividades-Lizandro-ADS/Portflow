@@ -1,12 +1,18 @@
 import { View, Text, Switch, StyleSheet } from 'react-native';
 import { colors, fontSize, spacing, radius } from '../../theme';
 
-export default function PublishToggle({ value, onChange }) {
+export default function PublishToggle({
+  value,
+  onChange,
+  label = 'Publicar agora',
+  subOn = 'Visível para todos',
+  subOff = 'Salvo como rascunho',
+}) {
   return (
     <View style={styles.row}>
       <View>
-        <Text style={styles.label}>Publicar agora</Text>
-        <Text style={styles.sub}>{value ? 'Visível para todos' : 'Salvo como rascunho'}</Text>
+        <Text style={styles.label}>{label}</Text>
+        <Text style={styles.sub}>{value ? subOn : subOff}</Text>
       </View>
       <Switch
         value={value}

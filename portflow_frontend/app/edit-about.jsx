@@ -15,6 +15,7 @@ import { useAuth } from '../src/context/AuthContext';
 import { getHiringOptions, getSkillOptions } from '../src/api/hiring';
 import { getPrograms } from '../src/api/programs';
 import ProgramChip from '../src/components/ProgramChip';
+import PublishToggle from '../src/components/molecules/PublishToggle';
 import { colors, fontSize, spacing, radius } from '../src/theme';
 
 function OptionChip({ label, selected, onPress }) {
@@ -40,6 +41,7 @@ export default function EditAboutScreen() {
     currentUsername: initUsername,
     avatarUri: initAvatarUri,
     bannerUri: initBannerUri,
+    commissionsOpen: initCommissionsOpen,
   } = useLocalSearchParams();
 
   const router = useRouter();
@@ -56,6 +58,7 @@ export default function EditAboutScreen() {
   const [usernameStatus, setUsernameStatus] = useState(null);
   const [newAvatar, setNewAvatar] = useState(null);
   const [newBanner, setNewBanner] = useState(null);
+  const [commissionsOpen, setCommissionsOpen] = useState(initCommissionsOpen === 'true');
 
   const [summary, setSummary] = useState('');
   const [selectedHiring, setSelectedHiring] = useState([]);
@@ -165,6 +168,7 @@ export default function EditAboutScreen() {
       if (usernameChanged) profileForm.append('username', username.trim());
       if (newAvatar) profileForm.append('user_picture', { uri: newAvatar.uri, name: newAvatar.fileName ?? 'avatar.jpg', type: newAvatar.mimeType ?? 'image/jpeg' });
       if (newBanner) profileForm.append('profile_banner', { uri: newBanner.uri, name: newBanner.fileName ?? 'banner.jpg', type: newBanner.mimeType ?? 'image/jpeg' });
+      profileForm.append('commissions_open', commissionsOpen ? 'true' : 'false');
 
       await Promise.all([
         updateProfile(profileId, profileForm),
@@ -255,6 +259,14 @@ export default function EditAboutScreen() {
           {usernameStatus === 'available' && <Text style={[styles.statusHint, { color: colors.dragActive }]}>Username disponível</Text>}
           {usernameStatus === 'taken' && <Text style={[styles.statusHint, { color: colors.danger }]}>Username já em uso</Text>}
         </View>
+
+        <PublishToggle
+          value={commissionsOpen}
+          onChange={setCommissionsOpen}
+          label="Comissões abertas"
+          subOn="Clientes podem enviar pedidos de comissão"
+          subOff="Perfil fechado para novos pedidos"
+        />
 
         <Text style={styles.sectionLabel}>Resumo</Text>
         <TextInput

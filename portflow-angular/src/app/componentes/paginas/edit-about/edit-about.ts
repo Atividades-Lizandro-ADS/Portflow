@@ -14,10 +14,11 @@ import { ImagePickerField } from '../../basico/image-picker-field/image-picker-f
 import { OptionChip } from '../../basico/option-chip/option-chip';
 import { ProgramSearchField } from '../../basico/program-search-field/program-search-field';
 import { BasicBtn } from '../../basico/basic-btn/basic-btn';
+import { PublishToggle } from '../../basico/publish-toggle/publish-toggle';
 
 @Component({
   selector: 'app-edit-about',
-  imports: [Navbar, ImagePickerField, OptionChip, ProgramSearchField, BasicBtn],
+  imports: [Navbar, ImagePickerField, OptionChip, ProgramSearchField, BasicBtn, PublishToggle],
   templateUrl: './edit-about.html',
   styleUrl: './edit-about.scss',
 })
@@ -49,6 +50,8 @@ export class EditAbout implements OnInit {
   private bannerFile = signal<File | null>(null);
   bannerPreview = signal<string | null>(null);
 
+  commissionsOpen = signal(false);
+
   summary = signal('');
   selectedHiring = signal<Hiring[]>([]);
   selectedSkills = signal<Skill[]>([]);
@@ -78,6 +81,7 @@ export class EditAbout implements OnInit {
       this.initialUsername.set(profile.username ?? '');
       this.avatarPreview.set(profile.user_picture);
       this.bannerPreview.set(profile.profile_banner);
+      this.commissionsOpen.set(profile.commissions_open);
 
       if (profile.about) {
         this.aboutId.set(profile.about.id);
@@ -175,6 +179,7 @@ export class EditAbout implements OnInit {
       if (this.usernameChanged()) profileForm.append('username', this.username().trim());
       if (this.avatarFile()) profileForm.append('user_picture', this.avatarFile()!);
       if (this.bannerFile()) profileForm.append('profile_banner', this.bannerFile()!);
+      profileForm.append('commissions_open', String(this.commissionsOpen()));
 
       const tasks: Promise<unknown>[] = [lastValueFrom(this.profiles.update(id, profileForm))];
 

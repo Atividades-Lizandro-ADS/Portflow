@@ -54,6 +54,14 @@
         </div>
       </div>
 
+      <app-publish-toggle
+        [value]="commissionsOpen()"
+        label="Comissões abertas"
+        subOn="Clientes podem enviar pedidos de comissão"
+        subOff="Perfil fechado para novos pedidos"
+        (valueChange)="commissionsOpen.set($event)"
+      />
+
       <div class="graybox">
         <div class="graybox-header">Resumo</div>
         <div class="graybox-body">
