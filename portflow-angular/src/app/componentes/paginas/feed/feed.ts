@@ -1,5 +1,5 @@
 import {
-  Component, DestroyRef, ElementRef, inject, signal, viewChild, afterNextRender,
+  Component, DestroyRef, ElementRef, Injector, inject, signal, viewChild, afterNextRender,
 } from '@angular/core';
 import { Navbar } from '../../basico/navbar/navbar';
 import { PostCard } from '../../basico/post-card/post-card';
@@ -15,6 +15,7 @@ import { PostService } from '../../../core/services/post.service';
 export class Feed {
   private posts$ = inject(PostService);
   private destroyRef = inject(DestroyRef);
+  private injector = inject(Injector);
   private sentinel = viewChild.required<ElementRef<HTMLDivElement>>('sentinel');
   private observer!: IntersectionObserver;
   private page = 1;
@@ -49,11 +50,18 @@ export class Feed {
         this.hasMore.set(!!res.next);
         this.page++;
         this.loading.set(false);
+        afterNextRender(() => this.loadMoreIfSentinelVisible(), { injector: this.injector });
       },
       error: () => {
         this.hasMore.set(false);
         this.loading.set(false);
       },
     });
+  }
+
+  private loadMoreIfSentinelVisible(): void {
+    if (this.loading() || !this.hasMore()) return;
+    const rect = this.sentinel().nativeElement.getBoundingClientRect();
+    if (rect.top <= window.innerHeight) this.loadMore();
   }
 }
