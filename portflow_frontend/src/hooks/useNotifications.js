@@ -1,4 +1,9 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { AppState } from 'react-native';
+import EventSource from 'react-native-sse';
+import axios from 'axios';
+import * as SecureStore from 'expo-secure-store';
+import { BASE_URL } from '../api/client';
 import {
   getNotifications,
   getUnreadCount,
@@ -6,7 +11,20 @@ import {
   markAllRead,
 } from '../api/notifications';
 
-const POLL_INTERVAL_MS = 5 * 60 * 1000;
+const RECONNECT_DELAY_MS = 1500;
+
+async function refreshAccessToken() {
+  try {
+    const refresh = await SecureStore.getItemAsync('refresh_token');
+    if (!refresh) return null;
+    const { data } = await axios.post(`${BASE_URL}/api/auth/token/refresh/`, { refresh });
+    await SecureStore.setItemAsync('access_token', data.access);
+    if (data.refresh) await SecureStore.setItemAsync('refresh_token', data.refresh);
+    return data.access;
+  } catch {
+    return null;
+  }
+}
 
 export function useNotifications({ enabled = false } = {}) {
   const [notifications, setNotifications] = useState([]);
@@ -58,10 +76,62 @@ export function useNotifications({ enabled = false } = {}) {
 
   useEffect(() => {
     if (!enabled) return;
+
     fetchUnreadCount();
-    const intervalId = setInterval(fetchUnreadCount, POLL_INTERVAL_MS);
-    return () => clearInterval(intervalId);
-  }, [enabled]);
+
+    let es = null;
+    let reconnectTimer = null;
+    let stopped = false;
+
+    const closeStream = () => {
+      clearTimeout(reconnectTimer);
+      es?.close();
+      es = null;
+    };
+
+    const openStream = async () => {
+      if (stopped || AppState.currentState !== 'active') return;
+      const token = await SecureStore.getItemAsync('access_token');
+      if (!token || stopped) return;
+
+      closeStream();
+      es = new EventSource(`${BASE_URL}/api/notif-stream/?token=${token}`);
+
+      es.addEventListener('message', (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === 'chat_message' || data.type === 'briefing_updated') return;
+          setUnreadCount((c) => c + 1);
+        } catch {}
+      });
+
+      es.addEventListener('error', () => {
+        closeStream();
+        if (stopped) return;
+        reconnectTimer = setTimeout(async () => {
+          const refreshed = await refreshAccessToken();
+          if (refreshed) openStream();
+        }, RECONNECT_DELAY_MS);
+      });
+    };
+
+    openStream();
+
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state === 'active') {
+        fetchUnreadCount();
+        openStream();
+      } else {
+        closeStream();
+      }
+    });
+
+    return () => {
+      stopped = true;
+      closeStream();
+      subscription.remove();
+    };
+  }, [enabled, fetchUnreadCount]);
 
   return {
     notifications,
