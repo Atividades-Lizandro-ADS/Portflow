@@ -66,19 +66,19 @@
   }
 }
 
-.username-field {
+.form-field {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.username-hint {
+.field-hint {
   font-size: 0.75rem;
   padding-left: 4px;
 
-  &.username-hint-checking { color: var(--text-secondary); }
-  &.username-hint-ok       { color: var(--drag-active); }
-  &.username-hint-err      { color: var(--danger); }
+  &.field-hint-checking { color: var(--text-secondary); }
+  &.field-hint-ok       { color: var(--drag-active); }
+  &.field-hint-err      { color: var(--danger); }
 }
 
 @media (min-width: 768px) {

@@ -15,33 +15,46 @@
         autocomplete="given-name"
       />
 
-      <div class="username-field">
+      <div class="form-field">
         <app-text-input
           formControlName="username"
           placeholder="Usuário (sem espaços)"
           autocomplete="username"
         />
         @if (usernameStatus() === 'checking') {
-          <span class="username-hint username-hint-checking">Verificando...</span>
+          <span class="field-hint field-hint-checking">Verificando...</span>
         } @else if (usernameStatus() === 'available') {
-          <span class="username-hint username-hint-ok">Username disponível</span>
+          <span class="field-hint field-hint-ok">Username disponível</span>
         } @else if (usernameStatus() === 'taken') {
-          <span class="username-hint username-hint-err">Username já em uso</span>
+          <span class="field-hint field-hint-err">Username já em uso</span>
         }
       </div>
 
-      <app-text-input
-        formControlName="email"
-        placeholder="E-mail"
-        type="email"
-        autocomplete="email"
-      />
-      <app-text-input
-        formControlName="password"
-        placeholder="Senha"
-        type="password"
-        autocomplete="new-password"
-      />
+      <div class="form-field">
+        <app-text-input
+          formControlName="email"
+          placeholder="E-mail"
+          type="email"
+          autocomplete="email"
+        />
+        @if (form.controls.email.errors && form.controls.email.touched) {
+          <span class="field-hint field-hint-err">Informe um e-mail válido.</span>
+        }
+      </div>
+
+      <div class="form-field">
+        <app-text-input
+          formControlName="password"
+          placeholder="Senha"
+          type="password"
+          autocomplete="new-password"
+        />
+        @if (form.controls.password.errors && form.controls.password.touched) {
+          <span class="field-hint field-hint-err">
+            A senha deve ter no mínimo 6 caracteres, uma letra, um número e um símbolo.
+          </span>
+        }
+      </div>
       <app-text-input
         formControlName="password2"
         placeholder="Confirmar senha"

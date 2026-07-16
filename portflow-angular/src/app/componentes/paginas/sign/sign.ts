@@ -5,6 +5,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, debounceTime, filter, of, switchMap, tap } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
 import { RegisterRequest } from '../../../core/models/auth';
+import { strongPasswordValidator } from '../../../core/validators/password.validators';
 import { BasicBtn } from '../../basico/basic-btn/basic-btn';
 import { TextInput } from '../../basico/text-input/text-input';
 
@@ -23,7 +24,7 @@ export class Sign {
     first_name: new FormControl('', Validators.required),
     username: new FormControl('', Validators.required),
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', Validators.required),
+    password: new FormControl('', [Validators.required, strongPasswordValidator()]),
     password2: new FormControl('', Validators.required),
   });
 
