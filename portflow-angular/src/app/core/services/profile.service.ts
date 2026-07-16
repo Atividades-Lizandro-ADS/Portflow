@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Profile } from '../models/profile';
+import { Profile, ProfilePage } from '../models/profile';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -17,5 +17,9 @@ export class ProfileService {
 
   update(id: number | string, data: FormData): Observable<Profile> {
     return this.http.patch<Profile>(`${this.api}/${id}/`, data);
+  }
+
+  search(query: string, page = 1): Observable<ProfilePage> {
+    return this.http.get<ProfilePage>(`${this.api}/`, { params: { search: query, page } });
   }
 }

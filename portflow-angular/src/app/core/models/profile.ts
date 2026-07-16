@@ -9,6 +9,13 @@ export interface ProfileMinimal {
   commissions_open: boolean;
 }
 
+export interface ProfilePage {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: ProfileMinimal[];
+}
+
 export interface Hiring {
   id: number;
   hire_type: string;

@@ -1,1 +1,68 @@
-<h1>Teste Search</h1>
+<app-navbar />
+
+<div class="search-page">
+  @if (!hasSearched()) {
+    <div class="search-hint">
+      <i class="bi bi-search"></i>
+      <span>Digite algo na busca para encontrar posts e artistas</span>
+    </div>
+  } @else {
+    <section class="search-section">
+      <h2 class="search-section-title">Artistas</h2>
+
+      @if (loadingProfiles()) {
+        <div class="search-section-loader"><span class="search-spinner"></span></div>
+      } @else if (profiles().length === 0) {
+        <p class="search-empty">Nenhum artista encontrado.</p>
+      } @else {
+        <div class="search-profiles">
+          @for (p of profiles(); track p.id) {
+            <a [routerLink]="['/profile', p.id]" class="search-profile-item">
+              <app-avatar [uri]="p.user_picture" [size]="44" />
+              <div class="search-profile-info">
+                <span class="search-profile-name">{{ p.first_name || p.username }}</span>
+                <span class="search-profile-username">@{{ p.username }}</span>
+              </div>
+            </a>
+          }
+        </div>
+
+        @if (hasMoreProfiles()) {
+          <button
+            class="search-load-more"
+            (click)="loadMoreProfiles()"
+            [disabled]="loadingMoreProfiles()"
+          >
+            @if (loadingMoreProfiles()) {
+              <span class="search-spinner search-spinner-sm"></span>
+            } @else {
+              Carregar mais artistas
+            }
+          </button>
+        }
+      }
+    </section>
+
+    <section class="search-section">
+      <h2 class="search-section-title">Posts</h2>
+
+      @if (loadingPosts() && posts().length === 0) {
+        <div class="search-section-loader"><span class="search-spinner"></span></div>
+      } @else if (posts().length === 0) {
+        <p class="search-empty">Nenhum post encontrado.</p>
+      } @else {
+        <div class="search-grid">
+          @for (post of posts(); track post.id) {
+            <app-post-card [post]="post" />
+          }
+        </div>
+      }
+
+      @if (loadingPosts() && posts().length > 0) {
+        <div class="search-section-loader"><span class="search-spinner"></span></div>
+      }
+    </section>
+  }
+
+  <div #sentinel class="search-sentinel"></div>
+</div>
