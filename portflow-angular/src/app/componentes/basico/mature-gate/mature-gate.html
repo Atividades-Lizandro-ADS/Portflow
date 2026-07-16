@@ -1,0 +1,21 @@
+<div class="mature-gate">
+  <div class="mature-gate-card">
+    <i class="bi bi-exclamation-triangle-fill mature-gate-icon"></i>
+    <h2 class="mature-gate-title">Conteúdo maduro</h2>
+    <p class="mature-gate-message">
+      @if (isLoggedIn()) {
+        O post a seguir tem conteúdo marcado como maduro. Deseja prosseguir?
+      } @else {
+        O post a seguir tem conteúdo marcado como maduro. Você precisa efetuar login caso deseje acessar.
+      }
+    </p>
+    <div class="mature-gate-actions">
+      <button class="mature-gate-btn-cancel" (click)="onCancel()">Cancelar</button>
+      @if (isLoggedIn()) {
+        <button class="mature-gate-btn-confirm" (click)="onContinue()">Prosseguir</button>
+      } @else {
+        <button class="mature-gate-btn-confirm" (click)="onLogin()">Fazer login</button>
+      }
+    </div>
+  </div>
+</div>

@@ -13,10 +13,11 @@ import { ToggleBtn } from '../../basico/toggle-btn/toggle-btn';
 import { CommentsSection } from '../../basico/comments-section/comments-section';
 import { ProgramChip } from '../../basico/program-chip/program-chip';
 import { DeletePostModal } from '../../basico/delete-post-modal/delete-post-modal';
+import { MatureGate } from '../../basico/mature-gate/mature-gate';
 
 @Component({
   selector: 'app-post-detail',
-  imports: [RouterLink, Navbar, PostGallery, Marmoviewer, AuthorCard, ToggleBtn, CommentsSection, ProgramChip, DeletePostModal],
+  imports: [RouterLink, Navbar, PostGallery, Marmoviewer, AuthorCard, ToggleBtn, CommentsSection, ProgramChip, DeletePostModal, MatureGate],
   templateUrl: './post-detail.html',
   styleUrl: './post-detail.scss',
 })
@@ -35,8 +36,10 @@ export class PostDetail implements OnInit {
   error = signal('');
   deleteModalVisible = signal(false);
   deleting = signal(false);
+  matureConfirmed = signal(false);
 
   isOwner = computed(() => this.user()?.profile_id === this.post()?.post_owner?.id);
+  showMatureGate = computed(() => !!this.post()?.is_mature && !this.matureConfirmed());
 
   youtubeUrl = computed<SafeResourceUrl | null>(() => {
     const id = extractYoutubeId(this.post()?.youtube_link ?? null);
@@ -58,6 +61,18 @@ export class PostDetail implements OnInit {
       next: p => { this.post.set(p); this.loading.set(false); },
       error: () => { this.error.set('Erro ao carregar o post.'); this.loading.set(false); },
     });
+  }
+
+  onMatureCancel(): void {
+    this.router.navigate(['/feed']);
+  }
+
+  onMatureContinue(): void {
+    this.matureConfirmed.set(true);
+  }
+
+  onMatureLogin(): void {
+    this.router.navigate(['/login']);
   }
 
   openDeleteModal(): void {

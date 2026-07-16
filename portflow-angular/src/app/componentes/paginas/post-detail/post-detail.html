@@ -10,6 +10,14 @@
   }
 
   @if (post(); as p) {
+    @if (showMatureGate()) {
+      <app-mature-gate
+        [isLoggedIn]="!!user()"
+        (cancel)="onMatureCancel()"
+        (continue)="onMatureContinue()"
+        (login)="onMatureLogin()"
+      />
+    } @else {
     <div class="post-detail-layout">
 
       <!-- wrapper dissolve no mobile (display:contents) → filhos entram no flex do layout -->
@@ -114,6 +122,7 @@
       </div>
 
     </div>
+    }
 
     <app-delete-post-modal
       [visible]="deleteModalVisible()"
