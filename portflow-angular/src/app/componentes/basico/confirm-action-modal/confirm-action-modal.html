@@ -1,6 +1,16 @@
 @if (visible()) {
-  <div class="confirm-action-modal-backdrop" (click)="onCancel()">
-    <div class="confirm-action-modal-card" (click)="$event.stopPropagation()">
+  <div
+    class="confirm-action-modal-backdrop"
+    animate.enter="modal-backdrop-enter"
+    animate.leave="modal-backdrop-leave"
+    (click)="onCancel()"
+  >
+    <div
+      class="confirm-action-modal-card"
+      animate.enter="modal-panel-enter"
+      animate.leave="modal-panel-leave"
+      (click)="$event.stopPropagation()"
+    >
       <i
         class="confirm-action-modal-icon bi"
         [class.bi-exclamation-triangle-fill]="tone() === 'danger'"

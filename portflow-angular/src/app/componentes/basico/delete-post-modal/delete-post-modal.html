@@ -1,6 +1,16 @@
 @if (visible()) {
-  <div class="delete-post-modal-backdrop" (click)="onCancel()">
-    <div class="delete-post-modal-card" (click)="$event.stopPropagation()">
+  <div
+    class="delete-post-modal-backdrop"
+    animate.enter="modal-backdrop-enter"
+    animate.leave="modal-backdrop-leave"
+    (click)="onCancel()"
+  >
+    <div
+      class="delete-post-modal-card"
+      animate.enter="modal-panel-enter"
+      animate.leave="modal-panel-leave"
+      (click)="$event.stopPropagation()"
+    >
       <i class="bi bi-exclamation-triangle-fill delete-post-modal-icon"></i>
       <h2 class="delete-post-modal-title">{{ title() }}</h2>
       <p class="delete-post-modal-message">

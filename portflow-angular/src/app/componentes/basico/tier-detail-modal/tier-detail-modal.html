@@ -1,6 +1,16 @@
 @if (visible() && tier(); as t) {
-  <div class="tier-detail-modal-backdrop" (click)="close.emit()">
-    <div class="tier-detail-modal-panel" (click)="$event.stopPropagation()">
+  <div
+    class="tier-detail-modal-backdrop"
+    animate.enter="modal-backdrop-enter"
+    animate.leave="modal-backdrop-leave"
+    (click)="close.emit()"
+  >
+    <div
+      class="tier-detail-modal-panel"
+      animate.enter="modal-panel-enter"
+      animate.leave="modal-panel-leave"
+      (click)="$event.stopPropagation()"
+    >
       <button type="button" class="tier-detail-modal-close" (click)="close.emit()">
         <i class="bi bi-x-lg"></i>
       </button>

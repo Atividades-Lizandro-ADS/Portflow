@@ -1,6 +1,16 @@
 @if (isOpen()) {
-  <div class="lightbox-backdrop" (click)="close.emit()">
-    <div class="lightbox-content" (click)="$event.stopPropagation()">
+  <div
+    class="lightbox-backdrop"
+    animate.enter="modal-backdrop-enter"
+    animate.leave="modal-backdrop-leave"
+    (click)="close.emit()"
+  >
+    <div
+      class="lightbox-content"
+      animate.enter="modal-panel-enter"
+      animate.leave="modal-panel-leave"
+      (click)="$event.stopPropagation()"
+    >
 
       <button class="lightbox-close" (click)="close.emit()">
         <i class="bi bi-x-lg"></i>

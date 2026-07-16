@@ -69,6 +69,31 @@ body {
   vertical-align: top;
 }
 
+@keyframes modal-backdrop-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-backdrop-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes modal-panel-pop-in {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes modal-panel-pop-out {
+  from { opacity: 1; transform: scale(1) translateY(0); }
+  to { opacity: 0; transform: scale(0.95) translateY(8px); }
+}
+
+.modal-backdrop-enter { animation: modal-backdrop-fade-in 0.2s ease; }
+.modal-backdrop-leave { animation: modal-backdrop-fade-out 0.2s ease; }
+.modal-panel-enter { animation: modal-panel-pop-in 0.22s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.modal-panel-leave { animation: modal-panel-pop-out 0.18s ease; }
+
 @media (min-width: 768px) {
   // Graybox desktop: card com header escuro
   .graybox {
