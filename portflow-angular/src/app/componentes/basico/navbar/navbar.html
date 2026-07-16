@@ -3,7 +3,7 @@
     @if (!logoExist()) {
       <img src="/site/logo.png" alt="Portflow" class="navbar-brand-logo" (error)="logoExist.set(true)" />
     } @else {
-      <span class="navbar-brand-text">Portflow</span>
+      <span class="navbar-brand-text">P<span class="navbar-brand-text-rest">ortflow</span></span>
     }
   </a>
 

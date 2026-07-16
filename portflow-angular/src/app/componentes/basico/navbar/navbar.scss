@@ -29,6 +29,12 @@
   font-size: 1.25rem;
 }
 
+@media (max-width: 365px) {
+  .navbar-brand-text-rest {
+    display: none;
+  }
+}
+
 .navbar-search {
   flex: 1;
   min-width: 0;
